@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* All your CSS styles from before remain exactly the same */
         :root {
             --primary-color: #e91e63;
             --primary-light: #f8bbd0;
@@ -47,13 +46,697 @@
             padding-bottom: 60px;
         }
 
-        /* ... (include ALL your previous CSS styles here) ... */
-        
-        /* Add any missing styles from your original CSS */
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .post-card {
+            padding: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn.liked {
+            color: var(--primary-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 15px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth pages */
+        .auth-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Messages */
+        .message-thread {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent {
+            background-color: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Chat Header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-right: 15px;
+        }
+
+        .call-buttons {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-item.unread {
+            background-color: var(--primary-light);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .user-list {
+            margin-top: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Comment section */
+        .comments-container {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* Call Styles */
+        .call-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .call-container.active {
+            display: flex;
+        }
+
+        .call-video {
+            flex: 1;
+            background-color: #000;
+            position: relative;
+        }
+
+        .local-video, .remote-video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .local-video {
+            width: 120px;
+            height: 160px;
+            bottom: 80px;
+            right: 20px;
+            border-radius: 8px;
+            z-index: 10;
+            border: 2px solid white;
+        }
+
+        .call-controls {
+            padding: 20px;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .call-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            color: white;
+        }
+
+        .call-end {
+            background-color: var(--error-color);
+        }
+
+        .call-mute, .call-video-toggle {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .call-mute.muted, .call-video-toggle.off {
+            background-color: var(--error-color);
+        }
+
+        .incoming-call {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .incoming-call.active {
+            display: block;
+        }
+
+        .caller-info {
+            margin-bottom: 20px;
+        }
+
+        .call-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .accept-call {
+            background-color: var(--success-color);
+        }
+
+        .reject-call {
+            background-color: var(--error-color);
+        }
+
+        /* Demo notice */
+        .demo-notice {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Your HTML structure remains exactly the same -->
+    <!-- Demo Notice -->
+    <div class="demo-notice">
+        <i class="fas fa-info-circle"></i> Demo Mode - Using Mock Data
+    </div>
+
+    <!-- Header -->
     <header class="header">
         <div class="logo-container">
             <div class="logo">Y</div>
@@ -62,7 +745,9 @@
         <button class="theme-toggle" id="themeToggle">🌙</button>
     </header>
 
+    <!-- Main Content -->
     <main class="container">
+        <!-- Home/Feed Page -->
         <section id="homePage" class="page active">
             <h2 class="text-center">Your Feed</h2>
             <div id="feedContainer">
@@ -70,6 +755,7 @@
             </div>
         </section>
 
+        <!-- Messages Page -->
         <section id="messagesPage" class="page">
             <h2 class="text-center">Messages</h2>
             <div id="conversationsContainer">
@@ -77,6 +763,7 @@
             </div>
         </section>
 
+        <!-- Chat Page -->
         <section id="chatPage" class="page">
             <div class="chat-header">
                 <button id="backToMessages" class="back-btn"><i class="fas fa-arrow-left"></i></button>
@@ -95,6 +782,7 @@
             </div>
         </section>
 
+        <!-- New Post Page -->
         <section id="newPostPage" class="page">
             <h2 class="text-center">Create Post</h2>
             <form id="newPostForm">
@@ -108,6 +796,7 @@
             </form>
         </section>
 
+        <!-- Notifications Page -->
         <section id="notificationsPage" class="page">
             <h2 class="text-center">Notifications</h2>
             <div id="notificationsContainer">
@@ -115,6 +804,7 @@
             </div>
         </section>
 
+        <!-- Profile Page -->
         <section id="profilePage" class="page">
             <div class="profile-header">
                 <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
@@ -142,6 +832,7 @@
             </div>
         </section>
 
+        <!-- Search Page -->
         <section id="searchPage" class="page">
             <h2 class="text-center">Search</h2>
             <div class="search-container">
@@ -152,6 +843,7 @@
             </div>
         </section>
 
+        <!-- Auth Pages -->
         <section id="authPage" class="page">
             <div class="auth-container">
                 <div class="auth-tabs">
@@ -171,7 +863,7 @@
                         <button type="button" class="btn btn-secondary" id="googleLogin">Login with Google</button>
                     </div>
                     <div class="text-center mt-2">
-                        <button type="button" id="demoLogin">Demo Login</button>
+                        <button type="button" class="btn btn-primary" id="demoLogin">Quick Demo Login</button>
                     </div>
                 </form>
 
@@ -194,6 +886,7 @@
         </section>
     </main>
 
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="nav-item active" data-page="homePage">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
@@ -219,7 +912,7 @@
         </div>
     </nav>
 
-    <!-- Modals remain the same -->
+    <!-- Edit Profile Modal -->
     <div class="modal-backdrop" id="editProfileModal" style="display: none;">
         <div class="modal">
             <div class="modal-header">
@@ -241,6 +934,7 @@
         </div>
     </div>
 
+    <!-- Comment Modal -->
     <div class="modal-backdrop" id="commentModal" style="display: none;">
         <div class="modal">
             <div class="modal-header">
@@ -258,39 +952,37 @@
     </div>
 
     <script>
-        // ========== CONFIGURATION ==========
-        // Replace these with your actual Supabase credentials
-        const SUPABASE_URL = 'https://your-project-ref.supabase.co';
-        const SUPABASE_ANON_KEY = 'your-anon-key';
-        
-        // Initialize Supabase with error handling
-        let supabase;
-        try {
-            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('Supabase initialized');
-        } catch (error) {
-            console.error('Error initializing Supabase:', error);
-            // Fallback to mock data mode
-            supabase = null;
-        }
-
-        // Mock data for demo when Supabase is not configured
+        // Mock data for demo
         const mockUsers = [
             {
                 id: '1',
                 name: 'Alex Johnson',
                 email: 'alex@example.com',
-                bio: 'Digital artist and photographer',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
+                bio: 'Digital artist and photographer 🎨',
+                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                posts: 12,
+                following: 156,
+                followers: 289
             },
             {
-                id: '2', 
+                id: '2',
                 name: 'Sam Smith',
                 email: 'sam@example.com',
-                bio: 'Travel enthusiast and food lover',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
+                bio: 'Travel enthusiast and food lover 🌍',
+                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                posts: 8,
+                following: 89,
+                followers: 145
+            },
+            {
+                id: '3',
+                name: 'Jordan Lee',
+                email: 'jordan@example.com',
+                bio: 'Fitness coach and nutritionist 💪',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                posts: 23,
+                following: 234,
+                followers: 567
             }
         ];
 
@@ -298,24 +990,81 @@
             {
                 id: '1',
                 user_id: '1',
-                content: 'Just finished my latest digital painting! What do you think? 🎨',
-                image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+                content: 'Just finished my latest digital painting! What do you think? 🎨✨',
+                image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
                 created_at: new Date(Date.now() - 2 * 60 * 60 * 1000),
-                profiles: { name: 'Alex Johnson', avatar: mockUsers[0].avatar },
-                likes: [{ user_id: '2' }],
+                profiles: mockUsers[0],
+                likes: [{ user_id: '2' }, { user_id: '3' }],
                 comments: [
-                    { id: '1', user_id: '2', content: 'Amazing work!', created_at: new Date(), profiles: { name: 'Sam Smith', avatar: mockUsers[1].avatar } }
+                    { 
+                        id: '1', 
+                        user_id: '2', 
+                        content: 'Amazing work! The colors are stunning!', 
+                        created_at: new Date(Date.now() - 1 * 60 * 60 * 1000),
+                        profiles: mockUsers[1]
+                    },
+                    { 
+                        id: '2', 
+                        user_id: '3', 
+                        content: 'Love the composition! 🔥', 
+                        created_at: new Date(Date.now() - 30 * 60 * 1000),
+                        profiles: mockUsers[2]
+                    }
                 ]
+            },
+            {
+                id: '2',
+                user_id: '2',
+                content: 'Beautiful sunset from my hike today. Nature is incredible! 🌄',
+                image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
+                created_at: new Date(Date.now() - 5 * 60 * 60 * 1000),
+                profiles: mockUsers[1],
+                likes: [{ user_id: '1' }],
+                comments: [
+                    { 
+                        id: '3', 
+                        user_id: '1', 
+                        content: 'Wow, where was this taken?', 
+                        created_at: new Date(Date.now() - 4 * 60 * 60 * 1000),
+                        profiles: mockUsers[0]
+                    }
+                ]
+            },
+            {
+                id: '3',
+                user_id: '3',
+                content: 'New personal record at the gym today! Consistency is key 💪\n\n#fitness #progress #workout',
+                image: null,
+                created_at: new Date(Date.now() - 24 * 60 * 60 * 1000),
+                profiles: mockUsers[2],
+                likes: [{ user_id: '2' }, { user_id: '1' }],
+                comments: []
             }
         ];
 
-        let mockDB = {
-            users: [...mockUsers],
-            posts: [...mockPosts],
-            messages: [],
-            notifications: [],
-            follows: []
-        };
+        const mockMessages = [
+            {
+                id: '1',
+                sender_id: '2',
+                receiver_id: '1',
+                content: 'Hey! Loved your latest artwork',
+                created_at: new Date(Date.now() - 3 * 60 * 60 * 1000)
+            },
+            {
+                id: '2',
+                sender_id: '1',
+                receiver_id: '2',
+                content: 'Thanks so much! Really appreciate it 😊',
+                created_at: new Date(Date.now() - 2 * 60 * 60 * 1000)
+            },
+            {
+                id: '3',
+                sender_id: '2',
+                receiver_id: '1',
+                content: 'Do you take commissions? I have an idea for a piece',
+                created_at: new Date(Date.now() - 1 * 60 * 60 * 1000)
+            }
+        ];
 
         // State Management
         let currentUser = null;
@@ -323,11 +1072,10 @@
         let currentPage = 'homePage';
         let currentPostId = null;
         let currentChatUser = null;
-        let useMockData = !supabase; // Use mock data if Supabase not configured
 
-        // ========== INITIALIZATION ==========
+        // Initialize the app
         function initApp() {
-            console.log('Initializing app...');
+            console.log('Initializing Yume Social App...');
             setTheme(currentTheme);
             setupEventListeners();
             checkAuthStatus();
@@ -336,42 +1084,23 @@
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-            document.getElementById('themeToggle').innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            }
         }
 
-        async function checkAuthStatus() {
-            if (useMockData) {
-                // Show auth page for mock mode
-                showPage('authPage');
-                return;
-            }
-
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                
-                if (error) {
-                    console.error('Auth session error:', error);
-                    showPage('authPage');
-                    return;
-                }
-                
-                if (session) {
-                    currentUser = session.user;
-                    await loadUserProfile();
-                    showPage('homePage');
-                    await loadFeed();
-                    await updateUnreadCount();
-                    setupRealtimeSubscriptions();
-                } else {
-                    showPage('authPage');
-                }
-            } catch (error) {
-                console.error('Error checking auth status:', error);
+        function checkAuthStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showPage('homePage');
+                loadFeed();
+            } else {
                 showPage('authPage');
             }
         }
 
-        // ========== EVENT LISTENERS ==========
         function setupEventListeners() {
             // Navigation
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -399,59 +1128,54 @@
                 });
             });
             
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                await loginUser(email, password);
-            });
-            
             // Demo login
             document.getElementById('demoLogin').addEventListener('click', () => {
-                useMockData = true;
                 currentUser = mockUsers[0];
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 showPage('homePage');
                 loadFeed();
-                alert('Demo mode activated! Using mock data.');
             });
             
-            // Register form
-            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
                 e.preventDefault();
-                const name = document.getElementById('registerName').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
                 
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match');
-                    return;
-                }
-                
-                await registerUser(name, email, password);
-            });
-            
-            // Google login
-            document.getElementById('googleLogin').addEventListener('click', async () => {
-                if (useMockData) {
-                    currentUser = mockUsers[1];
+                // Simple mock authentication
+                const user = mockUsers.find(u => u.email === email);
+                if (user && password === 'password') {
+                    currentUser = user;
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     showPage('homePage');
                     loadFeed();
-                    alert('Mock Google login successful!');
+                    alert('Login successful! Use any email with password "password"');
                 } else {
-                    await signInWithGoogle();
+                    alert('Use any email from mock users with password "password"');
                 }
             });
             
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Registration would create a real account in production');
+            });
+            
+            // Google login
+            document.getElementById('googleLogin').addEventListener('click', () => {
+                currentUser = mockUsers[1];
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showPage('homePage');
+                loadFeed();
+                alert('Mock Google login successful!');
+            });
+            
             // New post form
-            document.getElementById('newPostForm').addEventListener('submit', async (e) => {
+            document.getElementById('newPostForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const content = document.getElementById('postContent').value;
                 const imageFile = document.getElementById('postImage').files[0];
-                await createPost(content, imageFile);
+                createPost(content, imageFile);
             });
             
             // Edit profile
@@ -467,16 +1191,19 @@
             });
             
             // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const displayName = document.getElementById('editDisplayName').value;
                 const bio = document.getElementById('editBio').value;
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                await updateProfile(displayName, bio, avatarFile);
+                updateProfile(displayName, bio);
             });
             
-            // Messages
-            document.getElementById('backToMessages').addEventListener('click', () => showPage('messagesPage'));
+            // Back to messages
+            document.getElementById('backToMessages').addEventListener('click', () => {
+                showPage('messagesPage');
+            });
+            
+            // Send message
             document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
             document.getElementById('messageInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') sendMessage();
@@ -496,7 +1223,7 @@
                 document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
             });
             
-            // Call buttons (simplified)
+            // Call buttons
             document.getElementById('voiceCallBtn').addEventListener('click', () => {
                 alert('Voice call feature would be implemented with WebRTC');
             });
@@ -506,9 +1233,10 @@
             });
         }
 
-        // ========== PAGE MANAGEMENT ==========
         function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
             document.getElementById(pageId).classList.add('active');
             currentPage = pageId;
             
@@ -529,173 +1257,55 @@
             }
         }
 
-        // ========== AUTHENTICATION ==========
-        async function loadUserProfile() {
-            if (useMockData) return;
-            
-            try {
-                const { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-
-                if (error && error.code !== 'PGRST116') throw error;
-
-                if (!profile) {
-                    // Create profile
-                    const { error: insertError } = await supabase
-                        .from('profiles')
-                        .insert([{
-                            id: currentUser.id,
-                            name: currentUser.email.split('@')[0],
-                            bio: '',
-                            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.email.split('@')[0])}&background=random`
-                        }]);
-                    if (insertError) throw insertError;
-                }
-            } catch (error) {
-                console.error('Error loading profile:', error);
-            }
-        }
-
-        async function signInWithGoogle() {
-            if (useMockData) return;
-            
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-            });
-            if (error) alert('Google login error: ' + error.message);
-        }
-
-        async function loginUser(email, password) {
-            if (useMockData) {
-                // Mock login for demo
-                const user = mockUsers.find(u => u.email === email);
-                if (user && password === 'password') {
-                    currentUser = user;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    showPage('homePage');
-                    loadFeed();
-                    alert('Login successful! (Demo mode)');
-                } else {
-                    alert('Use any email with password "password" for demo');
-                }
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                alert('Login error: ' + error.message);
-            } else {
-                currentUser = data.user;
-                await loadUserProfile();
-                showPage('homePage');
-                await loadFeed();
-                alert('Login successful!');
-            }
-        }
-
-        async function registerUser(name, email, password) {
-            if (useMockData) {
-                alert('Registration would create a real account in production');
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: { data: { name } }
-            });
-            
-            if (error) {
-                alert('Registration error: ' + error.message);
-            } else {
-                alert('Registration successful! Please check your email.');
-                // Switch to login
-                document.querySelector('.auth-tab[data-tab="login"]').click();
-            }
-        }
-
-        async function logoutUser() {
-            if (useMockData) {
-                currentUser = null;
-                localStorage.removeItem('currentUser');
-                showPage('authPage');
-                return;
-            }
-
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                alert('Logout error: ' + error.message);
-            } else {
-                currentUser = null;
-                showPage('authPage');
-            }
-        }
-
-        // ========== POSTS & FEED ==========
-        async function loadFeed() {
-            const container = document.getElementById('feedContainer');
+        function loadFeed() {
+            const feedContainer = document.getElementById('feedContainer');
             
             if (!currentUser) {
-                container.innerHTML = `
+                feedContainer.innerHTML = `
                     <div class="card login-prompt">
                         <i class="fas fa-rss"></i>
                         <h3>Login to see your feed</h3>
+                        <p>Sign in to view posts from users you follow</p>
                         <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
                     </div>
                 `;
                 return;
             }
-
-            container.innerHTML = '<div class="spinner"></div>';
-
-            if (useMockData) {
-                // Use mock data
-                setTimeout(() => {
-                    container.innerHTML = '';
-                    mockPosts.forEach(post => {
-                        container.appendChild(createPostElement(post));
-                    });
-                }, 1000);
-                return;
-            }
-
-            try {
-                // Real Supabase implementation
-                const { data: posts, error } = await supabase
-                    .from('posts')
-                    .select(`
-                        *,
-                        profiles:user_id (name, avatar),
-                        likes (user_id),
-                        comments (id, user_id, content, created_at, profiles:user_id (name, avatar))
-                    `)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                container.innerHTML = '';
-                if (posts && posts.length > 0) {
-                    posts.forEach(post => container.appendChild(createPostElement(post)));
-                } else {
-                    container.innerHTML = '<p class="text-center">No posts yet</p>';
+            
+            feedContainer.innerHTML = '<div class="spinner"></div>';
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                feedContainer.innerHTML = '';
+                
+                if (mockPosts.length === 0) {
+                    feedContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Your feed is empty</h3>
+                                <p>Follow some users to see their posts here</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
                 }
-            } catch (error) {
-                console.error('Error loading feed:', error);
-                container.innerHTML = '<p class="text-center">Error loading feed</p>';
-            }
+                
+                mockPosts.forEach(post => {
+                    feedContainer.appendChild(createPostElement(post));
+                });
+            }, 1000);
         }
 
         function createPostElement(post) {
-            const isLiked = post.likes?.some(like => like.user_id === currentUser?.id);
-            const likeCount = post.likes?.length || 0;
-            const commentCount = post.comments?.length || 0;
-
-            const element = document.createElement('div');
-            element.className = 'card post-card';
-            element.innerHTML = `
+            const isLiked = post.likes.some(like => like.user_id === currentUser.id);
+            const likeCount = post.likes.length;
+            const commentCount = post.comments.length;
+            
+            const postEl = document.createElement('div');
+            postEl.className = 'card post-card';
+            postEl.innerHTML = `
                 <div class="user-info">
                     <img src="${post.profiles.avatar}" alt="${post.profiles.name}" class="avatar">
                     <div>
@@ -705,63 +1315,340 @@
                 </div>
                 <div class="post-content">
                     <p>${post.content}</p>
-                    ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
+                    ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
                 </div>
                 <div class="post-actions">
-                    <button class="action-btn ${isLiked ? 'liked' : ''}">
+                    <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
                         <i class="fas fa-heart"></i> <span>${likeCount}</span>
                     </button>
-                    <button class="action-btn">
+                    <button class="action-btn" data-post-id="${post.id}">
                         <i class="fas fa-comment"></i> <span>${commentCount}</span>
                     </button>
-                    <button class="action-btn"><i class="fas fa-share"></i></button>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i>
+                    </button>
                 </div>
             `;
-
-            // Add event listeners
-            const likeBtn = element.querySelector('.action-btn:first-child');
-            likeBtn.addEventListener('click', () => toggleLike(post.id));
-
-            const commentBtn = element.querySelectorAll('.action-btn')[1];
-            commentBtn.addEventListener('click', () => showComments(post.id));
-
-            return element;
+            
+            // Add like functionality
+            const likeBtn = postEl.querySelector('.action-btn:first-child');
+            likeBtn.addEventListener('click', () => {
+                toggleLike(post.id);
+            });
+            
+            // Add comment functionality
+            const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+            commentBtn.addEventListener('click', () => {
+                showComments(post.id);
+            });
+            
+            return postEl;
         }
 
-        async function createPost(content, imageFile) {
+        function toggleLike(postId) {
             if (!currentUser) {
-                alert('Please login first');
                 showPage('authPage');
                 return;
             }
-
-            if (useMockData) {
-                // Mock post creation
-                const newPost = {
-                    id: Date.now().toString(),
-                    user_id: currentUser.id,
-                    content,
-                    image: imageFile ? 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' : null,
-                    created_at: new Date(),
-                    profiles: { name: currentUser.name, avatar: currentUser.avatar },
-                    likes: [],
-                    comments: []
-                };
-                mockPosts.unshift(newPost);
-                document.getElementById('newPostForm').reset();
-                showPage('homePage');
-                loadFeed();
-                alert('Post created! (Demo mode)');
-                return;
+            
+            const post = mockPosts.find(p => p.id === postId);
+            const likeIndex = post.likes.findIndex(like => like.user_id === currentUser.id);
+            
+            if (likeIndex > -1) {
+                post.likes.splice(likeIndex, 1);
+            } else {
+                post.likes.push({ user_id: currentUser.id });
             }
-
-            // Real implementation would go here
-            alert('Post creation would work with real Supabase setup');
+            
+            // Reload feed to update like count
+            loadFeed();
         }
 
-        // ========== UTILITY FUNCTIONS ==========
+        function showComments(postId) {
+            if (!currentUser) {
+                alert('Please login to view comments');
+                showPage('authPage');
+                return;
+            }
+            
+            currentPostId = postId;
+            document.getElementById('commentModal').style.display = 'flex';
+            loadComments();
+        }
+
+        function loadComments() {
+            const commentsContainer = document.getElementById('commentsContainer');
+            const post = mockPosts.find(p => p.id === currentPostId);
+            
+            commentsContainer.innerHTML = '';
+            
+            if (!post.comments || post.comments.length === 0) {
+                commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
+            } else {
+                post.comments.forEach(comment => {
+                    const commentEl = document.createElement('div');
+                    commentEl.className = 'comment';
+                    commentEl.innerHTML = `
+                        <img src="${comment.profiles.avatar}" alt="${comment.profiles.name}" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="username">${comment.profiles.name}</div>
+                            <p>${comment.content}</p>
+                            <div class="timestamp">${formatDate(comment.created_at)}</div>
+                        </div>
+                    `;
+                    commentsContainer.appendChild(commentEl);
+                });
+            }
+        }
+
+        function postComment() {
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            
+            if (!content || !currentUser) return;
+            
+            const post = mockPosts.find(p => p.id === currentPostId);
+            const user = mockUsers.find(u => u.id === currentUser.id);
+            
+            const newComment = {
+                id: Date.now().toString(),
+                user_id: currentUser.id,
+                content: content,
+                created_at: new Date(),
+                profiles: user
+            };
+            
+            if (!post.comments) post.comments = [];
+            post.comments.push(newComment);
+            
+            commentInput.value = '';
+            loadComments();
+            loadFeed(); // Refresh feed to update comment count
+        }
+
+        function createPost(content, imageFile) {
+            if (!currentUser) {
+                alert('Please login to create a post');
+                showPage('authPage');
+                return;
+            }
+            
+            const newPost = {
+                id: Date.now().toString(),
+                user_id: currentUser.id,
+                content: content,
+                image: imageFile ? 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' : null,
+                created_at: new Date(),
+                profiles: currentUser,
+                likes: [],
+                comments: []
+            };
+            
+            mockPosts.unshift(newPost);
+            document.getElementById('newPostForm').reset();
+            showPage('homePage');
+            loadFeed();
+            alert('Post created successfully!');
+        }
+
+        function loadProfile() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            // Update profile info
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileBio').textContent = currentUser.bio;
+            document.getElementById('profileAvatar').src = currentUser.avatar;
+            
+            // Update stats
+            document.getElementById('postsCount').textContent = currentUser.posts || 0;
+            document.getElementById('followingCount').textContent = currentUser.following || 0;
+            document.getElementById('followersCount').textContent = currentUser.followers || 0;
+            
+            // Load user's posts
+            const postsContainer = document.getElementById('userPostsContainer');
+            const userPosts = mockPosts.filter(p => p.user_id === currentUser.id);
+            
+            postsContainer.innerHTML = '';
+            
+            if (userPosts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="card text-center">
+                        <div style="padding: 40px 20px;">
+                            <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3>No posts yet</h3>
+                            <p>Share your first post with the world</p>
+                            <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            userPosts.forEach(post => {
+                postsContainer.appendChild(createPostElement(post));
+            });
+        }
+
+        function showEditProfileModal() {
+            document.getElementById('editDisplayName').value = currentUser.name;
+            document.getElementById('editBio').value = currentUser.bio;
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        function updateProfile(displayName, bio) {
+            currentUser.name = displayName;
+            currentUser.bio = bio;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            document.getElementById('editProfileModal').style.display = 'none';
+            loadProfile();
+            alert('Profile updated successfully!');
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showPage('authPage');
+        }
+
+        function loadNotifications() {
+            const container = document.getElementById('notificationsContainer');
+            container.innerHTML = '<p class="text-center">No notifications yet</p>';
+        }
+
+        function loadConversations() {
+            const container = document.getElementById('conversationsContainer');
+            
+            if (!currentUser) {
+                container.innerHTML = '<p class="text-center">Please login to view messages</p>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="card text-center">
+                    <div style="padding: 40px 20px;">
+                        <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                        <h3>No messages yet</h3>
+                        <p>Start a conversation with someone</p>
+                        <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadChat(user) {
+            const messageThread = document.getElementById('messageThread');
+            const messages = mockMessages.filter(m => 
+                (m.sender_id === currentUser.id && m.receiver_id === user.id) ||
+                (m.sender_id === user.id && m.receiver_id === currentUser.id)
+            );
+            
+            messageThread.innerHTML = '';
+            
+            if (messages.length > 0) {
+                messages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
+                    messageEl.innerHTML = `
+                        <div>${msg.content}</div>
+                        <div class="message-time">${formatTime(msg.created_at)}</div>
+                    `;
+                    messageThread.appendChild(messageEl);
+                });
+            } else {
+                messageThread.innerHTML = '<p class="text-center">No messages yet. Start a conversation!</p>';
+            }
+            
+            messageThread.scrollTop = messageThread.scrollHeight;
+        }
+
+        function sendMessage() {
+            if (!currentUser || !currentChatUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+            
+            const newMessage = {
+                id: Date.now().toString(),
+                sender_id: currentUser.id,
+                receiver_id: currentChatUser.id,
+                content: content,
+                created_at: new Date()
+            };
+            
+            mockMessages.push(newMessage);
+            messageInput.value = '';
+            loadChat(currentChatUser);
+        }
+
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
+                return;
+            }
+            
+            const users = mockUsers.filter(u => 
+                u.name.toLowerCase().includes(query) && u.id !== currentUser.id
+            );
+            
+            searchResults.innerHTML = '';
+            
+            if (users.length === 0) {
+                searchResults.innerHTML = '<p class="text-center">No users found</p>';
+                return;
+            }
+            
+            users.forEach(user => {
+                const isFollowing = Math.random() > 0.5; // Random for demo
+                const userEl = document.createElement('div');
+                userEl.className = 'card user-item';
+                userEl.innerHTML = `
+                    <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                    <div style="flex: 1;">
+                        <div class="username">${user.name}</div>
+                        <div>${user.bio}</div>
+                    </div>
+                    <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                        ${isFollowing ? 'Unfollow' : 'Follow'}
+                    </button>
+                `;
+                
+                const followBtn = userEl.querySelector('button');
+                followBtn.addEventListener('click', () => {
+                    alert(`${isFollowing ? 'Unfollowed' : 'Followed'} ${user.name}`);
+                });
+                
+                // Make user clickable to start chat
+                userEl.style.cursor = 'pointer';
+                userEl.addEventListener('click', () => {
+                    currentChatUser = user;
+                    document.getElementById('chatUserName').textContent = user.name;
+                    showPage('chatPage');
+                    loadChat(user);
+                });
+                
+                searchResults.appendChild(userEl);
+            });
+        }
+
         function formatDate(date) {
-            const diff = new Date() - new Date(date);
+            const now = new Date();
+            const diff = now - new Date(date);
             const minutes = Math.floor(diff / 60000);
             const hours = Math.floor(diff / 3600000);
             const days = Math.floor(diff / 86400000);
@@ -769,7 +1656,8 @@
             if (minutes < 1) return 'Just now';
             if (minutes < 60) return `${minutes}m ago`;
             if (hours < 24) return `${hours}h ago`;
-            if (days < 7) return `${days}d ago`;
+            if (days < 7) return `${days}d ago';
+            
             return new Date(date).toLocaleDateString();
         }
 
@@ -777,84 +1665,7 @@
             return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        // ========== PLACEHOLDER FUNCTIONS ==========
-        // These would be fully implemented in a production app
-        async function toggleLike(postId) {
-            alert('Like functionality would be implemented');
-        }
-
-        async function showComments(postId) {
-            alert('Comment modal would open');
-        }
-
-        async function postComment() {
-            alert('Comment would be posted');
-        }
-
-        async function loadProfile() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileBio').textContent = currentUser.bio || 'No bio yet';
-            document.getElementById('profileAvatar').src = currentUser.avatar;
-            // Load user posts...
-        }
-
-        async function loadNotifications() {
-            document.getElementById('notificationsContainer').innerHTML = '<p class="text-center">No notifications</p>';
-        }
-
-        async function loadConversations() {
-            document.getElementById('conversationsContainer').innerHTML = '<p class="text-center">No conversations</p>';
-        }
-
-        async function loadChat(user) {
-            document.getElementById('messageThread').innerHTML = '<p class="text-center">No messages yet</p>';
-        }
-
-        async function sendMessage() {
-            alert('Message would be sent');
-        }
-
-        function initSearch() {
-            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search</p>';
-        }
-
-        async function handleSearch() {
-            document.getElementById('searchResults').innerHTML = '<p class="text-center">Search results would appear here</p>';
-        }
-
-        function showEditProfileModal() {
-            document.getElementById('editDisplayName').value = currentUser.name;
-            document.getElementById('editBio').value = currentUser.bio || '';
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        async function updateProfile(name, bio, avatarFile) {
-            if (useMockData) {
-                currentUser.name = name;
-                currentUser.bio = bio;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                document.getElementById('editProfileModal').style.display = 'none';
-                loadProfile();
-                alert('Profile updated! (Demo mode)');
-                return;
-            }
-            alert('Profile would be updated in Supabase');
-        }
-
-        async function updateUnreadCount() {
-            // Would update notification badge
-        }
-
-        function setupRealtimeSubscriptions() {
-            if (useMockData || !supabase) return;
-            // Would set up real-time subscriptions
-        }
-
-        // Initialize the app
+        // Initialize the app when the DOM is loaded
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
