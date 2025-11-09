@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
+              :root {
             --primary-color: #e91e63;
             --primary-light: #f8bbd0;
             --primary-dark: #ad1457;
@@ -591,7 +590,7 @@
             font-size: 3rem;
             color: #ccc;
             margin-bottom: 15px;
-        }
+        }  
     </style>
 </head>
 <body>
@@ -723,6 +722,335 @@
                 </form>
 
                 <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="registerName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="registerEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerPassword" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="homePage">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" data-page="messagesPage">
+            <div class="nav-icon"><i class="fas fa-comments"></i></div>
+            <span>Messages</span>
+        </div>
+        <div class="nav-item" data-page="newPostPage">
+            <div class="nav-icon"><i class="fas fa-plus-square"></i></div>
+            <span>New Post</span>
+        </div>
+        <div class="nav-item" data-page="notificationsPage">
+            <div class="nav-icon"><i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadge" style="display: none;">0</span>
+            </div>
+            <span>Notifications</span>
+        </div>
+        <div class="nav-item" data-page="profilePage">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <span>Profile</span>
+        </div>
+    </nav>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-backdrop" id="editProfileModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="editDisplayName" placeholder="Display Name" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="editBio" placeholder="Bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="file" id="editAvatar" accept="image/*" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-backdrop" id="commentModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Comments</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="commentsContainer">
+                <div class="spinner"></div>
+            </div>
+            <div class="comment-input">
+                <input type="text" id="commentInput" placeholder="Write a comment...">
+                <button id="postCommentBtn" class="btn btn-primary">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://xmjtlyfxdtklftuxajch.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtanRseWZ4ZHRrbGZ0dXhhamNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2ODg1NTQsImV4cCI6MjA3ODI2NDU1NH0.g6R8HumZRbDCQ1YWtdOEf5qLmAwUXueWPZDt44PtbB4';
+        
+        // Initialize Supabase client
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // State Management
+        let currentUser = null;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentPage = 'homePage';
+        let currentPostId = null;
+        let currentChatUser = null;
+
+        // DOM Elements
+        const pages = document.querySelectorAll('.page');
+        const navItems = document.querySelectorAll('.nav-item');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Initialize the app
+        async function initApp() {
+            // Set the theme
+            setTheme(currentTheme);
+            
+            // Check if user is logged in
+            await checkAuthStatus();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Load initial data
+            loadInitialData();
+        }
+
+        // Set theme function
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            const { data, error } = await supabase.auth.getSession();
+            
+            if (data.session) {
+                // User is logged in
+                const user = data.session.user;
+                
+                // Get user profile from database
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    currentUser = {
+                        id: user.id,
+                        email: user.email,
+                        name: profile.name,
+                        bio: profile.bio,
+                        avatar: profile.avatar,
+                        createdAt: profile.created_at
+                    };
+                    
+                    showPage('homePage');
+                    loadFeed();
+                    updateUnreadCount();
+                } else {
+                    // Create profile if it doesn't exist
+                    const { data: newProfile, error } = await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: user.id,
+                                name: user.email.split('@')[0],
+                                bio: '',
+                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                            }
+                        ])
+                        .select()
+                        .single();
+                    
+                    if (newProfile) {
+                        currentUser = {
+                            id: user.id,
+                            email: user.email,
+                            name: newProfile.name,
+                            bio: newProfile.bio,
+                            avatar: newProfile.avatar,
+                            createdAt: newProfile.created_at
+                        };
+                        
+                        showPage('homePage');
+                        loadFeed();
+                        updateUnreadCount();
+                    }
+                }
+            } else {
+                showPage('authPage');
+            }
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+            
+            // Update navigation
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Load content for the page if needed
+            if (pageId === 'homePage') loadFeed();
+            if (pageId === 'profilePage') loadProfile();
+            if (pageId === 'notificationsPage') loadNotifications();
+            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'searchPage') initSearch();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const pageId = item.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                currentTheme = newTheme;
+            });
+            
+            // Auth tabs
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    if (tabName === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                loginUser(email, password);
+            });
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                registerUser(name, email, password);
+            });
+            
+            // Google login
+            document.getElementById('googleLogin').addEventListener('click', () => {
+                signInWithGoogle();
+            });
+            
+            // Continue as guest
+            document.getElementById('continueAsGuest').addEventListener('click', () => {
+                currentUser = null;
+                showPage('homePage');
+                loadFeed();
+            });
+            
+            // New post form
+            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = document.getElementById('postContent').value;
+                const imageFile = document.getElementById('postImage').files[0];
+                createPost(content, imageFile);
+            });
+            
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                showEditProfileModal();
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logoutUser();
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('editProfileModal').style.display = 'none';
+                    document.getElementById('commentModal').style.display = 'none';
+                });
+            });
+            
+            // Edit profile form
+            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const displayName = document.getElementById('editDisplayName').value;
+                const bio = document.getElementById('editBio').value;
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                updateProfile(displayName, bio, avatarFile);
+            });
+            
+            // Back to messages button
+            document.getElementById('backToMessages').addEventListener('click', () => {
+                showPage('messagesPage');
+            });
+            
+            // Send message button
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+            
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                             <form id="registerForm" class="auth-form" style="display: none;">
                     <div class="form-group">
                         <input type="text" class="form-input" id="registerName" placeholder="Full Name" required>
                     </div>
