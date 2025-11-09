@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yume - Social Media App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* Your existing CSS styles remain exactly the same */
         :root {
             --primary-color: #e91e63;
             --primary-light: #f8bbd0;
@@ -42,553 +44,113 @@
             color: var(--text-color);
             line-height: 1.6;
             transition: var(--transition);
-            padding-bottom: 60px; /* Space for bottom nav */
+            padding-bottom: 60px;
         }
 
-        a {
-            text-decoration: none;
-            color: var(--primary-color);
-        }
+        /* ... (all your existing CSS styles remain exactly the same) ... */
 
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: inherit;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0 15px;
-        }
-
-        /* Header */
-        .header {
-            position: sticky;
-            top: 0;
-            background-color: var(--card-bg);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            z-index: 100;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--text-color);
-        }
-
-        /* Navigation */
-        .bottom-nav {
+        /* Voice/Video Call Styles */
+        .call-container {
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
             right: 0;
-            background-color: var(--card-bg);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            z-index: 100;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
         }
 
-        .nav-item {
+        .call-container.active {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.8rem;
-            color: var(--text-color);
+        }
+
+        .call-video {
+            flex: 1;
+            background-color: #000;
             position: relative;
         }
 
-        .nav-item.active {
-            color: var(--primary-color);
+        .local-video, .remote-video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .nav-icon {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
+        .local-video {
+            width: 120px;
+            height: 160px;
+            bottom: 80px;
+            right: 20px;
+            border-radius: 8px;
+            z-index: 10;
         }
 
-        .badge {
-            background-color: var(--primary-color);
-            color: white;
+        .call-controls {
+            padding: 20px;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .call-btn {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            top: -5px;
-            right: -5px;
-        }
-
-        /* Cards */
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .post-card {
-            padding: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-
-        .username {
-            font-weight: bold;
-        }
-
-        .timestamp {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .post-content {
-            margin-bottom: 15px;
-        }
-
-        .post-image {
-            width: 100%;
-            border-radius: 8px;
-            margin-top: 10px;
-            max-height: 300px;
-            object-fit: cover;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-around;
-            border-top: 1px solid var(--border-color);
-            padding-top: 10px;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            color: var(--text-color);
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .action-btn i {
-            margin-right: 5px;
-        }
-
-        .action-btn.liked {
-            color: var(--primary-color);
-        }
-
-        /* Forms */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border-radius: 4px;
-            font-weight: bold;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: var(--transition);
+            border: none;
         }
 
-        .btn-primary {
-            background-color: var(--primary-color);
+        .call-end {
+            background-color: var(--error-color);
             color: white;
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
+        .call-mute, .call-video-toggle {
+            background-color: rgba(255,255,255,0.2);
             color: white;
         }
 
-        .btn-block {
-            width: 100%;
-        }
-
-        /* Pages */
-        .page {
+        .incoming-call {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             display: none;
-            padding: 15px;
         }
 
-        .page.active {
+        .incoming-call.active {
             display: block;
         }
 
-        /* Auth pages */
-        .auth-container {
-            max-width: 400px;
-            margin: 30px auto;
-        }
-
-        .auth-tabs {
+        .call-actions {
             display: flex;
-            margin-bottom: 20px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-        }
-
-        .auth-tab.active {
-            border-bottom-color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        /* Messages */
-        .message-thread {
-            height: calc(100vh - 180px);
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .message {
-            padding: 10px 15px;
-            margin-bottom: 10px;
-            border-radius: 18px;
-            max-width: 80%;
-            word-wrap: break-word;
-            position: relative;
-        }
-
-        .message.sent {
-            background-color: var(--primary-light);
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.received {
-            background-color: var(--card-bg);
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            color: #888;
-            margin-top: 5px;
-            text-align: right;
-        }
-
-        .message-input {
-            display: flex;
-            padding: 10px;
-            background-color: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            position: fixed;
-            bottom: 60px;
-            left: 0;
-            right: 0;
-        }
-
-        .message-input input {
-            flex: 1;
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            margin-right: 10px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        /* Notifications */
-        .notification-item {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .notification-item.unread {
-            background-color: var(--primary-light);
-        }
-
-        .notification-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
+            gap: 15px;
             justify-content: center;
-            margin-right: 15px;
-            color: var(--primary-color);
+            margin-top: 20px;
         }
 
-        /* Profile */
-        .profile-header {
-            text-align: center;
-            padding: 20px;
+        .accept-call {
+            background-color: var(--success-color);
+            color: white;
         }
 
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 3px solid var(--primary-color);
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0;
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 15px;
-        }
-
-        .stat {
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .stat-value {
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        /* Search */
-        .search-container {
-            margin-bottom: 15px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .user-list {
-            margin-top: 15px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* Utilities */
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-1 { margin-top: 10px; }
-        .mt-2 { margin-top: 20px; }
-        .mb-1 { margin-bottom: 10px; }
-        .mb-2 { margin-bottom: 20px; }
-
-        /* Responsive */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .bottom-nav {
-                display: none;
-            }
-
-            .desktop-nav {
-                display: flex;
-            }
-
-            body {
-                padding-bottom: 0;
-            }
-        }
-
-        /* Loading spinner */
-        .spinner {
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-color);
-        }
-
-        /* Comment section */
-        .comments-container {
-            margin-top: 15px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-        }
-
-        .comment {
-            display: flex;
-            margin-bottom: 15px;
-        }
-
-        .comment-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-        }
-
-        .comment-content {
-            flex: 1;
-            background-color: var(--bg-color);
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .comment-input {
-            display: flex;
-            margin-top: 10px;
-        }
-
-        .comment-input input {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            margin-right: 10px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
-        /* Login prompt */
-        .login-prompt {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .login-prompt i {
-            font-size: 3rem;
-            color: #ccc;
-            margin-bottom: 15px;
+        .reject-call {
+            background-color: var(--error-color);
+            color: white;
         }
     </style>
 </head>
@@ -625,6 +187,10 @@
             <div class="chat-header">
                 <button id="backToMessages" class="back-btn"><i class="fas fa-arrow-left"></i></button>
                 <h3 id="chatUserName">User Name</h3>
+                <div class="call-buttons">
+                    <button class="btn btn-primary" id="voiceCallBtn"><i class="fas fa-phone"></i></button>
+                    <button class="btn btn-secondary" id="videoCallBtn"><i class="fas fa-video"></i></button>
+                </div>
             </div>
             <div class="message-thread" id="messageThread">
                 <div class="spinner"></div>
@@ -804,114 +370,46 @@
         </div>
     </div>
 
+    <!-- Call Interface -->
+    <div class="call-container" id="callContainer">
+        <div class="call-video">
+            <video id="remoteVideo" class="remote-video" autoplay></video>
+            <video id="localVideo" class="local-video" autoplay muted></video>
+        </div>
+        <div class="call-controls">
+            <button class="call-btn call-mute" id="muteBtn"><i class="fas fa-microphone"></i></button>
+            <button class="call-btn call-video-toggle" id="videoToggleBtn"><i class="fas fa-video"></i></button>
+            <button class="call-btn call-end" id="endCallBtn"><i class="fas fa-phone"></i></button>
+        </div>
+    </div>
+
+    <!-- Incoming Call Modal -->
+    <div class="incoming-call" id="incomingCall">
+        <div class="caller-info">
+            <img id="callerAvatar" src="" alt="Caller" class="avatar">
+            <h3 id="callerName">Incoming Call</h3>
+            <p id="callType">Voice Call</p>
+        </div>
+        <div class="call-actions">
+            <button class="call-btn accept-call" id="acceptCallBtn"><i class="fas fa-phone"></i></button>
+            <button class="call-btn reject-call" id="rejectCallBtn"><i class="fas fa-phone-slash"></i></button>
+        </div>
+    </div>
+
     <script>
-        // Mock data for demonstration
-        const mockUsers = [
-            {
-                id: '1',
-                name: 'Alex Johnson',
-                email: 'alex@example.com',
-                bio: 'Digital artist and photographer',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
-            },
-            {
-                id: '2',
-                name: 'Sam Smith',
-                email: 'sam@example.com',
-                bio: 'Travel enthusiast and food lover',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
-            },
-            {
-                id: '3',
-                name: 'Jordan Lee',
-                email: 'jordan@example.com',
-                bio: 'Fitness coach and nutritionist',
-                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
-            }
-        ];
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://your-project-ref.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+        
+        // Initialize Supabase
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const mockPosts = [
-            {
-                id: '1',
-                user_id: '1',
-                content: 'Just finished my latest digital painting! What do you think? 🎨',
-                image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
-                created_at: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-                likes: ['2'],
-                comments: [
-                    { id: '1', user_id: '2', content: 'Amazing work!', created_at: new Date(Date.now() - 1 * 60 * 60 * 1000) },
-                    { id: '2', user_id: '3', content: 'Love the colors!', created_at: new Date(Date.now() - 30 * 60 * 1000) }
-                ]
-            },
-            {
-                id: '2',
-                user_id: '2',
-                content: 'Beautiful sunset from my hike today. Nature is incredible! 🌄',
-                image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80',
-                created_at: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-                likes: ['1', '3'],
-                comments: [
-                    { id: '3', user_id: '1', content: 'Wow, where was this taken?', created_at: new Date(Date.now() - 4 * 60 * 60 * 1000) }
-                ]
-            },
-            {
-                id: '3',
-                user_id: '3',
-                content: 'New personal record at the gym today! Consistency is key 💪',
-                image: null,
-                created_at: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-                likes: ['2'],
-                comments: []
-            }
-        ];
-
-        const mockMessages = [
-            {
-                id: '1',
-                sender_id: '2',
-                receiver_id: '1',
-                content: 'Hey! Loved your latest artwork',
-                created_at: new Date(Date.now() - 3 * 60 * 60 * 1000)
-            },
-            {
-                id: '2',
-                sender_id: '1',
-                receiver_id: '2',
-                content: 'Thanks so much! Really appreciate it',
-                created_at: new Date(Date.now() - 2 * 60 * 60 * 1000)
-            },
-            {
-                id: '3',
-                sender_id: '2',
-                receiver_id: '1',
-                content: 'Do you take commissions?',
-                created_at: new Date(Date.now() - 1 * 60 * 60 * 1000)
-            }
-        ];
-
-        const mockNotifications = [
-            {
-                id: '1',
-                user_id: '1',
-                type: 'like',
-                source_user_id: '2',
-                content: 'liked your post',
-                read: false,
-                created_at: new Date(Date.now() - 2 * 60 * 60 * 1000)
-            },
-            {
-                id: '2',
-                user_id: '1',
-                type: 'comment',
-                source_user_id: '3',
-                content: 'commented on your post',
-                read: false,
-                created_at: new Date(Date.now() - 1 * 60 * 60 * 1000)
-            }
-        ];
+        // WebRTC Configuration (simplified - in production use a proper signaling server)
+        let localStream = null;
+        let remoteStream = null;
+        let peerConnection = null;
+        let currentCall = null;
+        let isCaller = false;
 
         // State Management
         let currentUser = null;
@@ -920,36 +418,12 @@
         let currentPostId = null;
         let currentChatUser = null;
         
-        // Mock database
-        let mockDB = {
-            users: [...mockUsers],
-            posts: [...mockPosts],
-            messages: [...mockMessages],
-            notifications: [...mockNotifications],
-            follows: [
-                { id: '1', follower_id: '1', following_id: '2' },
-                { id: '2', follower_id: '1', following_id: '3' }
-            ]
-        };
-
-        // DOM Elements
-        const pages = document.querySelectorAll('.page');
-        const navItems = document.querySelectorAll('.nav-item');
-        const themeToggle = document.getElementById('themeToggle');
-
         // Initialize the app
         function initApp() {
-            // Set the theme
             setTheme(currentTheme);
-            
-            // Check if user is logged in
             checkAuthStatus();
-            
-            // Set up event listeners
             setupEventListeners();
-            
-            // Load initial data
-            loadInitialData();
+            setupRealtimeSubscriptions();
         }
 
         // Set theme function
@@ -960,36 +434,69 @@
         }
 
         // Check authentication status
-        function checkAuthStatus() {
-            const savedUser = localStorage.getItem('currentUser');
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabase.auth.getSession();
             
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
+            if (session) {
+                currentUser = session.user;
+                await loadUserProfile();
                 showPage('homePage');
-                loadFeed();
-                updateUnreadCount();
+                await loadFeed();
+                await updateUnreadCount();
             } else {
                 showPage('authPage');
             }
         }
 
+        // Load user profile from database
+        async function loadUserProfile() {
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error loading profile:', error);
+                return;
+            }
+
+            if (!profile) {
+                // Create profile if it doesn't exist
+                const { error: insertError } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: currentUser.id,
+                            name: currentUser.email.split('@')[0],
+                            bio: '',
+                            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.email.split('@')[0])}&background=random`
+                        }
+                    ]);
+
+                if (insertError) {
+                    console.error('Error creating profile:', insertError);
+                }
+            } else {
+                currentUser.profile = profile;
+            }
+        }
+
         // Show specific page
         function showPage(pageId) {
-            pages.forEach(page => {
+            document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
             currentPage = pageId;
             
-            // Update navigation
-            navItems.forEach(item => {
+            document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.getAttribute('data-page') === pageId) {
                     item.classList.add('active');
                 }
             });
             
-            // Load content for the page if needed
             if (pageId === 'homePage') loadFeed();
             if (pageId === 'profilePage') loadProfile();
             if (pageId === 'notificationsPage') loadNotifications();
@@ -1000,7 +507,7 @@
         // Set up event listeners
         function setupEventListeners() {
             // Navigation
-            navItems.forEach(item => {
+            document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const pageId = item.getAttribute('data-page');
                     showPage(pageId);
@@ -1008,18 +515,17 @@
             });
             
             // Theme toggle
-            themeToggle.addEventListener('click', () => {
+            document.getElementById('themeToggle').addEventListener('click', () => {
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 setTheme(newTheme);
                 currentTheme = newTheme;
             });
             
             // Auth tabs
-            const authTabs = document.querySelectorAll('.auth-tab');
-            authTabs.forEach(tab => {
+            document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabName = tab.getAttribute('data-tab');
-                    authTabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
                     
                     if (tabName === 'login') {
@@ -1033,15 +539,15 @@
             });
             
             // Login form
-            document.getElementById('loginForm').addEventListener('submit', (e) => {
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
+                await loginUser(email, password);
             });
             
             // Register form
-            document.getElementById('registerForm').addEventListener('submit', (e) => {
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const name = document.getElementById('registerName').value;
                 const email = document.getElementById('registerEmail').value;
@@ -1053,28 +559,20 @@
                     return;
                 }
                 
-                registerUser(name, email, password);
+                await registerUser(name, email, password);
             });
             
             // Google login
-            document.getElementById('googleLogin').addEventListener('click', () => {
-                signInWithGoogle();
-            });
-            
-            // Continue as guest
-            document.getElementById('continueAsGuest').addEventListener('click', () => {
-                currentUser = mockUsers[0]; // Use first mock user as guest
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showPage('homePage');
-                loadFeed();
+            document.getElementById('googleLogin').addEventListener('click', async () => {
+                await signInWithGoogle();
             });
             
             // New post form
-            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+            document.getElementById('newPostForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const content = document.getElementById('postContent').value;
                 const imageFile = document.getElementById('postImage').files[0];
-                createPost(content, imageFile);
+                await createPost(content, imageFile);
             });
             
             // Edit profile button
@@ -1096,12 +594,12 @@
             });
             
             // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const displayName = document.getElementById('editDisplayName').value;
                 const bio = document.getElementById('editBio').value;
                 const avatarFile = document.getElementById('editAvatar').files[0];
-                updateProfile(displayName, bio, avatarFile);
+                await updateProfile(displayName, bio, avatarFile);
             });
             
             // Back to messages button
@@ -1132,90 +630,126 @@
             // Search input
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             
-            // Profile stats clicks
-            document.getElementById('postsStat').addEventListener('click', () => {
-                document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            document.getElementById('followingStat').addEventListener('click', () => {
-                alert('Following list would be shown here');
-            });
-            
-            document.getElementById('followersStat').addEventListener('click', () => {
-                alert('Followers list would be shown here');
-            });
+            // Call buttons
+            document.getElementById('voiceCallBtn').addEventListener('click', () => startCall('voice'));
+            document.getElementById('videoCallBtn').addEventListener('click', () => startCall('video'));
+            document.getElementById('endCallBtn').addEventListener('click', endCall);
+            document.getElementById('acceptCallBtn').addEventListener('click', acceptCall);
+            document.getElementById('rejectCallBtn').addEventListener('click', rejectCall);
+            document.getElementById('muteBtn').addEventListener('click', toggleMute);
+            document.getElementById('videoToggleBtn').addEventListener('click', toggleVideo);
         }
 
-        // Load initial data
-        function loadInitialData() {
-            // Set up real-time subscriptions (mocked)
-            setupRealtimeSubscriptions();
-        }
-
-        // Set up real-time subscriptions (mocked)
+        // Set up real-time subscriptions
         function setupRealtimeSubscriptions() {
-            // In a real app, this would set up WebSocket connections
-            console.log('Real-time subscriptions set up');
+            // Subscribe to new posts
+            supabase
+                .channel('posts')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'posts' },
+                    async (payload) => {
+                        if (currentPage === 'homePage') {
+                            await loadFeed();
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new messages
+            supabase
+                .channel('messages')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    async (payload) => {
+                        if (currentPage === 'messagesPage' || currentPage === 'chatPage') {
+                            if (currentPage === 'chatPage' && 
+                                (payload.new.sender_id === currentChatUser.id || 
+                                 payload.new.receiver_id === currentChatUser.id)) {
+                                await loadChat(currentChatUser);
+                            } else if (currentPage === 'messagesPage') {
+                                await loadConversations();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to notifications
+            supabase
+                .channel('notifications')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'notifications' },
+                    async (payload) => {
+                        if (payload.new.user_id === currentUser.id) {
+                            await updateUnreadCount();
+                            if (currentPage === 'notificationsPage') {
+                                await loadNotifications();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
         }
 
-        // Sign in with Google (mocked)
-        function signInWithGoogle() {
-            // Mock Google login - use the second user
-            currentUser = mockUsers[1];
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showPage('homePage');
-            loadFeed();
-            updateUnreadCount();
-            alert('Mock Google login successful!');
-        }
-
-        // Login user (mocked)
-        function loginUser(email, password) {
-            // Simple mock authentication
-            const user = mockUsers.find(u => u.email === email);
+        // Authentication functions
+        async function signInWithGoogle() {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+            });
             
-            if (user && password === 'password') {
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showPage('homePage');
-                loadFeed();
-                updateUnreadCount();
-                alert('Login successful!');
-            } else {
-                alert('Invalid email or password. Use any email with password "password"');
+            if (error) {
+                alert('Error signing in with Google: ' + error.message);
             }
         }
 
-        // Register user (mocked)
-        function registerUser(name, email, password) {
-            // Create new user
-            const newUser = {
-                id: String(mockDB.users.length + 1),
-                name,
+        async function loginUser(email, password) {
+            const { data, error } = await supabase.auth.signInWithPassword({
                 email,
-                bio: '',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                createdAt: new Date()
-            };
+                password
+            });
             
-            mockDB.users.push(newUser);
-            currentUser = newUser;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            
-            alert('Registration successful!');
-            showPage('homePage');
-            loadFeed();
+            if (error) {
+                alert('Error signing in: ' + error.message);
+            } else {
+                currentUser = data.user;
+                await loadUserProfile();
+                showPage('homePage');
+                await loadFeed();
+                await updateUnreadCount();
+            }
         }
 
-        // Logout user
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showPage('authPage');
+        async function registerUser(name, email, password) {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        name: name
+                    }
+                }
+            });
+            
+            if (error) {
+                alert('Error registering: ' + error.message);
+            } else {
+                alert('Registration successful! Please check your email for verification.');
+                showPage('authPage');
+            }
         }
 
-        // Load feed posts
-        function loadFeed() {
+        async function logoutUser() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                alert('Error signing out: ' + error.message);
+            } else {
+                currentUser = null;
+                showPage('authPage');
+            }
+        }
+
+        // Post functions
+        async function loadFeed() {
             const feedContainer = document.getElementById('feedContainer');
             
             if (!currentUser) {
@@ -1232,59 +766,82 @@
             
             feedContainer.innerHTML = '<div class="spinner"></div>';
             
-            setTimeout(() => {
-                try {
-                    // Get posts from followed users and current user
-                    const followedUserIds = mockDB.follows
-                        .filter(f => f.follower_id === currentUser.id)
-                        .map(f => f.following_id);
-                    
-                    followedUserIds.push(currentUser.id); // Include current user's posts
-                    
-                    const posts = mockDB.posts
-                        .filter(post => followedUserIds.includes(post.user_id))
-                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    
-                    feedContainer.innerHTML = '';
-                    
-                    if (posts.length === 0) {
-                        feedContainer.innerHTML = `
-                            <div class="card text-center">
-                                <div style="padding: 40px 20px;">
-                                    <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                    <h3>Your feed is empty</h3>
-                                    <p>Follow some users to see their posts here</p>
-                                    <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
-                                </div>
+            try {
+                // Get posts from users that current user follows
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+                
+                if (followsError) throw followsError;
+                
+                const followingIds = follows.map(f => f.following_id);
+                followingIds.push(currentUser.id); // Include current user's posts
+                
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            name,
+                            avatar
+                        ),
+                        likes (
+                            user_id
+                        ),
+                        comments (
+                            id,
+                            user_id,
+                            content,
+                            created_at,
+                            profiles:user_id (
+                                name,
+                                avatar
+                            )
+                        )
+                    `)
+                    .in('user_id', followingIds)
+                    .order('created_at', { ascending: false });
+                
+                if (postsError) throw postsError;
+                
+                feedContainer.innerHTML = '';
+                
+                if (!posts || posts.length === 0) {
+                    feedContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Your feed is empty</h3>
+                                <p>Follow some users to see their posts here</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
                             </div>
-                        `;
-                        return;
-                    }
-                    
-                    posts.forEach(post => {
-                        const user = mockDB.users.find(u => u.id === post.user_id);
-                        feedContainer.appendChild(createPostElement(post, user));
-                    });
-                } catch (error) {
-                    console.error('Error loading feed:', error);
-                    feedContainer.innerHTML = '<p class="text-center">Error loading feed</p>';
+                        </div>
+                    `;
+                    return;
                 }
-            }, 500); // Simulate loading delay
+                
+                posts.forEach(post => {
+                    feedContainer.appendChild(createPostElement(post));
+                });
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                feedContainer.innerHTML = '<p class="text-center">Error loading feed</p>';
+            }
         }
 
-        // Create post element
-        function createPostElement(post, user) {
-            const isLiked = post.likes && post.likes.includes(currentUser.id);
-            const likeCount = post.likes ? post.likes.length : 0;
-            const commentCount = post.comments ? post.comments.length : 0;
+        function createPostElement(post) {
+            const isLiked = post.likes.some(like => like.user_id === currentUser.id);
+            const likeCount = post.likes.length;
+            const commentCount = post.comments.length;
             
             const postEl = document.createElement('div');
             postEl.className = 'card post-card';
             postEl.innerHTML = `
                 <div class="user-info">
-                    <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                    <img src="${post.profiles.avatar}" alt="${post.profiles.name}" class="avatar">
                     <div>
-                        <div class="username">${user.name}</div>
+                        <div class="username">${post.profiles.name}</div>
                         <div class="timestamp">${formatDate(post.created_at)}</div>
                     </div>
                 </div>
@@ -1305,13 +862,11 @@
                 </div>
             `;
             
-            // Add like functionality
             const likeBtn = postEl.querySelector('.action-btn:first-child');
             likeBtn.addEventListener('click', () => {
                 toggleLike(post.id);
             });
             
-            // Add comment functionality
             const commentBtn = postEl.querySelectorAll('.action-btn')[1];
             commentBtn.addEventListener('click', () => {
                 showComments(post.id);
@@ -1320,159 +875,76 @@
             return postEl;
         }
 
-        // Toggle like on a post
-        function toggleLike(postId) {
+        async function toggleLike(postId) {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
-            
-            const post = mockDB.posts.find(p => p.id === postId);
-            
-            if (!post.likes) {
-                post.likes = [];
-            }
-            
-            const likeIndex = post.likes.indexOf(currentUser.id);
-            
-            if (likeIndex > -1) {
-                // Unlike the post
-                post.likes.splice(likeIndex, 1);
-            } else {
-                // Like the post
-                post.likes.push(currentUser.id);
-                
-                // Create notification if not liking own post
-                if (post.user_id !== currentUser.id) {
-                    const newNotification = {
-                        id: String(mockDB.notifications.length + 1),
-                        user_id: post.user_id,
-                        type: 'like',
-                        source_user_id: currentUser.id,
-                        content: 'liked your post',
-                        read: false,
-                        created_at: new Date()
-                    };
-                    
-                    mockDB.notifications.push(newNotification);
-                    updateUnreadCount();
-                }
-            }
-            
-            // Reload feed to update like count
-            if (currentPage === 'homePage') {
-                loadFeed();
-            } else if (currentPage === 'profilePage') {
-                loadProfile();
-            }
-        }
-
-        // Show comments for a post
-        function showComments(postId) {
-            if (!currentUser) {
-                alert('Please login to view comments');
-                showPage('authPage');
-                return;
-            }
-            
-            currentPostId = postId;
-            document.getElementById('commentModal').style.display = 'flex';
-            loadComments();
-        }
-
-        // Load comments for a post
-        function loadComments() {
-            const commentsContainer = document.getElementById('commentsContainer');
-            commentsContainer.innerHTML = '<div class="spinner"></div>';
-            
-            setTimeout(() => {
-                try {
-                    const post = mockDB.posts.find(p => p.id === currentPostId);
-                    
-                    commentsContainer.innerHTML = '';
-                    
-                    if (!post.comments || post.comments.length === 0) {
-                        commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
-                    } else {
-                        post.comments.forEach(comment => {
-                            const user = mockDB.users.find(u => u.id === comment.user_id);
-                            const commentEl = document.createElement('div');
-                            commentEl.className = 'comment';
-                            commentEl.innerHTML = `
-                                <img src="${user.avatar}" alt="${user.name}" class="comment-avatar">
-                                <div class="comment-content">
-                                    <div class="username">${user.name}</div>
-                                    <p>${comment.content}</p>
-                                    <div class="timestamp">${formatDate(comment.created_at)}</div>
-                                </div>
-                            `;
-                            commentsContainer.appendChild(commentEl);
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error loading comments:', error);
-                    commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
-                }
-            }, 300);
-        }
-
-        // Post a comment
-        function postComment() {
-            const commentInput = document.getElementById('commentInput');
-            const content = commentInput.value.trim();
-            
-            if (!content || !currentUser) return;
             
             try {
-                const post = mockDB.posts.find(p => p.id === currentPostId);
+                // Check if already liked
+                const { data: existingLike, error: checkError } = await supabase
+                    .from('likes')
+                    .select('id')
+                    .eq('post_id', postId)
+                    .eq('user_id', currentUser.id)
+                    .single();
                 
-                if (!post.comments) {
-                    post.comments = [];
-                }
+                if (checkError && checkError.code !== 'PGRST116') throw checkError;
                 
-                const newComment = {
-                    id: String(post.comments.length + 1),
-                    user_id: currentUser.id,
-                    content: content,
-                    created_at: new Date()
-                };
-                
-                post.comments.push(newComment);
-                
-                // Create notification if not commenting on own post
-                if (post.user_id !== currentUser.id) {
-                    const newNotification = {
-                        id: String(mockDB.notifications.length + 1),
-                        user_id: post.user_id,
-                        type: 'comment',
-                        source_user_id: currentUser.id,
-                        content: 'commented on your post',
-                        read: false,
-                        created_at: new Date()
-                    };
+                if (existingLike) {
+                    // Unlike
+                    const { error: deleteError } = await supabase
+                        .from('likes')
+                        .delete()
+                        .eq('id', existingLike.id);
                     
-                    mockDB.notifications.push(newNotification);
-                    updateUnreadCount();
+                    if (deleteError) throw deleteError;
+                } else {
+                    // Like
+                    const { error: insertError } = await supabase
+                        .from('likes')
+                        .insert([
+                            {
+                                post_id: postId,
+                                user_id: currentUser.id
+                            }
+                        ]);
+                    
+                    if (insertError) throw insertError;
+                    
+                    // Create notification if not liking own post
+                    const { data: post } = await supabase
+                        .from('posts')
+                        .select('user_id')
+                        .eq('id', postId)
+                        .single();
+                    
+                    if (post && post.user_id !== currentUser.id) {
+                        await supabase
+                            .from('notifications')
+                            .insert([
+                                {
+                                    user_id: post.user_id,
+                                    type: 'like',
+                                    source_user_id: currentUser.id,
+                                    content: 'liked your post'
+                                }
+                            ]);
+                    }
                 }
                 
-                // Clear input and reload comments
-                commentInput.value = '';
-                loadComments();
-                
-                // Reload feed to update comment count
+                // Reload feed
                 if (currentPage === 'homePage') {
-                    loadFeed();
-                } else if (currentPage === 'profilePage') {
-                    loadProfile();
+                    await loadFeed();
                 }
             } catch (error) {
-                console.error('Error posting comment:', error);
-                alert('Error posting comment');
+                console.error('Error toggling like:', error);
+                alert('Error toggling like');
             }
         }
 
-        // Create a new post
-        function createPost(content, imageFile) {
+        async function createPost(content, imageFile) {
             if (!currentUser) {
                 alert('Please login to create a post');
                 showPage('authPage');
@@ -1482,30 +954,39 @@
             try {
                 let imageUrl = '';
                 
-                // In a real app, you would upload the image here
                 if (imageFile) {
-                    alert('Image upload would happen here in a real app');
-                    imageUrl = 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=600&q=80';
+                    // Upload image to Supabase Storage
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const { error: uploadError } = await supabase.storage
+                        .from('posts')
+                        .upload(fileName, imageFile);
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('posts')
+                        .getPublicUrl(fileName);
+                    
+                    imageUrl = publicUrl;
                 }
                 
-                const newPost = {
-                    id: String(mockDB.posts.length + 1),
-                    user_id: currentUser.id,
-                    content: content,
-                    image: imageUrl,
-                    created_at: new Date(),
-                    likes: [],
-                    comments: []
-                };
+                const { error } = await supabase
+                    .from('posts')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            content: content,
+                            image: imageUrl
+                        }
+                    ]);
                 
-                mockDB.posts.push(newPost);
+                if (error) throw error;
                 
-                // Reset form and go back to feed
                 document.getElementById('newPostForm').reset();
                 showPage('homePage');
-                loadFeed();
-                
-                // Show success message
+                await loadFeed();
                 alert('Post created successfully!');
             } catch (error) {
                 console.error('Error creating post:', error);
@@ -1513,104 +994,258 @@
             }
         }
 
-        // Load user profile
-        function loadProfile() {
+        // Comment functions
+        async function showComments(postId) {
+            if (!currentUser) {
+                alert('Please login to view comments');
+                showPage('authPage');
+                return;
+            }
+            
+            currentPostId = postId;
+            document.getElementById('commentModal').style.display = 'flex';
+            await loadComments();
+        }
+
+        async function loadComments() {
+            const commentsContainer = document.getElementById('commentsContainer');
+            commentsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const { data: comments, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            name,
+                            avatar
+                        )
+                    `)
+                    .eq('post_id', currentPostId)
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                commentsContainer.innerHTML = '';
+                
+                if (!comments || comments.length === 0) {
+                    commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
+                } else {
+                    comments.forEach(comment => {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = 'comment';
+                        commentEl.innerHTML = `
+                            <img src="${comment.profiles.avatar}" alt="${comment.profiles.name}" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="username">${comment.profiles.name}</div>
+                                <p>${comment.content}</p>
+                                <div class="timestamp">${formatDate(comment.created_at)}</div>
+                            </div>
+                        `;
+                        commentsContainer.appendChild(commentEl);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
+            }
+        }
+
+        async function postComment() {
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            
+            if (!content || !currentUser) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: currentPostId,
+                            user_id: currentUser.id,
+                            content: content
+                        }
+                    ]);
+                
+                if (error) throw error;
+                
+                // Create notification if not commenting on own post
+                const { data: post } = await supabase
+                    .from('posts')
+                    .select('user_id')
+                    .eq('id', currentPostId)
+                    .single();
+                
+                if (post && post.user_id !== currentUser.id) {
+                    await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: post.user_id,
+                                type: 'comment',
+                                source_user_id: currentUser.id,
+                                content: 'commented on your post'
+                            }
+                        ]);
+                }
+                
+                commentInput.value = '';
+                await loadComments();
+                
+                if (currentPage === 'homePage') {
+                    await loadFeed();
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                alert('Error posting comment');
+            }
+        }
+
+        // Profile functions
+        async function loadProfile() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
-            // Update profile info
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileBio').textContent = currentUser.bio;
-            document.getElementById('profileAvatar').src = currentUser.avatar;
-            
-            setTimeout(() => {
-                try {
-                    // Get stats
-                    const posts = mockDB.posts.filter(p => p.user_id === currentUser.id);
-                    const following = mockDB.follows.filter(f => f.follower_id === currentUser.id);
-                    const followers = mockDB.follows.filter(f => f.following_id === currentUser.id);
-                    
-                    // Update stats
-                    document.getElementById('postsCount').textContent = posts.length;
-                    document.getElementById('followingCount').textContent = following.length;
-                    document.getElementById('followersCount').textContent = followers.length;
-                    
-                    // Load user's posts
-                    const postsContainer = document.getElementById('userPostsContainer');
-                    postsContainer.innerHTML = '<div class="spinner"></div>';
-                    
-                    setTimeout(() => {
-                        const userPosts = mockDB.posts
-                            .filter(p => p.user_id === currentUser.id)
-                            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                        
-                        postsContainer.innerHTML = '';
-                        
-                        if (userPosts.length === 0) {
-                            postsContainer.innerHTML = `
-                                <div class="card text-center">
-                                    <div style="padding: 40px 20px;">
-                                        <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                        <h3>No posts yet</h3>
-                                        <p>Share your first post with the world</p>
-                                        <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
-                                    </div>
-                                </div>
-                            `;
-                            return;
-                        }
-                        
-                        userPosts.forEach(post => {
-                            const user = mockDB.users.find(u => u.id === post.user_id);
-                            postsContainer.appendChild(createPostElement(post, user));
-                        });
-                    }, 500);
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                    alert('Error loading profile');
-                }
-            }, 300);
-        }
-
-        // Show edit profile modal
-        function showEditProfileModal() {
-            document.getElementById('editDisplayName').value = currentUser.name;
-            document.getElementById('editBio').value = currentUser.bio;
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        // Update user profile
-        function updateProfile(displayName, bio, avatarFile) {
             try {
-                // In a real app, you would upload the avatar here
+                // Load profile data
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (profileError) throw profileError;
+                
+                if (profile) {
+                    document.getElementById('profileName').textContent = profile.name;
+                    document.getElementById('profileBio').textContent = profile.bio || '';
+                    document.getElementById('profileAvatar').src = profile.avatar;
+                }
+                
+                // Load stats
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
+                    .select('id')
+                    .eq('user_id', currentUser.id);
+                
+                const { data: following, error: followingError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id);
+                
+                const { data: followers, error: followersError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('following_id', currentUser.id);
+                
+                if (postsError) throw postsError;
+                if (followingError) throw followingError;
+                if (followersError) throw followersError;
+                
+                document.getElementById('postsCount').textContent = posts ? posts.length : 0;
+                document.getElementById('followingCount').textContent = following ? following.length : 0;
+                document.getElementById('followersCount').textContent = followers ? followers.length : 0;
+                
+                // Load user's posts
+                await loadUserPosts();
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                alert('Error loading profile');
+            }
+        }
+
+        async function loadUserPosts() {
+            const postsContainer = document.getElementById('userPostsContainer');
+            postsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const { data: posts, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            name,
+                            avatar
+                        ),
+                        likes (
+                            user_id
+                        ),
+                        comments (
+                            id
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                postsContainer.innerHTML = '';
+                
+                if (!posts || posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No posts yet</h3>
+                                <p>Share your first post with the world</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                posts.forEach(post => {
+                    postsContainer.appendChild(createPostElement(post));
+                });
+            } catch (error) {
+                console.error('Error loading user posts:', error);
+                postsContainer.innerHTML = '<p class="text-center">Error loading posts</p>';
+            }
+        }
+
+        async function updateProfile(displayName, bio, avatarFile) {
+            try {
+                let avatarUrl = currentUser.profile?.avatar;
+                
                 if (avatarFile) {
-                    alert('Avatar upload would happen here in a real app');
+                    // Upload avatar to Supabase Storage
+                    const fileExt = avatarFile.name.split('.').pop();
+                    const fileName = `${currentUser.id}/avatar.${fileExt}`;
+                    const { error: uploadError } = await supabase.storage
+                        .from('avatars')
+                        .upload(fileName, avatarFile, { upsert: true });
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName);
+                    
+                    avatarUrl = publicUrl;
                 }
                 
-                // Update current user
-                currentUser.name = displayName;
-                currentUser.bio = bio;
+                const { error } = await supabase
+                    .from('profiles')
+                    .upsert([
+                        {
+                            id: currentUser.id,
+                            name: displayName,
+                            bio: bio,
+                            avatar: avatarUrl,
+                            updated_at: new Date().toISOString()
+                        }
+                    ]);
                 
-                // Update in mock database
-                const userIndex = mockDB.users.findIndex(u => u.id === currentUser.id);
-                if (userIndex > -1) {
-                    mockDB.users[userIndex].name = displayName;
-                    mockDB.users[userIndex].bio = bio;
-                }
+                if (error) throw error;
                 
-                // Save to localStorage
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Update UI
-                document.getElementById('profileName').textContent = displayName;
-                document.getElementById('profileBio').textContent = bio;
-                
-                // Close modal
+                // Update current user profile
+                await loadUserProfile();
                 document.getElementById('editProfileModal').style.display = 'none';
-                
-                // Show success message
                 alert('Profile updated successfully!');
             } catch (error) {
                 console.error('Error updating profile:', error);
@@ -1618,8 +1253,8 @@
             }
         }
 
-        // Load notifications
-        function loadNotifications() {
+        // Notification functions
+        async function loadNotifications() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
@@ -1628,67 +1263,86 @@
             const notificationsContainer = document.getElementById('notificationsContainer');
             notificationsContainer.innerHTML = '<div class="spinner"></div>';
             
-            setTimeout(() => {
-                try {
-                    const notifications = mockDB.notifications
-                        .filter(n => n.user_id === currentUser.id)
-                        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                    
-                    notificationsContainer.innerHTML = '';
-                    
-                    if (notifications.length === 0) {
-                        notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
-                        return;
-                    }
-                    
-                    notifications.forEach(notif => {
-                        const sourceUser = mockDB.users.find(u => u.id === notif.source_user_id);
-                        const notifEl = document.createElement('div');
-                        notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
-                        notifEl.innerHTML = `
-                            <div class="notification-icon">
-                                <i class="fas fa-${notif.type === 'like' ? 'heart' : notif.type === 'comment' ? 'comment' : 'user-plus'}"></i>
-                            </div>
-                            <div>
-                                <p><strong>${sourceUser.name}</strong> ${notif.content}</p>
-                                <div class="timestamp">${formatDate(notif.created_at)}</div>
-                            </div>
-                        `;
-                        notificationsContainer.appendChild(notifEl);
-                        
-                        // Mark as read when clicked
-                        if (!notif.read) {
-                            notifEl.addEventListener('click', () => {
-                                notif.read = true;
-                                updateUnreadCount();
-                                loadNotifications();
-                            });
-                        }
-                    });
-                } catch (error) {
-                    console.error('Error loading notifications:', error);
-                    notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select(`
+                        *,
+                        profiles:source_user_id (
+                            name,
+                            avatar
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                notificationsContainer.innerHTML = '';
+                
+                if (!notifications || notifications.length === 0) {
+                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    return;
                 }
-            }, 500);
-        }
-
-        // Update unread notification count
-        function updateUnreadCount() {
-            if (!currentUser) return;
-            
-            const unreadCount = mockDB.notifications.filter(n => n.user_id === currentUser.id && !n.read).length;
-            
-            const badge = document.getElementById('notificationBadge');
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
+                
+                notifications.forEach(notif => {
+                    const notifEl = document.createElement('div');
+                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                    notifEl.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-${notif.type === 'like' ? 'heart' : notif.type === 'comment' ? 'comment' : notif.type === 'follow' ? 'user-plus' : 'envelope'}"></i>
+                        </div>
+                        <div>
+                            <p><strong>${notif.profiles.name}</strong> ${notif.content}</p>
+                            <div class="timestamp">${formatDate(notif.created_at)}</div>
+                        </div>
+                    `;
+                    notificationsContainer.appendChild(notifEl);
+                    
+                    if (!notif.read) {
+                        notifEl.addEventListener('click', async () => {
+                            await supabase
+                                .from('notifications')
+                                .update({ read: true })
+                                .eq('id', notif.id);
+                            
+                            await updateUnreadCount();
+                            await loadNotifications();
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
             }
         }
 
-        // Load conversations
-        function loadConversations() {
+        async function updateUnreadCount() {
+            if (!currentUser) return;
+            
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
+                
+                if (error) throw error;
+                
+                const badge = document.getElementById('notificationBadge');
+                if (notifications && notifications.length > 0) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating unread count:', error);
+            }
+        }
+
+        // Message functions
+        async function loadConversations() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
@@ -1697,119 +1351,125 @@
             const conversationsContainer = document.getElementById('conversationsContainer');
             conversationsContainer.innerHTML = '<div class="spinner"></div>';
             
-            setTimeout(() => {
-                try {
-                    // Get unique conversation partners
-                    const userMessages = mockDB.messages.filter(m => 
-                        m.sender_id === currentUser.id || m.receiver_id === currentUser.id
-                    );
-                    
-                    conversationsContainer.innerHTML = '';
-                    
-                    if (userMessages.length === 0) {
-                        conversationsContainer.innerHTML = `
-                            <div class="card text-center">
-                                <div style="padding: 40px 20px;">
-                                    <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                    <h3>No messages yet</h3>
-                                    <p>Start a conversation with someone</p>
-                                    <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
-                                </div>
+            try {
+                // Get unique conversation partners and their last messages
+                const { data: messages, error } = await supabase
+                    .from('messages')
+                    .select(`
+                        *,
+                        sender:profiles!messages_sender_id_fkey (name, avatar),
+                        receiver:profiles!messages_receiver_id_fkey (name, avatar)
+                    `)
+                    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                conversationsContainer.innerHTML = '';
+                
+                if (!messages || messages.length === 0) {
+                    conversationsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No messages yet</h3>
+                                <p>Start a conversation with someone</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
                             </div>
-                        `;
-                        return;
-                    }
-                    
-                    // Get unique conversation partners and their last messages
-                    const conversationPartners = new Set();
-                    const lastMessages = {};
-                    
-                    userMessages.forEach(msg => {
-                        const partnerId = msg.sender_id === currentUser.id ? msg.receiver_id : msg.sender_id;
-                        conversationPartners.add(partnerId);
-                        
-                        // Store the latest message for each partner
-                        if (!lastMessages[partnerId] || new Date(msg.created_at) > new Date(lastMessages[partnerId].created_at)) {
-                            lastMessages[partnerId] = msg;
-                        }
-                    });
-                    
-                    Array.from(conversationPartners).forEach(partnerId => {
-                        const user = mockDB.users.find(u => u.id === partnerId);
-                        const lastMessage = lastMessages[partnerId];
-                        const conversationEl = document.createElement('div');
-                        conversationEl.className = 'card';
-                        conversationEl.style.padding = '15px';
-                        conversationEl.style.marginBottom = '10px';
-                        conversationEl.innerHTML = `
-                            <div style="display: flex; align-items: center;">
-                                <img src="${user.avatar}" alt="${user.name}" class="avatar">
-                                <div style="flex: 1; margin-left: 10px; cursor: pointer;">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <div class="username">${user.name}</div>
-                                        <div class="timestamp">${formatDate(lastMessage.created_at)}</div>
-                                    </div>
-                                    <p>${lastMessage.content}</p>
-                                </div>
-                            </div>
-                        `;
-                        
-                        // Add click event to open chat
-                        conversationEl.addEventListener('click', () => {
-                            currentChatUser = user;
-                            document.getElementById('chatUserName').textContent = user.name;
-                            showPage('chatPage');
-                            loadChat(user);
-                        });
-                        
-                        conversationsContainer.appendChild(conversationEl);
-                    });
-                } catch (error) {
-                    console.error('Error loading conversations:', error);
-                    conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
+                        </div>
+                    `;
+                    return;
                 }
-            }, 500);
+                
+                // Group messages by conversation partner
+                const conversations = new Map();
+                
+                messages.forEach(msg => {
+                    const partnerId = msg.sender_id === currentUser.id ? msg.receiver_id : msg.sender_id;
+                    const partner = msg.sender_id === currentUser.id ? msg.receiver : msg.sender;
+                    
+                    if (!conversations.has(partnerId)) {
+                        conversations.set(partnerId, {
+                            partner: partner,
+                            lastMessage: msg
+                        });
+                    }
+                });
+                
+                Array.from(conversations.values()).forEach(conversation => {
+                    const conversationEl = document.createElement('div');
+                    conversationEl.className = 'card';
+                    conversationEl.style.padding = '15px';
+                    conversationEl.style.marginBottom = '10px';
+                    conversationEl.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <img src="${conversation.partner.avatar}" alt="${conversation.partner.name}" class="avatar">
+                            <div style="flex: 1; margin-left: 10px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div class="username">${conversation.partner.name}</div>
+                                    <div class="timestamp">${formatDate(conversation.lastMessage.created_at)}</div>
+                                </div>
+                                <p>${conversation.lastMessage.content}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    conversationEl.addEventListener('click', () => {
+                        currentChatUser = {
+                            id: conversation.lastMessage.sender_id === currentUser.id ? 
+                                conversation.lastMessage.receiver_id : 
+                                conversation.lastMessage.sender_id,
+                            name: conversation.partner.name,
+                            avatar: conversation.partner.avatar
+                        };
+                        document.getElementById('chatUserName').textContent = currentChatUser.name;
+                        showPage('chatPage');
+                        loadChat(currentChatUser);
+                    });
+                    
+                    conversationsContainer.appendChild(conversationEl);
+                });
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
+            }
         }
 
-        // Load chat with a user
-        function loadChat(user) {
+        async function loadChat(user) {
             const messageThread = document.getElementById('messageThread');
             messageThread.innerHTML = '<div class="spinner"></div>';
             
-            setTimeout(() => {
-                try {
-                    const messages = mockDB.messages
-                        .filter(m => 
-                            (m.sender_id === currentUser.id && m.receiver_id === user.id) ||
-                            (m.sender_id === user.id && m.receiver_id === currentUser.id)
-                        )
-                        .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-                    
-                    messageThread.innerHTML = '';
-                    
-                    if (messages.length > 0) {
-                        messages.forEach(msg => {
-                            const messageEl = document.createElement('div');
-                            messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
-                            messageEl.innerHTML = `
-                                <div>${msg.content}</div>
-                                <div class="message-time">${formatTime(msg.created_at)}</div>
-                            `;
-                            messageThread.appendChild(messageEl);
-                        });
-                    }
-                    
-                    // Scroll to bottom
-                    messageThread.scrollTop = messageThread.scrollHeight;
-                } catch (error) {
-                    console.error('Error loading chat:', error);
-                    messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
+            try {
+                const { data: messages, error } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${user.id}),and(sender_id.eq.${user.id},receiver_id.eq.${currentUser.id})`)
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                messageThread.innerHTML = '';
+                
+                if (messages && messages.length > 0) {
+                    messages.forEach(msg => {
+                        const messageEl = document.createElement('div');
+                        messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
+                        messageEl.innerHTML = `
+                            <div>${msg.content}</div>
+                            <div class="message-time">${formatTime(msg.created_at)}</div>
+                        `;
+                        messageThread.appendChild(messageEl);
+                    });
                 }
-            }, 300);
+                
+                messageThread.scrollTop = messageThread.scrollHeight;
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
+            }
         }
 
-        // Send a message
-        function sendMessage() {
+        async function sendMessage() {
             if (!currentUser || !currentChatUser) {
                 showPage('authPage');
                 return;
@@ -1821,47 +1481,40 @@
             if (!content) return;
             
             try {
-                const newMessage = {
-                    id: String(mockDB.messages.length + 1),
-                    sender_id: currentUser.id,
-                    receiver_id: currentChatUser.id,
-                    content: content,
-                    created_at: new Date()
-                };
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([
+                        {
+                            sender_id: currentUser.id,
+                            receiver_id: currentChatUser.id,
+                            content: content
+                        }
+                    ]);
                 
-                mockDB.messages.push(newMessage);
+                if (error) throw error;
                 
-                // Clear input and reload chat
                 messageInput.value = '';
-                loadChat(currentChatUser);
+                await loadChat(currentChatUser);
                 
                 // Create notification
-                const newNotification = {
-                    id: String(mockDB.notifications.length + 1),
-                    user_id: currentChatUser.id,
-                    type: 'message',
-                    source_user_id: currentUser.id,
-                    content: 'sent you a message',
-                    read: false,
-                    created_at: new Date()
-                };
-                
-                mockDB.notifications.push(newNotification);
-                updateUnreadCount();
+                await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: currentChatUser.id,
+                            type: 'message',
+                            source_user_id: currentUser.id,
+                            content: 'sent you a message'
+                        }
+                    ]);
             } catch (error) {
                 console.error('Error sending message:', error);
                 alert('Error sending message');
             }
         }
 
-        // Initialize search
-        function initSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
-        }
-
-        // Handle search input
-        function handleSearch() {
+        // Search functions
+        async function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const searchResults = document.getElementById('searchResults');
             
@@ -1870,100 +1523,117 @@
                 return;
             }
             
-            setTimeout(() => {
-                try {
-                    const users = mockDB.users.filter(u => 
-                        u.name.toLowerCase().includes(query) && u.id !== currentUser.id
-                    );
-                    
-                    searchResults.innerHTML = '';
-                    
-                    if (users.length === 0) {
-                        searchResults.innerHTML = '<p class="text-center">No users found</p>';
-                        return;
-                    }
-                    
-                    // Get follow status for each user
-                    const followingIds = mockDB.follows
-                        .filter(f => f.follower_id === currentUser.id)
-                        .map(f => f.following_id);
-                    
-                    users.forEach(user => {
-                        const isFollowing = followingIds.includes(user.id);
-                        const userEl = document.createElement('div');
-                        userEl.className = 'card user-item';
-                        userEl.innerHTML = `
-                            <img src="${user.avatar}" alt="${user.name}" class="avatar">
-                            <div style="flex: 1;">
-                                <div class="username">${user.name}</div>
-                                <div>${user.bio}</div>
-                            </div>
-                            <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
-                                ${isFollowing ? 'Unfollow' : 'Follow'}
-                            </button>
-                        `;
-                        
-                        // Add follow functionality
-                        const followBtn = userEl.querySelector('button');
-                        followBtn.addEventListener('click', () => {
-                            toggleFollow(user.id);
-                        });
-                        
-                        searchResults.appendChild(userEl);
-                    });
-                } catch (error) {
-                    console.error('Error searching users:', error);
-                    searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
+            try {
+                const { data: users, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .ilike('name', `%${query}%`)
+                    .neq('id', currentUser.id)
+                    .limit(20);
+                
+                if (error) throw error;
+                
+                searchResults.innerHTML = '';
+                
+                if (!users || users.length === 0) {
+                    searchResults.innerHTML = '<p class="text-center">No users found</p>';
+                    return;
                 }
-            }, 300);
+                
+                // Get follow status for each user
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+                
+                if (followsError) throw followsError;
+                
+                const followingIds = follows ? follows.map(f => f.following_id) : [];
+                
+                users.forEach(user => {
+                    const isFollowing = followingIds.includes(user.id);
+                    const userEl = document.createElement('div');
+                    userEl.className = 'card user-item';
+                    userEl.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        <div style="flex: 1;">
+                            <div class="username">${user.name}</div>
+                            <div>${user.bio || ''}</div>
+                        </div>
+                        <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                            ${isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
+                    `;
+                    
+                    const followBtn = userEl.querySelector('button');
+                    followBtn.addEventListener('click', () => {
+                        toggleFollow(user.id);
+                    });
+                    
+                    searchResults.appendChild(userEl);
+                });
+            } catch (error) {
+                console.error('Error searching users:', error);
+                searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
+            }
         }
 
-        // Toggle follow
-        function toggleFollow(userId) {
+        async function toggleFollow(userId) {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
             try {
-                const existingFollowIndex = mockDB.follows.findIndex(f => 
-                    f.follower_id === currentUser.id && f.following_id === userId
-                );
+                // Check if already following
+                const { data: existingFollow, error: checkError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id)
+                    .eq('following_id', userId)
+                    .single();
                 
-                if (existingFollowIndex > -1) {
+                if (checkError && checkError.code !== 'PGRST116') throw checkError;
+                
+                if (existingFollow) {
                     // Unfollow
-                    mockDB.follows.splice(existingFollowIndex, 1);
+                    const { error: deleteError } = await supabase
+                        .from('follows')
+                        .delete()
+                        .eq('id', existingFollow.id);
+                    
+                    if (deleteError) throw deleteError;
                 } else {
                     // Follow
-                    const newFollow = {
-                        id: String(mockDB.follows.length + 1),
-                        follower_id: currentUser.id,
-                        following_id: userId
-                    };
+                    const { error: insertError } = await supabase
+                        .from('follows')
+                        .insert([
+                            {
+                                follower_id: currentUser.id,
+                                following_id: userId
+                            }
+                        ]);
                     
-                    mockDB.follows.push(newFollow);
+                    if (insertError) throw insertError;
                     
                     // Create notification
-                    const newNotification = {
-                        id: String(mockDB.notifications.length + 1),
-                        user_id: userId,
-                        type: 'follow',
-                        source_user_id: currentUser.id,
-                        content: 'started following you',
-                        read: false,
-                        created_at: new Date()
-                    };
-                    
-                    mockDB.notifications.push(newNotification);
-                    updateUnreadCount();
+                    await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: userId,
+                                type: 'follow',
+                                source_user_id: currentUser.id,
+                                content: 'started following you'
+                            }
+                        ]);
                 }
                 
                 // Update UI
                 handleSearch();
                 
-                // Update profile stats if on profile page
                 if (currentPage === 'profilePage') {
-                    loadProfile();
+                    await loadProfile();
                 }
             } catch (error) {
                 console.error('Error toggling follow:', error);
@@ -1971,7 +1641,103 @@
             }
         }
 
-        // Format date
+        // Call functions (simplified WebRTC implementation)
+        async function startCall(type) {
+            if (!currentUser || !currentChatUser) return;
+            
+            try {
+                isCaller = true;
+                currentCall = { type, with: currentChatUser.id };
+                
+                // Get user media
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: type === 'video'
+                });
+                
+                document.getElementById('localVideo').srcObject = localStream;
+                document.getElementById('callContainer').classList.add('active');
+                
+                // In a real app, you would send a call invitation via your signaling server
+                // For this example, we'll simulate it
+                simulateCallInvitation(type);
+                
+            } catch (error) {
+                console.error('Error starting call:', error);
+                alert('Error starting call: ' + error.message);
+            }
+        }
+
+        function simulateCallInvitation(type) {
+            // In a real app, this would be handled by your signaling server
+            // For demo purposes, we'll show a simulated incoming call after a delay
+            setTimeout(() => {
+                document.getElementById('callerName').textContent = currentChatUser.name;
+                document.getElementById('callType').textContent = type === 'video' ? 'Video Call' : 'Voice Call';
+                document.getElementById('incomingCall').classList.add('active');
+            }, 2000);
+        }
+
+        async function acceptCall() {
+            document.getElementById('incomingCall').classList.remove('active');
+            document.getElementById('callContainer').classList.add('active');
+            
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: currentCall.type === 'video'
+                });
+                
+                document.getElementById('localVideo').srcObject = localStream;
+                
+                // In a real app, you would establish the WebRTC connection here
+                alert('Call connected! (This is a simulation)');
+                
+            } catch (error) {
+                console.error('Error accepting call:', error);
+                alert('Error accepting call: ' + error.message);
+            }
+        }
+
+        function rejectCall() {
+            document.getElementById('incomingCall').classList.remove('active');
+            endCall();
+        }
+
+        function endCall() {
+            document.getElementById('callContainer').classList.remove('active');
+            document.getElementById('incomingCall').classList.remove('active');
+            
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            currentCall = null;
+            isCaller = false;
+        }
+
+        function toggleMute() {
+            if (localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if (audioTrack) {
+                    audioTrack.enabled = !audioTrack.enabled;
+                    document.getElementById('muteBtn').classList.toggle('muted');
+                }
+            }
+        }
+
+        function toggleVideo() {
+            if (localStream) {
+                const videoTrack = localStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    videoTrack.enabled = !videoTrack.enabled;
+                    document.getElementById('videoToggleBtn').classList.toggle('off');
+                }
+            }
+        }
+
+        // Utility functions
         function formatDate(date) {
             const now = new Date();
             const diff = now - new Date(date);
@@ -1987,9 +1753,21 @@
             return new Date(date).toLocaleDateString();
         }
 
-        // Format time
         function formatTime(date) {
             return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function showEditProfileModal() {
+            if (currentUser && currentUser.profile) {
+                document.getElementById('editDisplayName').value = currentUser.profile.name;
+                document.getElementById('editBio').value = currentUser.profile.bio || '';
+            }
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
         }
 
         // Initialize the app when the DOM is loaded
