@@ -46,9 +46,572 @@
             padding-bottom: 60px;
         }
 
-        /* ... (all your existing CSS styles remain exactly the same) ... */
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
 
-        /* Voice/Video Call Styles */
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .post-card {
+            padding: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn.liked {
+            color: var(--primary-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 15px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth pages */
+        .auth-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Messages */
+        .message-thread {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent {
+            background-color: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Chat Header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-right: 15px;
+        }
+
+        .call-buttons {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-item.unread {
+            background-color: var(--primary-light);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .user-list {
+            margin-top: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Comment section */
+        .comments-container {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* Call Styles */
         .call-container {
             position: fixed;
             top: 0;
@@ -85,6 +648,7 @@
             right: 20px;
             border-radius: 8px;
             z-index: 10;
+            border: 2px solid white;
         }
 
         .call-controls {
@@ -105,16 +669,19 @@
             font-size: 1.5rem;
             cursor: pointer;
             border: none;
+            color: white;
         }
 
         .call-end {
             background-color: var(--error-color);
-            color: white;
         }
 
         .call-mute, .call-video-toggle {
             background-color: rgba(255,255,255,0.2);
-            color: white;
+        }
+
+        .call-mute.muted, .call-video-toggle.off {
+            background-color: var(--error-color);
         }
 
         .incoming-call {
@@ -135,21 +702,22 @@
             display: block;
         }
 
+        .caller-info {
+            margin-bottom: 20px;
+        }
+
         .call-actions {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-top: 20px;
         }
 
         .accept-call {
             background-color: var(--success-color);
-            color: white;
         }
 
         .reject-call {
             background-color: var(--error-color);
-            color: white;
         }
     </style>
 </head>
@@ -280,9 +848,6 @@
                     <div class="text-center mt-2">
                         <button type="button" class="btn btn-secondary" id="googleLogin">Login with Google</button>
                     </div>
-                    <div class="text-center mt-2">
-                        <button type="button" id="continueAsGuest">Continue as Guest</button>
-                    </div>
                 </form>
 
                 <form id="registerForm" class="auth-form" style="display: none;">
@@ -396,14 +961,14 @@
     </div>
 
     <script>
-        // Supabase Configuration
+        // Supabase Configuration - REPLACE WITH YOUR ACTUAL CREDENTIALS
         const SUPABASE_URL = 'https://your-project-ref.supabase.co';
         const SUPABASE_ANON_KEY = 'your-anon-key';
         
         // Initialize Supabase
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // WebRTC Configuration (simplified - in production use a proper signaling server)
+        // WebRTC Configuration
         let localStream = null;
         let remoteStream = null;
         let peerConnection = null;
@@ -416,13 +981,15 @@
         let currentPage = 'homePage';
         let currentPostId = null;
         let currentChatUser = null;
-        
+
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+
         // Initialize the app
         function initApp() {
             setTheme(currentTheme);
             checkAuthStatus();
             setupEventListeners();
-            setupRealtimeSubscriptions();
         }
 
         // Set theme function
@@ -442,6 +1009,7 @@
                 showPage('homePage');
                 await loadFeed();
                 await updateUnreadCount();
+                setupRealtimeSubscriptions();
             } else {
                 showPage('authPage');
             }
@@ -475,6 +1043,9 @@
 
                 if (insertError) {
                     console.error('Error creating profile:', insertError);
+                } else {
+                    // Reload profile after creation
+                    await loadUserProfile();
                 }
             } else {
                 currentUser.profile = profile;
@@ -514,7 +1085,7 @@
             });
             
             // Theme toggle
-            document.getElementById('themeToggle').addEventListener('click', () => {
+            themeToggle.addEventListener('click', () => {
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 setTheme(newTheme);
                 currentTheme = newTheme;
@@ -661,7 +1232,7 @@
                     { event: 'INSERT', schema: 'public', table: 'messages' },
                     async (payload) => {
                         if (currentPage === 'messagesPage' || currentPage === 'chatPage') {
-                            if (currentPage === 'chatPage' && 
+                            if (currentPage === 'chatPage' && currentChatUser && 
                                 (payload.new.sender_id === currentChatUser.id || 
                                  payload.new.receiver_id === currentChatUser.id)) {
                                 await loadChat(currentChatUser);
@@ -715,6 +1286,7 @@
                 showPage('homePage');
                 await loadFeed();
                 await updateUnreadCount();
+                setupRealtimeSubscriptions();
             }
         }
 
@@ -733,7 +1305,11 @@
                 alert('Error registering: ' + error.message);
             } else {
                 alert('Registration successful! Please check your email for verification.');
-                showPage('authPage');
+                // Switch to login tab
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('registerForm').style.display = 'none';
             }
         }
 
@@ -774,7 +1350,7 @@
                 
                 if (followsError) throw followsError;
                 
-                const followingIds = follows.map(f => f.following_id);
+                const followingIds = follows ? follows.map(f => f.following_id) : [];
                 followingIds.push(currentUser.id); // Include current user's posts
                 
                 const { data: posts, error: postsError } = await supabase
@@ -830,9 +1406,9 @@
         }
 
         function createPostElement(post) {
-            const isLiked = post.likes.some(like => like.user_id === currentUser.id);
-            const likeCount = post.likes.length;
-            const commentCount = post.comments.length;
+            const isLiked = post.likes && post.likes.some(like => like.user_id === currentUser.id);
+            const likeCount = post.likes ? post.likes.length : 0;
+            const commentCount = post.comments ? post.comments.length : 0;
             
             const postEl = document.createElement('div');
             postEl.className = 'card post-card';
@@ -936,6 +1512,8 @@
                 // Reload feed
                 if (currentPage === 'homePage') {
                     await loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    await loadUserPosts();
                 }
             } catch (error) {
                 console.error('Error toggling like:', error);
@@ -954,21 +1532,10 @@
                 let imageUrl = '';
                 
                 if (imageFile) {
-                    // Upload image to Supabase Storage
-                    const fileExt = imageFile.name.split('.').pop();
-                    const fileName = `${Math.random()}.${fileExt}`;
-                    const { error: uploadError } = await supabase.storage
-                        .from('posts')
-                        .upload(fileName, imageFile);
-                    
-                    if (uploadError) throw uploadError;
-                    
-                    // Get public URL
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('posts')
-                        .getPublicUrl(fileName);
-                    
-                    imageUrl = publicUrl;
+                    // For demo purposes, we'll use a placeholder
+                    // In a real app, you would upload to Supabase Storage
+                    alert('Image upload would be implemented with Supabase Storage in production');
+                    imageUrl = 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80';
                 }
                 
                 const { error } = await supabase
@@ -989,7 +1556,7 @@
                 alert('Post created successfully!');
             } catch (error) {
                 console.error('Error creating post:', error);
-                alert('Error creating post');
+                alert('Error creating post: ' + error.message);
             }
         }
 
@@ -1094,6 +1661,8 @@
                 
                 if (currentPage === 'homePage') {
                     await loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    await loadUserPosts();
                 }
             } catch (error) {
                 console.error('Error posting comment:', error);
@@ -1122,6 +1691,7 @@
                     document.getElementById('profileName').textContent = profile.name;
                     document.getElementById('profileBio').textContent = profile.bio || '';
                     document.getElementById('profileAvatar').src = profile.avatar;
+                    currentUser.profile = profile;
                 }
                 
                 // Load stats
@@ -1206,26 +1776,23 @@
             }
         }
 
+        function showEditProfileModal() {
+            if (currentUser && currentUser.profile) {
+                document.getElementById('editDisplayName').value = currentUser.profile.name;
+                document.getElementById('editBio').value = currentUser.profile.bio || '';
+            }
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
         async function updateProfile(displayName, bio, avatarFile) {
             try {
                 let avatarUrl = currentUser.profile?.avatar;
                 
                 if (avatarFile) {
-                    // Upload avatar to Supabase Storage
-                    const fileExt = avatarFile.name.split('.').pop();
-                    const fileName = `${currentUser.id}/avatar.${fileExt}`;
-                    const { error: uploadError } = await supabase.storage
-                        .from('avatars')
-                        .upload(fileName, avatarFile, { upsert: true });
-                    
-                    if (uploadError) throw uploadError;
-                    
-                    // Get public URL
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(fileName);
-                    
-                    avatarUrl = publicUrl;
+                    // For demo purposes, we'll use a placeholder
+                    // In a real app, you would upload to Supabase Storage
+                    alert('Avatar upload would be implemented with Supabase Storage in production');
+                    avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`;
                 }
                 
                 const { error } = await supabase
@@ -1248,7 +1815,7 @@
                 alert('Profile updated successfully!');
             } catch (error) {
                 console.error('Error updating profile:', error);
-                alert('Error updating profile');
+                alert('Error updating profile: ' + error.message);
             }
         }
 
@@ -1513,6 +2080,11 @@
         }
 
         // Search functions
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
         async function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const searchResults = document.getElementById('searchResults');
@@ -1672,6 +2244,7 @@
             // For demo purposes, we'll show a simulated incoming call after a delay
             setTimeout(() => {
                 document.getElementById('callerName').textContent = currentChatUser.name;
+                document.getElementById('callerAvatar').src = currentChatUser.avatar;
                 document.getElementById('callType').textContent = type === 'video' ? 'Video Call' : 'Voice Call';
                 document.getElementById('incomingCall').classList.add('active');
             }, 2000);
@@ -1754,19 +2327,6 @@
 
         function formatTime(date) {
             return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function showEditProfileModal() {
-            if (currentUser && currentUser.profile) {
-                document.getElementById('editDisplayName').value = currentUser.profile.name;
-                document.getElementById('editBio').value = currentUser.profile.bio || '';
-            }
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        function initSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
         }
 
         // Initialize the app when the DOM is loaded
