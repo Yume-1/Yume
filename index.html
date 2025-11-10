@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* All previous CSS remains the same */
         :root {
             --primary-color: #6a11cb;
             --primary-light: #9d4edd;
@@ -42,10 +41,1044 @@
             box-sizing: border-box;
         }
 
-        /* All previous CSS styles remain exactly the same */
-        /* ... (truncated for brevity, but all CSS from the original code remains) ... */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
 
-        /* New styles for enhanced features */
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle, .search-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .yume-balance {
+            background: var(--earn-gradient);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+            transition: var(--transition);
+        }
+
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .post-card {
+            padding: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid var(--primary-light);
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+        }
+
+        .post-image, .post-video {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 400px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .post-image:hover, .post-video:hover {
+            transform: scale(1.02);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            position: relative;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background-color: rgba(106, 17, 203, 0.1);
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn.liked {
+            color: var(--secondary-color);
+        }
+
+        .action-btn.bookmarked {
+            color: var(--accent-color);
+        }
+
+        /* TikTok Feed */
+        .tiktok-feed {
+            position: relative;
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+        }
+
+        .tiktok-video {
+            height: 100%;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            color: white;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7));
+        }
+
+        .tiktok-video video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .video-info {
+            z-index: 1;
+        }
+
+        .video-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .video-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .video-action i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .video-sidebar {
+            position: absolute;
+            right: 15px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Earning Features */
+        .earn-section {
+            padding: 20px;
+            text-align: center;
+            background: var(--earn-gradient);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .earn-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .earn-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .earn-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .yume-store {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .store-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .store-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .store-price {
+            background: var(--earn-gradient);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Shareable Profile */
+        .profile-share {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .share-btn {
+            background: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background-color: #00b4d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth pages */
+        .auth-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .auth-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Messages */
+        .message-thread {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.sent {
+            background-color: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .notification-item.unread {
+            background-color: var(--primary-light);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .stat:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .user-list {
+            margin-top: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .user-item:hover {
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .desktop-nav {
+                display: flex;
+            }
+
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Comment section */
+        .comments-container {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* Error message */
+        .error-message {
+            background-color: var(--error-color);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Success message */
+        .success-message {
+            background-color: var(--success-color);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* Story section */
+        .stories-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .story {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .story-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            padding: 2px;
+            margin-bottom: 5px;
+        }
+
+        .story-username {
+            font-size: 0.7rem;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        .skeleton-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .skeleton-text {
+            height: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .skeleton-text.short {
+            width: 60%;
+        }
+
+        .skeleton-image {
+            height: 200px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-10px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* New post floating button */
+        .floating-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 99;
+            transition: var(--transition);
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-3px) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Enhanced post options */
+        .post-options {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .options-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .options-btn:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .options-menu {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            width: 150px;
+            z-index: 10;
+            overflow: hidden;
+            display: none;
+        }
+
+        .options-menu.show {
+            display: block;
+            animation: slideUp 0.2s ease;
+        }
+
+        .option-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .option-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .option-item i {
+            margin-right: 10px;
+        }
+
+        /* Dark mode improvements */
+        [data-theme="dark"] .skeleton {
+            background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+        }
+
+        [data-theme="dark"] .action-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        [data-theme="dark"] .stat:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        [data-theme="dark"] .user-item:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        [data-theme="dark"] .notification-item:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* Paystack payment button */
+        .paystack-btn {
+            background: #0ba360;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .paystack-btn:hover {
+            background: #089952;
+            transform: translateY(-2px);
+        }
+
+        .paystack-btn i {
+            margin-right: 8px;
+        }
+
+        /* NEW: Enhanced features styles */
         .subscription-plans {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -858,8 +1891,81 @@
         </div>
     </nav>
 
-    <!-- All previous modals remain the same -->
-    <!-- ... (truncated for brevity) ... -->
+    <!-- Edit Profile Modal -->
+    <div class="modal-backdrop" id="editProfileModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="editDisplayName" placeholder="Display Name" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="editBio" placeholder="Bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editAvatar" class="btn btn-outline" style="display: inline-block;">
+                        <i class="fas fa-camera"></i> Change Avatar
+                    </label>
+                    <input type="file" id="editAvatar" accept="image/*" style="display: none;">
+                    <div id="avatarPreview" style="margin-top: 10px; display: none;">
+                        <img src="" alt="Preview" style="max-width: 100px; border-radius: 8px;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-backdrop" id="commentModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Comments</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="commentsContainer">
+                <div class="spinner"></div>
+            </div>
+            <div class="comment-input">
+                <input type="text" id="commentInput" placeholder="Write a comment...">
+                <button id="postCommentBtn" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Options Modal -->
+    <div class="modal-backdrop" id="postOptionsModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Post Options</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="options-list">
+                <div class="option-item" data-action="save">
+                    <i class="fas fa-bookmark"></i> Save Post
+                </div>
+                <div class="option-item" data-action="share">
+                    <i class="fas fa-share"></i> Share Post
+                </div>
+                <div class="option-item" data-action="repost">
+                    <i class="fas fa-retweet"></i> Repost
+                </div>
+                <div class="option-item" data-action="report">
+                    <i class="fas fa-flag"></i> Report Post
+                </div>
+                <div class="option-item" data-action="delete" style="color: var(--error-color);">
+                    <i class="fas fa-trash"></i> Delete Post
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- NEW: Gift Modal -->
     <div class="modal-backdrop" id="giftModal" style="display: none;">
@@ -940,6 +2046,13 @@
             }
         }
 
+        // Set theme function
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+
         // NEW: Check authentication status with Supabase
         async function checkAuthStatus() {
             const { data, error } = await supabase.auth.getSession();
@@ -1013,6 +2126,1086 @@
                 } else {
                     showPage('authPage');
                 }
+            }
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+            
+            // Update navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Load content for the page if needed
+            if (pageId === 'homePage') {
+                loadStories();
+                loadFeed();
+            }
+            if (pageId === 'tiktokPage') loadTikTokFeed();
+            if (pageId === 'earnPage') updateBalanceDisplay();
+            if (pageId === 'profilePage') loadProfile();
+            if (pageId === 'notificationsPage') loadNotifications();
+            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'searchPage') initSearch();
+            if (pageId === 'creatorPage') loadCreatorDashboard();
+            if (pageId === 'livePage') loadActiveStreams();
+            if (pageId === 'giftingPage') {
+                loadGifts();
+                loadReceivedGifts();
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const pageId = item.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                currentTheme = newTheme;
+            });
+            
+            // Search toggle
+            const searchToggle = document.getElementById('searchToggle');
+            searchToggle.addEventListener('click', () => {
+                const searchBar = document.getElementById('searchBar');
+                searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Floating action button
+            const newPostFloatBtn = document.getElementById('newPostFloatBtn');
+            newPostFloatBtn.addEventListener('click', () => {
+                showPage('newPostPage');
+            });
+            
+            // Auth tabs
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    if (tabName === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                loginUser(email, password);
+            });
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    showError('registerError', 'Passwords do not match');
+                    return;
+                }
+                
+                registerUser(name, email, password);
+            });
+            
+            // Google login
+            document.getElementById('googleLogin').addEventListener('click', () => {
+                loginWithGoogle();
+            });
+            
+            // Continue as guest
+            document.getElementById('continueAsGuest').addEventListener('click', () => {
+                continueAsGuest();
+            });
+            
+            // New post form
+            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = document.getElementById('postContent').value;
+                const imageFile = document.getElementById('postImage').files[0];
+                const videoFile = document.getElementById('postVideo').files[0];
+                createPost(content, imageFile, videoFile);
+            });
+            
+            // Character count for post content
+            document.getElementById('postContent').addEventListener('input', (e) => {
+                document.getElementById('charCount').textContent = e.target.value.length;
+            });
+            
+            // Media preview for new post
+            document.getElementById('postImage').addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('mediaPreview').style.display = 'block';
+                        document.getElementById('imagePreview').src = event.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                        document.getElementById('videoPreview').style.display = 'none';
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            document.getElementById('postVideo').addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const url = URL.createObjectURL(e.target.files[0]);
+                    document.getElementById('mediaPreview').style.display = 'block';
+                    document.getElementById('videoPreview').src = url;
+                    document.getElementById('videoPreview').style.display = 'block';
+                    document.getElementById('imagePreview').style.display = 'none';
+                }
+            });
+            
+            // Remove media button
+            document.getElementById('removeMedia').addEventListener('click', () => {
+                document.getElementById('postImage').value = '';
+                document.getElementById('postVideo').value = '';
+                document.getElementById('mediaPreview').style.display = 'none';
+            });
+            
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                showEditProfileModal();
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logoutUser();
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('editProfileModal').style.display = 'none';
+                    document.getElementById('commentModal').style.display = 'none';
+                    document.getElementById('postOptionsModal').style.display = 'none';
+                    document.getElementById('giftModal').style.display = 'none';
+                });
+            });
+            
+            // Edit profile form
+            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const displayName = document.getElementById('editDisplayName').value;
+                const bio = document.getElementById('editBio').value;
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                updateProfile(displayName, bio, avatarFile);
+            });
+            
+            // Avatar preview for edit profile
+            document.getElementById('editAvatar').addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('avatarPreview').style.display = 'block';
+                        document.getElementById('avatarPreview').querySelector('img').src = event.target.result;
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Back to messages button
+            document.getElementById('backToMessages').addEventListener('click', () => {
+                showPage('messagesPage');
+            });
+            
+            // Send message button
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+            
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Post comment button
+            document.getElementById('postCommentBtn').addEventListener('click', postComment);
+            
+            // Comment input enter key
+            document.getElementById('commentInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    postComment();
+                }
+            });
+            
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('globalSearch').addEventListener('input', handleGlobalSearch);
+            
+            // Profile stats clicks
+            document.getElementById('postsStat').addEventListener('click', () => {
+                document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            document.getElementById('followingStat').addEventListener('click', () => {
+                alert('Following list would be shown here');
+            });
+            
+            document.getElementById('followersStat').addEventListener('click', () => {
+                alert('Followers list would be shown here');
+            });
+            
+            document.getElementById('profileViewsStat').addEventListener('click', () => {
+                alert('Profile views analytics would be shown here');
+            });
+            
+            // Post options
+            document.querySelectorAll('.option-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const action = item.getAttribute('data-action');
+                    handlePostOption(action);
+                });
+            });
+            
+            // Earning buttons
+            document.getElementById('watchAdBtn').addEventListener('click', () => {
+                earnYume(5, 'Watched ad');
+            });
+            
+            document.getElementById('inviteFriendBtn').addEventListener('click', () => {
+                earnYume(20, 'Invited friend');
+            });
+            
+            document.getElementById('dailyRewardBtn').addEventListener('click', () => {
+                earnYume(10, 'Daily reward');
+            });
+            
+            document.getElementById('buyYumeBtn').addEventListener('click', () => {
+                buyYumeWithPaystack();
+            });
+            
+            // Share profile button
+            document.getElementById('shareProfileBtn').addEventListener('click', () => {
+                shareProfile();
+            });
+            
+            // Message profile button
+            document.getElementById('messageProfileBtn').addEventListener('click', () => {
+                messageCurrentUser();
+            });
+            
+            // NEW: Creator page button
+            document.getElementById('verifyAccountBtn')?.addEventListener('click', () => {
+                showPage('subscriptionPage');
+            });
+            
+            // NEW: Live stream controls
+            document.getElementById('startStreamBtn')?.addEventListener('click', startStream);
+            document.getElementById('stopStreamBtn')?.addEventListener('click', stopStream);
+            
+            // NEW: Subscription plans
+            document.querySelectorAll('[data-plan]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const plan = e.target.getAttribute('data-plan');
+                    subscribeToPlan(plan);
+                });
+            });
+            
+            // NEW: Gifting
+            document.getElementById('sendGiftBtn')?.addEventListener('click', sendGift);
+            document.getElementById('confirmSendGiftBtn')?.addEventListener('click', confirmSendGift);
+            
+            // NEW: Withdraw earnings
+            document.getElementById('withdrawEarningsBtn')?.addEventListener('click', withdrawEarnings);
+            
+            // Set up real-time subscriptions for new features
+            setupRealtimeSubscriptions();
+        }
+
+        // NEW: Set up real-time subscriptions
+        function setupRealtimeSubscriptions() {
+            // Subscribe to new posts
+            supabase
+                .channel('posts')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'posts' },
+                    (payload) => {
+                        // Add new post to feed if it's from a followed user
+                        if (currentUser && currentUser.following && currentUser.following.includes(payload.new.user_id)) {
+                            loadFeed(); // Reload feed to show new post
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new messages
+            supabase
+                .channel('messages')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    (payload) => {
+                        // If we're in a chat with the sender, add the message
+                        if (currentChatUser && payload.new.sender_id === currentChatUser.id) {
+                            loadChat(currentChatUser);
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to live streams
+            supabase
+                .channel('streams')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'streams' },
+                    (payload) => {
+                        // If we're on the live page, reload active streams
+                        if (currentPage === 'livePage') {
+                            loadActiveStreams();
+                        }
+                    }
+                )
+                .on('postgres_changes', 
+                    { event: 'DELETE', schema: 'public', table: 'streams' },
+                    (payload) => {
+                        // If we're on the live page, reload active streams
+                        if (currentPage === 'livePage') {
+                            loadActiveStreams();
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to gifts
+            supabase
+                .channel('gifts')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'gifts' },
+                    (payload) => {
+                        // If the gift is for the current user and they're in a live stream, show notification
+                        if (currentUser && payload.new.recipient_id === currentUser.id) {
+                            if (currentPage === 'livePage' && activeStream) {
+                                showGiftNotification(payload.new);
+                            }
+                            // Update received gifts list
+                            if (currentPage === 'giftingPage') {
+                                loadReceivedGifts();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // Create a temporary success message element
+            const successElement = document.createElement('div');
+            successElement.className = 'success-message';
+            successElement.textContent = message;
+            successElement.style.position = 'fixed';
+            successElement.style.top = '70px';
+            successElement.style.left = '50%';
+            successElement.style.transform = 'translateX(-50%)';
+            successElement.style.zIndex = '1000';
+            successElement.style.maxWidth = '90%';
+            
+            document.body.appendChild(successElement);
+            
+            setTimeout(() => {
+                successElement.remove();
+            }, 3000);
+        }
+
+        // Load TikTok-style feed
+        function loadTikTokFeed() {
+            const tiktokFeed = document.getElementById('tiktokFeed');
+            
+            if (!currentUser) {
+                tiktokFeed.innerHTML = `
+                    <div class="card login-prompt">
+                        <i class="fas fa-play-circle"></i>
+                        <h3>Login to view TikTok feed</h3>
+                        <p>Sign in to watch short videos</p>
+                        <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            tiktokFeed.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                // In a real app, you would fetch videos from your database
+                // For demo purposes, we'll create some placeholder videos
+                const videos = [
+                    {
+                        id: 1,
+                        username: 'user1',
+                        description: 'Check out this amazing trick!',
+                        likes: 1500,
+                        comments: 120,
+                        shares: 45
+                    },
+                    {
+                        id: 2,
+                        username: 'user2',
+                        description: 'Just having fun with friends',
+                        likes: 2300,
+                        comments: 180,
+                        shares: 67
+                    },
+                    {
+                        id: 3,
+                        username: 'user3',
+                        description: 'Learning new dance moves',
+                        likes: 3200,
+                        comments: 250,
+                        shares: 89
+                    }
+                ];
+                
+                tiktokFeed.innerHTML = '';
+                
+                videos.forEach(video => {
+                    const videoEl = document.createElement('div');
+                    videoEl.className = 'tiktok-video';
+                    videoEl.innerHTML = `
+                        <video autoplay loop muted>
+                            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-info">
+                            <h3>@${video.username}</h3>
+                            <p>${video.description}</p>
+                            <div class="video-stats">
+                                <span><i class="fas fa-music"></i> Original Sound</span>
+                                <span><i class="fas fa-eye"></i> ${Math.floor(video.likes * 10)} views</span>
+                            </div>
+                        </div>
+                        <div class="video-sidebar">
+                            <div class="video-action">
+                                <i class="fas fa-heart"></i>
+                                <span>${video.likes}</span>
+                            </div>
+                            <div class="video-action">
+                                <i class="fas fa-comment"></i>
+                                <span>${video.comments}</span>
+                            </div>
+                            <div class="video-action">
+                                <i class="fas fa-share"></i>
+                                <span>${video.shares}</span>
+                            </div>
+                            <div class="video-action">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </div>
+                        </div>
+                    `;
+                    
+                    tiktokFeed.appendChild(videoEl);
+                });
+            } catch (error) {
+                console.error('Error loading TikTok feed:', error);
+                tiktokFeed.innerHTML = `
+                    <div class="card text-center">
+                        <div style="padding: 40px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3>Error loading videos</h3>
+                            <p>Please try again later</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            const yumeBalance = document.getElementById('balanceAmount');
+            yumeBalance.textContent = userBalance;
+        }
+
+        // Earn YUME tokens
+        function earnYume(amount, reason) {
+            userBalance += amount;
+            localStorage.setItem('yumeBalance', userBalance.toString());
+            updateBalanceDisplay();
+            
+            // Record earning
+            const earning = {
+                id: Date.now(),
+                userId: currentUser.id,
+                amount: amount,
+                reason: reason,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add notification
+            addNotification({
+                id: Date.now(),
+                type: 'earning',
+                title: 'YUME Tokens Earned',
+                message: `You earned ${amount} $YUME for ${reason}`,
+                read: false,
+                createdAt: new Date().toISOString()
+            });
+            
+            showSuccess(`+${amount} $YUME earned for ${reason}!`);
+        }
+
+        // Buy YUME with Paystack
+        function buyYumeWithPaystack() {
+            const amount = parseInt(document.getElementById('yumeAmount').value);
+            
+            if (amount < 10) {
+                alert('Minimum purchase is 10 $YUME');
+                return;
+            }
+            
+            // In a real implementation, this would integrate with Paystack API
+            // For demo purposes, we'll simulate a successful purchase
+            const cost = amount * 0.01; // $0.01 per YUME token
+            
+            if (confirm(`Purchase ${amount} $YUME for $${cost.toFixed(2)}?`)) {
+                userBalance += amount;
+                localStorage.setItem('yumeBalance', userBalance.toString());
+                updateBalanceDisplay();
+                
+                // Add notification
+                addNotification({
+                    id: Date.now(),
+                    type: 'purchase',
+                    title: 'YUME Tokens Purchased',
+                    message: `You purchased ${amount} $YUME tokens`,
+                    read: false,
+                    createdAt: new Date().toISOString()
+                });
+                
+                showSuccess(`Successfully purchased ${amount} $YUME!`);
+            }
+        }
+
+        // Share profile
+        function shareProfile() {
+            if (!currentUser) return;
+            
+            const profileUrl = `${window.location.origin}/profile/${currentUser.id}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `Check out ${currentUser.name}'s profile on YUME`,
+                    text: `Follow ${currentUser.name} on YUME`,
+                    url: profileUrl
+                });
+            } else {
+                navigator.clipboard.writeText(profileUrl);
+                showSuccess('Profile link copied to clipboard!');
+            }
+        }
+
+        // Message current user
+        function messageCurrentUser() {
+            if (!currentUser) return;
+            
+            // In a real app, this would open a chat with the current user
+            // For demo purposes, we'll show a message
+            alert(`This would open a chat with ${currentUser.name}`);
+        }
+
+        // Add notification
+        function addNotification(notification) {
+            notifications.push(notification);
+            localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
+            updateUnreadCount();
+            
+            if (currentPage === 'notificationsPage') {
+                loadNotifications();
+            }
+        }
+
+        // Update unread notification count
+        function updateUnreadCount() {
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notificationBadge');
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Load notifications
+        function loadNotifications() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            notificationsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                // Filter notifications for current user
+                const userNotifications = notifications.filter(n => 
+                    n.userId === currentUser.id || !n.userId
+                );
+                
+                // Sort notifications by date
+                userNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                notificationsContainer.innerHTML = '';
+                
+                if (userNotifications.length === 0) {
+                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    return;
+                }
+                
+                for (const notif of userNotifications) {
+                    const notifEl = document.createElement('div');
+                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                    notifEl.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'purchase' ? 'shopping-cart' : 'bell'}"></i>
+                        </div>
+                        <div>
+                            <h4>${notif.title}</h4>
+                            <p>${notif.message}</p>
+                            <div class="timestamp">${formatDate(notif.createdAt)}</div>
+                        </div>
+                    `;
+                    
+                    // Mark as read when clicked
+                    if (!notif.read) {
+                        notifEl.addEventListener('click', () => {
+                            notif.read = true;
+                            localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
+                            updateUnreadCount();
+                            loadNotifications();
+                        });
+                    }
+                    
+                    notificationsContainer.appendChild(notifEl);
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
+            }
+        }
+
+        // Load feed posts
+        function loadFeed() {
+            const feedContainer = document.getElementById('feedContainer');
+            
+            if (!currentUser) {
+                feedContainer.innerHTML = `
+                    <div class="card login-prompt">
+                        <i class="fas fa-rss"></i>
+                        <h3>Login to see your feed</h3>
+                        <p>Sign in to view posts from users you follow</p>
+                        <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show skeleton loading
+            feedContainer.innerHTML = `
+                <div class="card post-card">
+                    <div class="user-info">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-text short"></div>
+                            <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                        <div class="skeleton skeleton-image"></div>
+                    </div>
+                </div>
+                <div class="card post-card">
+                    <div class="user-info">
+                        <div class="skeleton skeleton-avatar"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton skeleton-text short"></div>
+                            <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text"></div>
+                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
+                    </div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                try {
+                    // Get posts from followed users
+                    const followedUserIds = [currentUser.id]; // Include current user's posts
+                    
+                    // In a real app, you would filter by followed users
+                    const userPosts = posts.filter(post => followedUserIds.includes(post.userId));
+                    
+                    // Sort posts by date
+                    userPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    
+                    feedContainer.innerHTML = '';
+                    
+                    if (userPosts.length === 0) {
+                        feedContainer.innerHTML = `
+                            <div class="card text-center">
+                                <div style="padding: 40px 20px;">
+                                    <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                    <h3>Your feed is empty</h3>
+                                    <p>Follow some users to see their posts here</p>
+                                    <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    for (const post of userPosts) {
+                        const user = users.find(u => u.id === post.userId) || {
+                            name: 'Unknown User',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        };
+                        
+                        const isLiked = post.likedBy && post.likedBy.includes(currentUser.id);
+                        const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
+                        
+                        const postEl = document.createElement('div');
+                        postEl.className = 'card post-card';
+                        postEl.innerHTML = `
+                            <div class="user-info">
+                                <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                                <div style="flex: 1;">
+                                    <div class="username">${user.name}</div>
+                                    <div class="timestamp">${formatDate(post.createdAt)}</div>
+                                </div>
+                                <div class="post-options">
+                                    <button class="options-btn">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p>${post.text}</p>
+                                ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
+                                ${post.video ? `<video controls class="post-video"><source src="${post.video}" type="video/mp4"></video>` : ''}
+                                ${post.isRepost ? `<p style="color: #888; font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-retweet"></i> Reposted</p>` : ''}
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                                    <i class="fas fa-heart"></i> <span>${post.likeCount || 0}</span>
+                                </button>
+                                <button class="action-btn" data-post-id="${post.id}">
+                                    <i class="fas fa-comment"></i> <span>${post.commentCount || 0}</span>
+                                </button>
+                                <button class="action-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                                <button class="action-btn" data-post-id="${post.id}">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add like functionality
+                        const likeBtn = postEl.querySelector('.action-btn:first-child');
+                        likeBtn.addEventListener('click', () => {
+                            toggleLike(post.id);
+                        });
+                        
+                        // Add comment functionality
+                        const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+                        commentBtn.addEventListener('click', () => {
+                            showComments(post.id);
+                        });
+                        
+                        // Add bookmark functionality
+                        const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
+                        bookmarkBtn.addEventListener('click', () => {
+                            toggleBookmark(post.id);
+                        });
+                        
+                        // Add share functionality
+                        const shareBtn = postEl.querySelectorAll('.action-btn')[3];
+                        shareBtn.addEventListener('click', () => {
+                            sharePost(post.id);
+                        });
+                        
+                        // Add options functionality
+                        const optionsBtn = postEl.querySelector('.options-btn');
+                        optionsBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showPostOptions(post);
+                        });
+                        
+                        feedContainer.appendChild(postEl);
+                    }
+                } catch (error) {
+                    console.error('Error loading feed:', error);
+                    feedContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Error loading feed</h3>
+                                <p>Please try again later</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 1000); // Simulate loading delay
+        }
+
+        // Load stories
+        function loadStories() {
+            const storiesContainer = document.getElementById('storiesContainer');
+            
+            if (!currentUser) {
+                return;
+            }
+            
+            storiesContainer.innerHTML = '<div class="spinner"></div>';
+            
+            setTimeout(() => {
+                try {
+                    // In a real app, you would fetch stories from your database
+                    // For demo purposes, we'll create some placeholder stories
+                    const demoStories = [
+                        {
+                            id: 1,
+                            userId: 'user1',
+                            username: 'user1',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        },
+                        {
+                            id: 2,
+                            userId: 'user2',
+                            username: 'user2',
+                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        },
+                        {
+                            id: 3,
+                            userId: 'user3',
+                            username: 'user3',
+                            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        }
+                    ];
+                    
+                    storiesContainer.innerHTML = '';
+                    
+                    // Add current user's story first with create option
+                    const addStoryEl = document.createElement('div');
+                    addStoryEl.className = 'story';
+                    addStoryEl.innerHTML = `
+                        <div style="position: relative;">
+                            <img src="${currentUser.avatar}" alt="Your story" class="story-avatar">
+                            <div style="position: absolute; bottom: 0; right: 0; background: var(--primary-color); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
+                            </div>
+                        </div>
+                        <div class="story-username">Your story</div>
+                    `;
+                    
+                    addStoryEl.addEventListener('click', () => {
+                        alert('Create story functionality would go here');
+                    });
+                    
+                    storiesContainer.appendChild(addStoryEl);
+                    
+                    // Add other users' stories
+                    demoStories.forEach(story => {
+                        const storyEl = document.createElement('div');
+                        storyEl.className = 'story';
+                        storyEl.innerHTML = `
+                            <img src="${story.avatar}" alt="${story.username}" class="story-avatar">
+                            <div class="story-username">${story.username}</div>
+                        `;
+                        
+                        storyEl.addEventListener('click', () => {
+                            alert(`View ${story.username}'s story`);
+                        });
+                        
+                        storiesContainer.appendChild(storyEl);
+                    });
+                } catch (error) {
+                    console.error('Error loading stories:', error);
+                    storiesContainer.innerHTML = '';
+                }
+            }, 500); // Simulate loading delay
+        }
+
+        // Load user profile
+        function loadProfile() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            // Update profile info
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileBio').textContent = currentUser.bio || '';
+            document.getElementById('profileAvatar').src = currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80';
+            
+            try {
+                // Get user's posts
+                const userPosts = posts.filter(post => post.userId === currentUser.id);
+                const postCount = userPosts.length;
+                
+                // Update stats
+                document.getElementById('postsCount').textContent = postCount;
+                document.getElementById('followingCount').textContent = currentUser.followingCount || 0;
+                document.getElementById('followersCount').textContent = currentUser.followersCount || 0;
+                document.getElementById('profileViewsCount').textContent = currentUser.profileViews || 0;
+                
+                // Load user's posts
+                const postsContainer = document.getElementById('userPostsContainer');
+                postsContainer.innerHTML = '<div class="spinner"></div>';
+                
+                // Sort posts by date
+                userPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                setTimeout(() => {
+                    postsContainer.innerHTML = '';
+                    
+                    if (userPosts.length === 0) {
+                        postsContainer.innerHTML = `
+                            <div class="card text-center">
+                                <div style="padding: 40px 20px;">
+                                    <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                    <h3>No posts yet</h3>
+                                    <p>Share your first post with the world</p>
+                                    <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    for (const post of userPosts) {
+                        const isLiked = post.likedBy && post.likedBy.includes(currentUser.id);
+                        const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
+                        
+                        const postEl = document.createElement('div');
+                        postEl.className = 'card post-card';
+                        postEl.innerHTML = `
+                            <div class="user-info">
+                                <img src="${currentUser.avatar}" alt="${currentUser.name}" class="avatar">
+                                <div>
+                                    <div class="username">${currentUser.name}</div>
+                                    <div class="timestamp">${formatDate(post.createdAt)}</div>
+                                </div>
+                                <div class="post-options">
+                                    <button class="options-btn">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <p>${post.text}</p>
+                                ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
+                                ${post.video ? `<video controls class="post-video"><source src="${post.video}" type="video/mp4"></video>` : ''}
+                                ${post.isRepost ? `<p style="color: #888; font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-retweet"></i> Reposted</p>` : ''}
+                            </div>
+                            <div class="post-actions">
+                                <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                                    <i class="fas fa-heart"></i> <span>${post.likeCount || 0}</span>
+                                </button>
+                                <button class="action-btn" data-post-id="${post.id}">
+                                    <i class="fas fa-comment"></i> <span>${post.commentCount || 0}</span>
+                                </button>
+                                <button class="action-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}">
+                                    <i class="fas fa-bookmark"></i>
+                                </button>
+                                <button class="action-btn" data-post-id="${post.id}">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                            </div>
+                        `;
+                        
+                        // Add like functionality
+                        const likeBtn = postEl.querySelector('.action-btn:first-child');
+                        likeBtn.addEventListener('click', () => {
+                            toggleLike(post.id);
+                        });
+                        
+                        // Add comment functionality
+                        const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+                        commentBtn.addEventListener('click', () => {
+                            showComments(post.id);
+                        });
+                        
+                        // Add bookmark functionality
+                        const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
+                        bookmarkBtn.addEventListener('click', () => {
+                            toggleBookmark(post.id);
+                        });
+                        
+                        // Add share functionality
+                        const shareBtn = postEl.querySelectorAll('.action-btn')[3];
+                        shareBtn.addEventListener('click', () => {
+                            sharePost(post.id);
+                        });
+                        
+                        // Add options functionality
+                        const optionsBtn = postEl.querySelector('.options-btn');
+                        optionsBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showPostOptions(post);
+                        });
+                        
+                        postsContainer.appendChild(postEl);
+                    }
+                }, 500); // Simulate loading delay
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('userPostsContainer').innerHTML = `
+                    <div class="card text-center">
+                        <div style="padding: 40px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3>Error loading profile</h3>
+                            <p>Please try again later</p>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -1137,111 +3330,795 @@
             }
         }
 
-        // NEW: Enhanced setupEventListeners with new features
-        function setupEventListeners() {
-            // All previous event listeners remain the same
-            // ... (truncated for brevity) ...
+        // Login with Google
+        function loginWithGoogle() {
+            alert('Google login would be implemented here');
+        }
+
+        // Continue as guest
+        function continueAsGuest() {
+            currentUser = null;
+            showPage('homePage');
+            loadStories();
+            loadFeed();
+            updateBalanceDisplay();
+        }
+
+        // Logout user
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showPage('authPage');
+        }
+
+        // Create a new post
+        function createPost(content, imageFile, videoFile) {
+            if (!currentUser) {
+                alert('Please login to create a post');
+                showPage('authPage');
+                return;
+            }
             
-            // NEW: Creator page button
-            document.getElementById('verifyAccountBtn')?.addEventListener('click', () => {
-                showPage('subscriptionPage');
-            });
+            try {
+                // Create post
+                const newPost = {
+                    id: 'post' + (posts.length + 1),
+                    userId: currentUser.id,
+                    text: content,
+                    image: imageFile ? URL.createObjectURL(imageFile) : null,
+                    video: videoFile ? URL.createObjectURL(videoFile) : null,
+                    likeCount: 0,
+                    commentCount: 0,
+                    shareCount: 0,
+                    repostCount: 0,
+                    likedBy: [],
+                    bookmarkedBy: [],
+                    createdAt: new Date().toISOString()
+                };
+                
+                posts.push(newPost);
+                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                
+                // Reset form and go back to feed
+                document.getElementById('newPostForm').reset();
+                document.getElementById('charCount').textContent = '0';
+                document.getElementById('mediaPreview').style.display = 'none';
+                showPage('homePage');
+                loadFeed();
+                
+                // Show success message
+                showSuccess('Post created successfully!');
+                
+                // Earn YUME for creating content
+                earnYume(2, 'Creating a post');
+            } catch (error) {
+                console.error('Error creating post:', error);
+                alert('Error creating post. Please try again.');
+            }
+        }
+
+        // Toggle like on a post
+        function toggleLike(postId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
             
-            // NEW: Live stream controls
-            document.getElementById('startStreamBtn')?.addEventListener('click', startStream);
-            document.getElementById('stopStreamBtn')?.addEventListener('click', stopStream);
+            const postIndex = posts.findIndex(p => p.id === postId);
             
-            // NEW: Subscription plans
-            document.querySelectorAll('[data-plan]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const plan = e.target.getAttribute('data-plan');
-                    subscribeToPlan(plan);
+            if (postIndex !== -1) {
+                const post = posts[postIndex];
+                
+                if (!post.likedBy) {
+                    post.likedBy = [];
+                }
+                
+                const isLiked = post.likedBy.includes(currentUser.id);
+                
+                if (isLiked) {
+                    post.likedBy = post.likedBy.filter(id => id !== currentUser.id);
+                    post.likeCount--;
+                } else {
+                    post.likedBy.push(currentUser.id);
+                    post.likeCount++;
+                    
+                    // Earn YUME for liking content
+                    earnYume(1, 'Liking a post');
+                }
+                
+                posts[postIndex] = post;
+                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            }
+        }
+
+        // Toggle bookmark on a post
+        function toggleBookmark(postId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex !== -1) {
+                const post = posts[postIndex];
+                
+                if (!post.bookmarkedBy) {
+                    post.bookmarkedBy = [];
+                }
+                
+                const isBookmarked = post.bookmarkedBy.includes(currentUser.id);
+                
+                if (isBookmarked) {
+                    post.bookmarkedBy = post.bookmarkedBy.filter(id => id !== currentUser.id);
+                } else {
+                    post.bookmarkedBy.push(currentUser.id);
+                }
+                
+                posts[postIndex] = post;
+                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+                
+                showSuccess(isBookmarked ? 'Post removed from bookmarks' : 'Post added to bookmarks');
+            }
+        }
+
+        // Share a post
+        function sharePost(postId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            try {
+                if (navigator.share) {
+                    // Use Web Share API if available
+                    navigator.share({
+                        title: 'Check out this post on YUME',
+                        text: 'I found this interesting post on YUME social app',
+                        url: window.location.href + '?post=' + postId
+                    });
+                } else {
+                    // Fallback to copying to clipboard
+                    const shareUrl = window.location.href + '?post=' + postId;
+                    navigator.clipboard.writeText(shareUrl);
+                    showSuccess('Post link copied to clipboard');
+                }
+                
+                // Track share
+                const postIndex = posts.findIndex(p => p.id === postId);
+                
+                if (postIndex !== -1) {
+                    const post = posts[postIndex];
+                    post.shareCount = (post.shareCount || 0) + 1;
+                    posts[postIndex] = post;
+                    localStorage.setItem('yumePosts', JSON.stringify(posts));
+                }
+                
+                // Earn YUME for sharing content
+                earnYume(3, 'Sharing a post');
+            } catch (error) {
+                console.error('Error sharing post:', error);
+            }
+        }
+
+        // Show post options
+        function showPostOptions(post) {
+            const modal = document.getElementById('postOptionsModal');
+            const optionsList = modal.querySelector('.options-list');
+            
+            // Clear previous options
+            optionsList.innerHTML = '';
+            
+            // Add save option
+            const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
+            optionsList.innerHTML += `
+                <div class="option-item" data-action="save">
+                    <i class="fas fa-bookmark"></i> ${isBookmarked ? 'Unsave Post' : 'Save Post'}
+                </div>
+            `;
+            
+            // Add share option
+            optionsList.innerHTML += `
+                <div class="option-item" data-action="share">
+                    <i class="fas fa-share"></i> Share Post
+                </div>
+            `;
+            
+            // Add repost option
+            optionsList.innerHTML += `
+                <div class="option-item" data-action="repost">
+                    <i class="fas fa-retweet"></i> Repost
+                </div>
+            `;
+            
+            // Add report option (if not current user's post)
+            if (post.userId !== currentUser.id) {
+                optionsList.innerHTML += `
+                    <div class="option-item" data-action="report">
+                        <i class="fas fa-flag"></i> Report Post
+                    </div>
+                `;
+            }
+            
+            // Add delete option (if current user's post)
+            if (post.userId === currentUser.id) {
+                optionsList.innerHTML += `
+                    <div class="option-item" data-action="delete" style="color: var(--error-color);">
+                        <i class="fas fa-trash"></i> Delete Post
+                    </div>
+                `;
+            }
+            
+            // Add event listeners
+            modal.querySelectorAll('.option-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const action = item.getAttribute('data-action');
+                    handlePostOption(action, post);
+                    modal.style.display = 'none';
                 });
             });
             
-            // NEW: Gifting
-            document.getElementById('sendGiftBtn')?.addEventListener('click', sendGift);
-            document.getElementById('confirmSendGiftBtn')?.addEventListener('click', confirmSendGift);
-            
-            // NEW: Withdraw earnings
-            document.getElementById('withdrawEarningsBtn')?.addEventListener('click', withdrawEarnings);
-            
-            // Set up real-time subscriptions for new features
-            setupRealtimeSubscriptions();
+            modal.style.display = 'flex';
         }
 
-        // NEW: Set up real-time subscriptions
-        function setupRealtimeSubscriptions() {
-            // Subscribe to new posts
-            supabase
-                .channel('posts')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'posts' },
-                    (payload) => {
-                        // Add new post to feed if it's from a followed user
-                        if (currentUser && currentUser.following && currentUser.following.includes(payload.new.user_id)) {
-                            loadFeed(); // Reload feed to show new post
-                        }
+        // Handle post option selection
+        function handlePostOption(action, post) {
+            switch (action) {
+                case 'save':
+                    toggleBookmark(post.id);
+                    break;
+                case 'share':
+                    sharePost(post.id);
+                    break;
+                case 'repost':
+                    repostPost(post.id);
+                    break;
+                case 'report':
+                    alert('Report post functionality would go here');
+                    break;
+                case 'delete':
+                    if (confirm('Are you sure you want to delete this post?')) {
+                        deletePost(post.id);
                     }
-                )
-                .subscribe();
+                    break;
+            }
+        }
 
-            // Subscribe to new messages
-            supabase
-                .channel('messages')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'messages' },
-                    (payload) => {
-                        // If we're in a chat with the sender, add the message
-                        if (currentChatUser && payload.new.sender_id === currentChatUser.id) {
-                            loadChat(currentChatUser);
-                        }
-                    }
-                )
-                .subscribe();
+        // Repost functionality
+        function repostPost(postId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const originalPost = posts.find(p => p.id === postId);
+            
+            if (originalPost) {
+                // Create repost
+                const repost = {
+                    id: 'post' + (posts.length + 1),
+                    userId: currentUser.id,
+                    text: originalPost.text,
+                    image: originalPost.image,
+                    video: originalPost.video,
+                    isRepost: true,
+                    originalPostId: postId,
+                    likeCount: 0,
+                    commentCount: 0,
+                    shareCount: 0,
+                    repostCount: 0,
+                    likedBy: [],
+                    bookmarkedBy: [],
+                    createdAt: new Date().toISOString()
+                };
+                
+                posts.push(repost);
+                
+                // Update original post repost count
+                const originalPostIndex = posts.findIndex(p => p.id === postId);
+                if (originalPostIndex !== -1) {
+                    posts[originalPostIndex].repostCount = (posts[originalPostIndex].repostCount || 0) + 1;
+                }
+                
+                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                
+                showSuccess('Post reposted successfully!');
+                
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+                
+                // Earn YUME for reposting content
+                earnYume(2, 'Reposting a post');
+            }
+        }
 
-            // Subscribe to live streams
-            supabase
-                .channel('streams')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'streams' },
-                    (payload) => {
-                        // If we're on the live page, reload active streams
-                        if (currentPage === 'livePage') {
-                            loadActiveStreams();
-                        }
-                    }
-                )
-                .on('postgres_changes', 
-                    { event: 'DELETE', schema: 'public', table: 'streams' },
-                    (payload) => {
-                        // If we're on the live page, reload active streams
-                        if (currentPage === 'livePage') {
-                            loadActiveStreams();
-                        }
-                    }
-                )
-                .subscribe();
+        // Delete a post
+        function deletePost(postId) {
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex !== -1) {
+                posts.splice(postIndex, 1);
+                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                
+                showSuccess('Post deleted successfully');
+                
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            }
+        }
 
-            // Subscribe to gifts
-            supabase
-                .channel('gifts')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'gifts' },
-                    (payload) => {
-                        // If the gift is for the current user and they're in a live stream, show notification
-                        if (currentUser && payload.new.recipient_id === currentUser.id) {
-                            if (currentPage === 'livePage' && activeStream) {
-                                showGiftNotification(payload.new);
-                            }
-                            // Update received gifts list
-                            if (currentPage === 'giftingPage') {
-                                loadReceivedGifts();
-                            }
-                        }
+        // Show comments for a post
+        function showComments(postId) {
+            if (!currentUser) {
+                alert('Please login to view comments');
+                showPage('authPage');
+                return;
+            }
+            
+            currentPostId = postId;
+            document.getElementById('commentModal').style.display = 'flex';
+            loadComments();
+        }
+
+        // Load comments for a post
+        function loadComments() {
+            const commentsContainer = document.getElementById('commentsContainer');
+            commentsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            // In a real app, you would fetch comments from your database
+            // For demo purposes, we'll create some placeholder comments
+            setTimeout(() => {
+                const comments = [
+                    {
+                        id: 1,
+                        userId: 'user2',
+                        username: 'user2',
+                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                        text: 'This is amazing!',
+                        createdAt: new Date(Date.now() - 3600000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        userId: 'user3',
+                        username: 'user3',
+                        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                        text: 'Great content!',
+                        createdAt: new Date(Date.now() - 7200000).toISOString()
                     }
-                )
-                .subscribe();
+                ];
+                
+                commentsContainer.innerHTML = '';
+                
+                if (comments.length === 0) {
+                    commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
+                } else {
+                    for (const comment of comments) {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = 'comment';
+                        commentEl.innerHTML = `
+                            <img src="${comment.avatar}" alt="${comment.username}" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="username">${comment.username}</div>
+                                <p>${comment.text}</p>
+                                <div class="timestamp">${formatDate(comment.createdAt)}</div>
+                            </div>
+                        `;
+                        commentsContainer.appendChild(commentEl);
+                    }
+                }
+            }, 500); // Simulate loading delay
+        }
+
+        // Post a comment
+        function postComment() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            
+            if (!content) return;
+            
+            // In a real app, you would save the comment to your database
+            // For demo purposes, we'll just show a success message
+            showSuccess('Comment posted!');
+            
+            // Clear input
+            commentInput.value = '';
+            
+            // Earn YUME for commenting
+            earnYume(1, 'Commenting on a post');
+        }
+
+        // Show edit profile modal
+        function showEditProfileModal() {
+            document.getElementById('editDisplayName').value = currentUser.name;
+            document.getElementById('editBio').value = currentUser.bio || '';
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        // Update user profile
+        function updateProfile(displayName, bio, avatarFile) {
+            try {
+                // Update current user
+                currentUser.name = displayName;
+                currentUser.bio = bio;
+                
+                if (avatarFile) {
+                    currentUser.avatar = URL.createObjectURL(avatarFile);
+                }
+                
+                // Update in users array
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex] = currentUser;
+                    localStorage.setItem('yumeUsers', JSON.stringify(users));
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                document.getElementById('profileName').textContent = displayName;
+                document.getElementById('profileBio').textContent = bio;
+                
+                if (avatarFile) {
+                    document.getElementById('profileAvatar').src = URL.createObjectURL(avatarFile);
+                }
+                
+                // Close modal
+                document.getElementById('editProfileModal').style.display = 'none';
+                
+                // Show success message
+                showSuccess('Profile updated successfully!');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile. Please try again.');
+            }
+        }
+
+        // Load conversations
+        function loadConversations() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const conversationsContainer = document.getElementById('conversationsContainer');
+            conversationsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            // In a real app, you would fetch conversations from your database
+            // For demo purposes, we'll create some placeholder conversations
+            setTimeout(() => {
+                const demoConversations = [
+                    {
+                        id: 1,
+                        userId: 'user2',
+                        username: 'user2',
+                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                        lastMessage: 'Hey, how are you?',
+                        lastMessageTime: new Date(Date.now() - 3600000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        userId: 'user3',
+                        username: 'user3',
+                        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                        lastMessage: 'Check out my new post!',
+                        lastMessageTime: new Date(Date.now() - 7200000).toISOString()
+                    }
+                ];
+                
+                conversationsContainer.innerHTML = '';
+                
+                if (demoConversations.length === 0) {
+                    conversationsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No messages yet</h3>
+                                <p>Start a conversation with someone</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                for (const conversation of demoConversations) {
+                    const conversationEl = document.createElement('div');
+                    conversationEl.className = 'card';
+                    conversationEl.style.padding = '15px';
+                    conversationEl.style.marginBottom = '10px';
+                    conversationEl.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <img src="${conversation.avatar}" alt="${conversation.username}" class="avatar">
+                            <div style="flex: 1; margin-left: 10px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div class="username">${conversation.username}</div>
+                                    <div class="timestamp">${formatDate(conversation.lastMessageTime)}</div>
+                                </div>
+                                <p>${conversation.lastMessage}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add click event to open chat
+                    conversationEl.addEventListener('click', () => {
+                        currentChatUser = {
+                            id: conversation.userId,
+                            name: conversation.username,
+                            avatar: conversation.avatar
+                        };
+                        
+                        document.getElementById('chatUserName').textContent = conversation.username;
+                        document.getElementById('chatUserAvatar').src = conversation.avatar;
+                        
+                        showPage('chatPage');
+                        loadChat(currentChatUser);
+                    });
+                    
+                    conversationsContainer.appendChild(conversationEl);
+                }
+            }, 500); // Simulate loading delay
+        }
+
+        // Load chat with a user
+        function loadChat(user) {
+            const messageThread = document.getElementById('messageThread');
+            messageThread.innerHTML = '<div class="spinner"></div>';
+            
+            // In a real app, you would fetch messages from your database
+            // For demo purposes, we'll create some placeholder messages
+            setTimeout(() => {
+                const demoMessages = [
+                    {
+                        id: 1,
+                        senderId: user.id,
+                        text: 'Hey, how are you?',
+                        createdAt: new Date(Date.now() - 3600000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        senderId: currentUser.id,
+                        text: 'I\'m good, thanks! How about you?',
+                        createdAt: new Date(Date.now() - 3500000).toISOString()
+                    },
+                    {
+                        id: 3,
+                        senderId: user.id,
+                        text: 'Doing great! Just posted a new video',
+                        createdAt: new Date(Date.now() - 3400000).toISOString()
+                    }
+                ];
+                
+                // Sort messages by date
+                demoMessages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                
+                messageThread.innerHTML = '';
+                
+                demoMessages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${msg.senderId === currentUser.id ? 'sent' : 'received'}`;
+                    messageEl.innerHTML = `
+                        <div>${msg.text}</div>
+                        <div class="message-time">${formatTime(msg.createdAt)}</div>
+                    `;
+                    messageThread.appendChild(messageEl);
+                });
+                
+                // Scroll to bottom
+                messageThread.scrollTop = messageThread.scrollHeight;
+            }, 500); // Simulate loading delay
+        }
+
+        // Send a message
+        function sendMessage() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content || !currentChatUser) return;
+            
+            // In a real app, you would save the message to your database
+            // For demo purposes, we'll just add it to the UI
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message sent';
+            messageEl.innerHTML = `
+                <div>${content}</div>
+                <div class="message-time">${formatTime(new Date())}</div>
+            `;
+            
+            document.getElementById('messageThread').appendChild(messageEl);
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Scroll to bottom
+            const messageThread = document.getElementById('messageThread');
+            messageThread.scrollTop = messageThread.scrollHeight;
+            
+            // Earn YUME for messaging
+            earnYume(1, 'Sending a message');
+        }
+
+        // Initialize search
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
+        // Handle search input
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
+                return;
+            }
+            
+            try {
+                const filteredUsers = users.filter(user => 
+                    user.name.toLowerCase().includes(query) && user.id !== currentUser.id
+                );
+                
+                searchResults.innerHTML = '';
+                
+                if (filteredUsers.length === 0) {
+                    searchResults.innerHTML = '<p class="text-center">No users found</p>';
+                    return;
+                }
+                
+                for (const user of filteredUsers) {
+                    const userEl = document.createElement('div');
+                    userEl.className = 'card user-item';
+                    userEl.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        <div style="flex: 1;">
+                            <div class="username">${user.name}</div>
+                            <div>${user.bio || ''}</div>
+                        </div>
+                        <button class="btn btn-primary" data-user-id="${user.id}">Follow</button>
+                    `;
+                    
+                    // Add follow functionality
+                    const followBtn = userEl.querySelector('button');
+                    const isFollowing = user.followers && user.followers.includes(currentUser.id);
+                    
+                    if (isFollowing) {
+                        followBtn.textContent = 'Unfollow';
+                        followBtn.classList.remove('btn-primary');
+                        followBtn.classList.add('btn-secondary');
+                    }
+                    
+                    followBtn.addEventListener('click', () => {
+                        toggleFollow(user.id);
+                    });
+                    
+                    searchResults.appendChild(userEl);
+                }
+            } catch (error) {
+                console.error('Error searching users:', error);
+                searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
+            }
+        }
+
+        // Handle global search
+        function handleGlobalSearch() {
+            const query = document.getElementById('globalSearch').value.toLowerCase();
+            
+            if (query.length < 2) {
+                return;
+            }
+            
+            // If we're not already on the search page, go there
+            if (currentPage !== 'searchPage') {
+                showPage('searchPage');
+                // Small delay to allow the page to render before triggering search
+                setTimeout(() => {
+                    document.getElementById('searchInput').value = query;
+                    handleSearch();
+                }, 100);
+            } else {
+                // If we're already on the search page, just trigger the search
+                document.getElementById('searchInput').value = query;
+                handleSearch();
+            }
+        }
+
+        // Toggle follow
+        function toggleFollow(userId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const userIndex = users.findIndex(u => u.id === userId);
+            
+            if (userIndex !== -1) {
+                const user = users[userIndex];
+                
+                if (!user.followers) {
+                    user.followers = [];
+                }
+                
+                const isFollowing = user.followers.includes(currentUser.id);
+                
+                if (isFollowing) {
+                    // Unfollow
+                    user.followers = user.followers.filter(id => id !== currentUser.id);
+                    user.followersCount--;
+                    
+                    // Update current user's following count
+                    currentUser.followingCount--;
+                } else {
+                    // Follow
+                    user.followers.push(currentUser.id);
+                    user.followersCount++;
+                    
+                    // Update current user's following count
+                    currentUser.followingCount++;
+                    
+                    // Add notification
+                    addNotification({
+                        id: Date.now(),
+                        userId: userId,
+                        type: 'follow',
+                        title: 'New Follower',
+                        message: `${currentUser.name} started following you`,
+                        read: false,
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    // Earn YUME for following
+                    earnYume(5, 'Following a user');
+                }
+                
+                users[userIndex] = user;
+                localStorage.setItem('yumeUsers', JSON.stringify(users));
+                
+                // Update current user in localStorage
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                // Update UI
+                handleSearch();
+                
+                // Update profile stats if on profile page
+                if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+                
+                showSuccess(isFollowing ? 'Unfollowed user' : 'Followed user');
+            }
         }
 
         // NEW: Load gifts for the gifting page
@@ -1624,6 +4501,42 @@
             alert('This would open the live stream in a player');
         }
 
+        // NEW: Load creator dashboard
+        function loadCreatorDashboard() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            // Update creator stats
+            document.getElementById('creatorFollowers').textContent = currentUser.followersCount || 0;
+            document.getElementById('creatorViews').textContent = '250'; // Placeholder
+            document.getElementById('creatorLikes').textContent = '350'; // Placeholder
+            
+            // Update progress bars
+            const followersProgress = Math.min((currentUser.followersCount || 0) / 10, 100);
+            const viewsProgress = Math.min(250 / 5, 100);
+            const likesProgress = Math.min(350 / 5, 100);
+            
+            document.getElementById('followersProgress').style.width = `${followersProgress}%`;
+            document.getElementById('viewsProgress').style.width = `${viewsProgress}%`;
+            document.getElementById('likesProgress').style.width = `${likesProgress}%`;
+            
+            // Update earnings
+            document.getElementById('totalEarnings').textContent = (currentUser.totalEarnings || 0).toFixed(2);
+            
+            // Update verification status
+            const monetizationStatus = document.getElementById('monetizationStatus');
+            if (currentUser.isVerified) {
+                monetizationStatus.innerHTML = `
+                    <div class="success-message">
+                        <h3>Account Verified!</h3>
+                        <p>You can now monetize your content</p>
+                    </div>
+                `;
+            }
+        }
+
         // NEW: Subscribe to a plan
         async function subscribeToPlan(planId) {
             if (!currentUser) {
@@ -1743,8 +4656,26 @@
             sendGift();
         }
 
-        // All other functions remain the same but are enhanced to work with Supabase
-        // ... (truncated for brevity) ...
+        // Format date
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - new Date(date);
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return new Date(date).toLocaleDateString();
+        }
+
+        // Format time
+        function formatTime(date) {
+            return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
 
         // Initialize the app when the DOM is loaded
         document.addEventListener('DOMContentLoaded', initApp);
