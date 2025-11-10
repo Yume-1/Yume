@@ -6,6 +6,7 @@
     <title>YUME - Social Media with Earning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary-color: #6a11cb;
@@ -23,7 +24,6 @@
             --shadow: 0 2px 10px rgba(0,0,0,0.08);
             --transition: all 0.3s ease;
             --gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            --tiktok-gradient: linear-gradient(135deg, #ff0050, #00f2ea);
             --earn-gradient: linear-gradient(135deg, #ffd700, #ff9500);
         }
 
@@ -257,68 +257,6 @@
 
         .action-btn.bookmarked {
             color: var(--accent-color);
-        }
-
-        /* TikTok Feed */
-        .tiktok-feed {
-            position: relative;
-            height: calc(100vh - 120px);
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-        }
-
-        .tiktok-video {
-            height: 100%;
-            width: 100%;
-            scroll-snap-align: start;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-            color: white;
-            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.7));
-        }
-
-        .tiktok-video video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        .video-info {
-            z-index: 1;
-        }
-
-        .video-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        .video-action {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .video-action i {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-
-        .video-sidebar {
-            position: absolute;
-            right: 15px;
-            bottom: 100px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
         /* Earning Features */
@@ -1053,9 +991,9 @@
             background-color: rgba(255,255,255,0.05);
         }
 
-        /* Paystack payment button */
-        .paystack-btn {
-            background: #0ba360;
+        /* Stripe payment button */
+        .stripe-btn {
+            background: #635bff;
             color: white;
             padding: 12px 20px;
             border-radius: 8px;
@@ -1069,287 +1007,32 @@
             margin-top: 10px;
         }
 
-        .paystack-btn:hover {
-            background: #089952;
+        .stripe-btn:hover {
+            background: #5a54d9;
             transform: translateY(-2px);
         }
 
-        .paystack-btn i {
+        .stripe-btn i {
             margin-right: 8px;
         }
 
-        /* NEW: Enhanced features styles */
-        .subscription-plans {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .plan-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .plan-card.featured {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .plan-card.featured::before {
-            content: 'POPULAR';
-            position: absolute;
-            top: 10px;
-            right: -30px;
-            background: var(--primary-color);
-            color: white;
-            padding: 5px 30px;
-            transform: rotate(45deg);
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .plan-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .plan-price {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 15px 0;
-            color: var(--primary-color);
-        }
-
-        .plan-period {
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .plan-features {
-            list-style: none;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .plan-features li {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .plan-features li:last-child {
-            border-bottom: none;
-        }
-
-        .plan-features li i {
-            color: var(--success-color);
-            margin-right: 10px;
-        }
-
-        .gift-section {
-            margin-top: 20px;
-        }
-
-        .gifts-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .gift-item {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .gift-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
-        }
-
-        .gift-item.selected {
-            border-color: var(--primary-color);
-            background: rgba(106, 17, 203, 0.1);
-        }
-
-        .gift-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .gift-price {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .live-indicator {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: var(--error-color);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            z-index: 2;
-        }
-
-        .live-indicator::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        .creator-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 15px 0;
-            padding: 15px;
-            background: var(--card-bg);
-            border-radius: 8px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .stat-label {
+        /* Currency display */
+        .currency-display {
             font-size: 0.8rem;
             color: #888;
+            margin-top: 5px;
         }
 
-        .progress-bar {
-            height: 8px;
-            background: var(--border-color);
-            border-radius: 4px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary-color);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .verification-badge {
+        /* Verification badge */
+        .verified-badge {
             display: inline-flex;
             align-items: center;
             background: var(--primary-color);
             color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
             margin-left: 5px;
-        }
-
-        .upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 8px;
-            padding: 40px 20px;
-            text-align: center;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary-color);
-            background: rgba(106, 17, 203, 0.05);
-        }
-
-        .upload-area i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .stream-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stream-btn {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stream-btn i {
-            margin-right: 8px;
-        }
-
-        .stream-btn.start {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .stream-btn.stop {
-            background-color: var(--error-color);
-            color: white;
-        }
-
-        .gift-sender {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .gift-sender img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-        .gift-notification {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
     </style>
 </head>
@@ -1363,7 +1046,7 @@
             </button>
             <div class="yume-balance" id="yumeBalance">
                 <i class="fas fa-coins"></i>
-                <span id="balanceAmount">100</span> $YUME
+                <span id="balanceAmount">0</span> $YUME
             </div>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -1390,13 +1073,6 @@
             
             <div id="feedContainer">
                 <!-- Feed posts will be loaded here -->
-            </div>
-        </section>
-
-        <!-- TikTok Feed Page -->
-        <section id="tiktokPage" class="page">
-            <div class="tiktok-feed" id="tiktokFeed">
-                <!-- TikTok videos will be loaded here -->
             </div>
         </section>
 
@@ -1455,13 +1131,14 @@
                     <h3>Buy $YUME Tokens</h3>
                 </div>
                 <div style="padding: 15px;">
-                    <p>Purchase $YUME tokens using Paystack</p>
+                    <p>Purchase $YUME tokens using Stripe</p>
                     <div class="form-group">
                         <label for="yumeAmount">Amount of $YUME:</label>
-                        <input type="number" class="form-input" id="yumeAmount" min="10" value="100">
+                        <input type="number" class="form-input" id="yumeAmount" min="100" value="1000">
+                        <div class="currency-display" id="currencyDisplay">≈ $0.50 USD</div>
                     </div>
-                    <button class="paystack-btn" id="buyYumeBtn">
-                        <i class="fas fa-shopping-cart"></i> Buy with Paystack
+                    <button class="stripe-btn" id="buyYumeBtn">
+                        <i class="fas fa-credit-card"></i> Buy with Stripe
                     </button>
                 </div>
             </div>
@@ -1535,7 +1212,7 @@
         <!-- Profile Page -->
         <section id="profilePage" class="page">
             <div class="profile-header">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80" alt="Profile" class="profile-avatar" id="profileAvatar">
+                <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
                 <h2 id="profileName">Guest User</h2>
                 <p id="profileBio">Welcome to YUME! Start sharing your content.</p>
                 <div class="profile-share">
@@ -1586,7 +1263,7 @@
             <h2 class="text-center">Search</h2>
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search users by username...">
             </div>
             <div id="searchResults">
                 <p class="text-center">Start typing to search for users</p>
@@ -1630,6 +1307,9 @@
                         <input type="text" class="form-input" id="registerName" placeholder="Full Name" required>
                     </div>
                     <div class="form-group">
+                        <input type="text" class="form-input" id="registerUsername" placeholder="Username" required>
+                    </div>
+                    <div class="form-group">
                         <input type="email" class="form-input" id="registerEmail" placeholder="Email" required>
                     </div>
                     <div class="form-group">
@@ -1642,216 +1322,6 @@
                         <i class="fas fa-user-plus"></i> Register
                     </button>
                 </form>
-            </div>
-        </section>
-
-        <!-- NEW: Creator Page -->
-        <section id="creatorPage" class="page">
-            <h2 class="text-center">Creator Dashboard</h2>
-            
-            <div class="card">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Monetization Status</h3>
-                </div>
-                <div style="padding: 15px;">
-                    <div class="creator-stats">
-                        <div class="stat-item">
-                            <div class="stat-value" id="creatorFollowers">0</div>
-                            <div class="stat-label">Followers</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="followersProgress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="creatorViews">0</div>
-                            <div class="stat-label">Views/Video</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="viewsProgress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="creatorLikes">0</div>
-                            <div class="stat-label">Total Likes</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="likesProgress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="monetizationStatus" class="text-center mt-2">
-                        <p>You need to meet all requirements to monetize your content:</p>
-                        <ul style="text-align: left; margin: 15px 0;">
-                            <li>✓ 1,000 followers</li>
-                            <li>✓ 500 views per video</li>
-                            <li>✓ 500 total likes</li>
-                            <li>✓ Verified account</li>
-                        </ul>
-                        <button class="btn btn-primary" id="verifyAccountBtn">
-                            <i class="fas fa-check-circle"></i> Get Verified
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card mt-2">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Your Earnings</h3>
-                </div>
-                <div style="padding: 15px;">
-                    <div class="text-center">
-                        <h3 style="color: var(--primary-color);">$<span id="totalEarnings">0.00</span></h3>
-                        <p>Total earnings from gifts and subscriptions</p>
-                    </div>
-                    <div class="earn-actions" style="margin-top: 15px;">
-                        <button class="earn-btn" id="withdrawEarningsBtn">
-                            <i class="fas fa-money-bill-wave"></i> Withdraw
-                        </button>
-                        <button class="earn-btn" id="viewAnalyticsBtn">
-                            <i class="fas fa-chart-line"></i> Analytics
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- NEW: Live Stream Page -->
-        <section id="livePage" class="page">
-            <h2 class="text-center">Go Live</h2>
-            
-            <div class="card">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Start a Live Stream</h3>
-                </div>
-                <div style="padding: 15px;">
-                    <div class="form-group">
-                        <label for="streamTitle">Stream Title</label>
-                        <input type="text" class="form-input" id="streamTitle" placeholder="What are you streaming about?">
-                    </div>
-                    <div class="form-group">
-                        <label for="streamCategory">Category</label>
-                        <select class="form-input" id="streamCategory">
-                            <option value="gaming">Gaming</option>
-                            <option value="music">Music</option>
-                            <option value="talk">Talk Show</option>
-                            <option value="education">Education</option>
-                            <option value="entertainment">Entertainment</option>
-                        </select>
-                    </div>
-                    
-                    <div class="stream-controls">
-                        <button class="stream-btn start" id="startStreamBtn">
-                            <i class="fas fa-broadcast-tower"></i> Go Live
-                        </button>
-                        <button class="stream-btn stop" id="stopStreamBtn" style="display: none;">
-                            <i class="fas fa-stop"></i> End Stream
-                        </button>
-                    </div>
-                    
-                    <div id="streamPreview" style="margin-top: 20px; display: none;">
-                        <div style="position: relative;">
-                            <div class="live-indicator">LIVE</div>
-                            <video id="streamVideo" autoplay muted style="width: 100%; border-radius: 8px;"></video>
-                        </div>
-                        <div class="gift-section">
-                            <h4>Gifts Received</h4>
-                            <div id="giftsReceived">
-                                <!-- Gifts will appear here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card mt-2">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Active Live Streams</h3>
-                </div>
-                <div style="padding: 15px;" id="activeStreams">
-                    <!-- Active streams will be loaded here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- NEW: Subscription Page -->
-        <section id="subscriptionPage" class="page">
-            <h2 class="text-center">Subscription Plans</h2>
-            <p class="text-center">Choose a plan to unlock premium features and monetization</p>
-            
-            <div class="subscription-plans">
-                <div class="plan-card">
-                    <div class="plan-name">Basic</div>
-                    <div class="plan-price">$4.99</div>
-                    <div class="plan-period">per month</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Basic verification</li>
-                        <li><i class="fas fa-check"></i> Access to gifting</li>
-                        <li><i class="fas fa-times"></i> No monetization</li>
-                        <li><i class="fas fa-times"></i> Limited analytics</li>
-                    </ul>
-                    <button class="btn btn-primary btn-block" data-plan="basic">Select Plan</button>
-                </div>
-                
-                <div class="plan-card featured">
-                    <div class="plan-name">Creator</div>
-                    <div class="plan-price">$9.99</div>
-                    <div class="plan-period">per month</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Full verification</li>
-                        <li><i class="fas fa-check"></i> Monetization enabled</li>
-                        <li><i class="fas fa-check"></i> Advanced analytics</li>
-                        <li><i class="fas fa-check"></i> Priority support</li>
-                    </ul>
-                    <button class="btn btn-primary btn-block" data-plan="creator">Select Plan</button>
-                </div>
-                
-                <div class="plan-card">
-                    <div class="plan-name">Pro</div>
-                    <div class="plan-price">$99.99</div>
-                    <div class="plan-period">per year</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> All Creator features</li>
-                        <li><i class="fas fa-check"></i> Custom badges</li>
-                        <li><i class="fas fa-check"></i> Exclusive content tools</li>
-                        <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
-                    </ul>
-                    <button class="btn btn-primary btn-block" data-plan="pro">Select Plan</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- NEW: Gifting Page -->
-        <section id="giftingPage" class="page">
-            <h2 class="text-center">Send Gifts</h2>
-            
-            <div class="card">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Choose a Gift</h3>
-                </div>
-                <div style="padding: 15px;">
-                    <div class="gifts-container" id="giftsContainer">
-                        <!-- Gifts will be loaded here -->
-                    </div>
-                    
-                    <div class="form-group mt-2">
-                        <label for="giftRecipient">Send to:</label>
-                        <select class="form-input" id="giftRecipient">
-                            <option value="">Select a user</option>
-                        </select>
-                    </div>
-                    
-                    <button class="btn btn-primary btn-block" id="sendGiftBtn" disabled>
-                        <i class="fas fa-gift"></i> Send Gift
-                    </button>
-                </div>
-            </div>
-            
-            <div class="card mt-2">
-                <div class="card-header" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-                    <h3>Gifts You've Received</h3>
-                </div>
-                <div style="padding: 15px;" id="receivedGifts">
-                    <p class="text-center">No gifts received yet</p>
-                </div>
             </div>
         </section>
     </main>
@@ -1867,17 +1337,15 @@
             <div class="nav-icon"><i class="fas fa-home"></i></div>
             <span>Home</span>
         </div>
-        <div class="nav-item" data-page="tiktokPage">
-            <div class="nav-icon"><i class="fas fa-play-circle"></i></div>
-            <span>TikTok</span>
-        </div>
-        <div class="nav-item" data-page="livePage">
-            <div class="nav-icon"><i class="fas fa-broadcast-tower"></i></div>
-            <span>Live</span>
-        </div>
         <div class="nav-item" data-page="earnPage">
             <div class="nav-icon"><i class="fas fa-coins"></i></div>
             <span>Earn</span>
+        </div>
+        <div class="nav-item" data-page="messagesPage">
+            <div class="nav-icon"><i class="fas fa-comments"></i>
+                <span class="badge" id="messageBadge" style="display: none;">0</span>
+            </div>
+            <span>Messages</span>
         </div>
         <div class="nav-item" data-page="notificationsPage">
             <div class="nav-icon"><i class="fas fa-bell"></i>
@@ -1901,6 +1369,9 @@
             <form id="editProfileForm">
                 <div class="form-group">
                     <input type="text" class="form-input" id="editDisplayName" placeholder="Display Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="editUsername" placeholder="Username" required>
                 </div>
                 <div class="form-group">
                     <textarea class="form-input form-textarea" id="editBio" placeholder="Bio"></textarea>
@@ -1967,76 +1438,46 @@
         </div>
     </div>
 
-    <!-- NEW: Gift Modal -->
-    <div class="modal-backdrop" id="giftModal" style="display: none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Send a Gift</h3>
-                <button class="close-btn">&times;</button>
-            </div>
-            <div style="padding: 15px;">
-                <div class="gifts-container" id="modalGiftsContainer">
-                    <!-- Gifts will be loaded here -->
-                </div>
-                <div class="form-group mt-2">
-                    <label for="modalGiftMessage">Message (optional):</label>
-                    <input type="text" class="form-input" id="modalGiftMessage" placeholder="Add a message with your gift">
-                </div>
-                <button class="btn btn-primary btn-block" id="confirmSendGiftBtn">
-                    <i class="fas fa-gift"></i> Send Gift for <span id="giftCost">0</span> $YUME
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = 'your-anon-key'; // Replace with your Supabase anon key
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Stripe Configuration
+        const stripe = Stripe('pk_test_your_publishable_key'); // Replace with your Stripe publishable key
+
         // State Management
         let currentUser = null;
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentPage = 'homePage';
         let currentPostId = null;
         let currentChatUser = null;
-        let userBalance = parseInt(localStorage.getItem('yumeBalance')) || 100;
-        let notifications = JSON.parse(localStorage.getItem('yumeNotifications')) || [];
-        let users = JSON.parse(localStorage.getItem('yumeUsers')) || [];
-        let posts = JSON.parse(localStorage.getItem('yumePosts')) || [];
-        let messages = JSON.parse(localStorage.getItem('yumeMessages')) || [];
+        let userBalance = 0;
+        let notifications = [];
+        let users = [];
+        let posts = [];
+        let messages = [];
+        let conversations = [];
+        let followers = [];
+        let following = [];
         
-        // NEW: Enhanced state for new features
-        let activeStream = null;
-        let selectedGift = null;
-        let gifts = [
-            { id: 1, name: 'Rose', icon: 'fas fa-rose', price: 10 },
-            { id: 2, name: 'Coffee', icon: 'fas fa-coffee', price: 25 },
-            { id: 3, name: 'Crown', icon: 'fas fa-crown', price: 100 },
-            { id: 4, name: 'Diamond', icon: 'fas fa-gem', price: 500 },
-            { id: 5, name: 'Rocket', icon: 'fas fa-rocket', price: 1000 },
-            { id: 6, name: 'Fire', icon: 'fas fa-fire', price: 2500 }
-        ];
-        let subscriptions = [
-            { id: 'basic', name: 'Basic', price: 4.99, period: 'month' },
-            { id: 'creator', name: 'Creator', price: 9.99, period: 'month' },
-            { id: 'pro', name: 'Pro', price: 99.99, period: 'year' }
-        ];
+        // YUME to USD conversion rate
+        const YUME_TO_USD = 0.0005;
 
         // Initialize the app
-        function initApp() {
+        async function initApp() {
             // Set the theme
             setTheme(currentTheme);
             
             // Check if user is logged in
-            checkAuthStatus();
+            await checkAuthStatus();
             
             // Set up event listeners
             setupEventListeners();
             
             // Load initial data
-            loadStories();
-            loadFeed();
-            updateUnreadCount();
-            updateBalanceDisplay();
-            loadGifts();
-            loadActiveStreams();
+            await loadInitialData();
         }
 
         // Set theme function
@@ -2048,34 +1489,74 @@
         }
 
         // Check authentication status
-        function checkAuthStatus() {
-            const userData = localStorage.getItem('currentUser');
-            if (userData) {
-                currentUser = JSON.parse(userData);
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                // User is logged in
+                await loadUserProfile(session.user.id);
                 showPage('homePage');
             } else {
-                // Create a guest user
-                currentUser = {
-                    id: 'guest',
-                    name: 'Guest User',
-                    email: 'guest@yume.com',
-                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                    bio: 'Welcome to YUME! Start sharing your content.',
-                    profileViews: 0,
-                    followingCount: 0,
-                    followersCount: 0,
-                    isVerified: false,
-                    subscriptionTier: 'free',
-                    totalEarnings: 0,
-                    createdAt: new Date().toISOString()
-                };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showPage('homePage');
+                // No user session, show auth page
+                showPage('authPage');
+            }
+        }
+
+        // Load user profile
+        async function loadUserProfile(userId) {
+            try {
+                // Get user profile from database
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                
+                if (error) {
+                    console.error('Error loading user profile:', error);
+                    return;
+                }
+                
+                if (data) {
+                    currentUser = data;
+                    userBalance = data.yume_balance || 0;
+                    updateBalanceDisplay();
+                    updateProfileDisplay();
+                }
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+            }
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            if (!currentUser) return;
+            
+            try {
+                // Load user's posts
+                await loadUserPosts();
+                
+                // Load feed
+                await loadFeed();
+                
+                // Load notifications
+                await loadNotifications();
+                
+                // Load conversations
+                await loadConversations();
+                
+                // Load followers and following
+                await loadFollowData();
+                
+                // Update unread counts
+                updateUnreadCounts();
+            } catch (error) {
+                console.error('Error loading initial data:', error);
             }
         }
 
         // Show specific page
-        function showPage(pageId) {
+        async function showPage(pageId) {
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => {
                 page.classList.remove('active');
@@ -2094,21 +1575,14 @@
             
             // Load content for the page if needed
             if (pageId === 'homePage') {
-                loadStories();
-                loadFeed();
+                await loadStories();
+                await loadFeed();
             }
-            if (pageId === 'tiktokPage') loadTikTokFeed();
             if (pageId === 'earnPage') updateBalanceDisplay();
-            if (pageId === 'profilePage') loadProfile();
-            if (pageId === 'notificationsPage') loadNotifications();
-            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'profilePage') await loadProfile();
+            if (pageId === 'notificationsPage') await loadNotifications();
+            if (pageId === 'messagesPage') await loadConversations();
             if (pageId === 'searchPage') initSearch();
-            if (pageId === 'creatorPage') loadCreatorDashboard();
-            if (pageId === 'livePage') loadActiveStreams();
-            if (pageId === 'giftingPage') {
-                loadGifts();
-                loadReceivedGifts();
-            }
         }
 
         // Set up event listeners
@@ -2140,6 +1614,10 @@
             // Floating action button
             const newPostFloatBtn = document.getElementById('newPostFloatBtn');
             newPostFloatBtn.addEventListener('click', () => {
+                if (!currentUser) {
+                    showPage('authPage');
+                    return;
+                }
                 showPage('newPostPage');
             });
             
@@ -2162,17 +1640,18 @@
             });
             
             // Login form
-            document.getElementById('loginForm').addEventListener('submit', (e) => {
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
+                await loginUser(email, password);
             });
             
             // Register form
-            document.getElementById('registerForm').addEventListener('submit', (e) => {
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const name = document.getElementById('registerName').value;
+                const username = document.getElementById('registerUsername').value;
                 const email = document.getElementById('registerEmail').value;
                 const password = document.getElementById('registerPassword').value;
                 const confirmPassword = document.getElementById('registerConfirmPassword').value;
@@ -2182,12 +1661,12 @@
                     return;
                 }
                 
-                registerUser(name, email, password);
+                await registerUser(name, username, email, password);
             });
             
             // Google login
-            document.getElementById('googleLogin').addEventListener('click', () => {
-                loginWithGoogle();
+            document.getElementById('googleLogin').addEventListener('click', async () => {
+                await loginWithGoogle();
             });
             
             // Continue as guest
@@ -2196,17 +1675,24 @@
             });
             
             // New post form
-            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+            document.getElementById('newPostForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const content = document.getElementById('postContent').value;
                 const imageFile = document.getElementById('postImage').files[0];
                 const videoFile = document.getElementById('postVideo').files[0];
-                createPost(content, imageFile, videoFile);
+                await createPost(content, imageFile, videoFile);
             });
             
             // Character count for post content
             document.getElementById('postContent').addEventListener('input', (e) => {
                 document.getElementById('charCount').textContent = e.target.value.length;
+            });
+            
+            // YUME amount input for currency conversion
+            document.getElementById('yumeAmount').addEventListener('input', (e) => {
+                const yumeAmount = parseInt(e.target.value) || 0;
+                const usdAmount = (yumeAmount * YUME_TO_USD).toFixed(2);
+                document.getElementById('currencyDisplay').textContent = `≈ $${usdAmount} USD`;
             });
             
             // Media preview for new post
@@ -2256,17 +1742,17 @@
                     document.getElementById('editProfileModal').style.display = 'none';
                     document.getElementById('commentModal').style.display = 'none';
                     document.getElementById('postOptionsModal').style.display = 'none';
-                    document.getElementById('giftModal').style.display = 'none';
                 });
             });
             
             // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const displayName = document.getElementById('editDisplayName').value;
+                const username = document.getElementById('editUsername').value;
                 const bio = document.getElementById('editBio').value;
                 const avatarFile = document.getElementById('editAvatar').files[0];
-                updateProfile(displayName, bio, avatarFile);
+                await updateProfile(displayName, username, bio, avatarFile);
             });
             
             // Avatar preview for edit profile
@@ -2315,12 +1801,12 @@
                 document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
             });
             
-            document.getElementById('followingStat').addEventListener('click', () => {
-                alert('Following list would be shown here');
+            document.getElementById('followingStat').addEventListener('click', async () => {
+                await showFollowingList();
             });
             
-            document.getElementById('followersStat').addEventListener('click', () => {
-                alert('Followers list would be shown here');
+            document.getElementById('followersStat').addEventListener('click', async () => {
+                await showFollowersList();
             });
             
             document.getElementById('profileViewsStat').addEventListener('click', () => {
@@ -2349,7 +1835,7 @@
             });
             
             document.getElementById('buyYumeBtn').addEventListener('click', () => {
-                buyYumeWithPaystack();
+                buyYumeWithStripe();
             });
             
             // Share profile button
@@ -2361,30 +1847,6 @@
             document.getElementById('messageProfileBtn').addEventListener('click', () => {
                 messageCurrentUser();
             });
-            
-            // NEW: Creator page button
-            document.getElementById('verifyAccountBtn')?.addEventListener('click', () => {
-                showPage('subscriptionPage');
-            });
-            
-            // NEW: Live stream controls
-            document.getElementById('startStreamBtn')?.addEventListener('click', startStream);
-            document.getElementById('stopStreamBtn')?.addEventListener('click', stopStream);
-            
-            // NEW: Subscription plans
-            document.querySelectorAll('[data-plan]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const plan = e.target.getAttribute('data-plan');
-                    subscribeToPlan(plan);
-                });
-            });
-            
-            // NEW: Gifting
-            document.getElementById('sendGiftBtn')?.addEventListener('click', sendGift);
-            document.getElementById('confirmSendGiftBtn')?.addEventListener('click', confirmSendGift);
-            
-            // NEW: Withdraw earnings
-            document.getElementById('withdrawEarningsBtn')?.addEventListener('click', withdrawEarnings);
         }
 
         // Show error message
@@ -2418,275 +1880,170 @@
             }, 3000);
         }
 
-        // Load TikTok-style feed
-        function loadTikTokFeed() {
-            const tiktokFeed = document.getElementById('tiktokFeed');
-            
-            if (!currentUser) {
-                tiktokFeed.innerHTML = `
-                    <div class="card login-prompt">
-                        <i class="fas fa-play-circle"></i>
-                        <h3>Login to view TikTok feed</h3>
-                        <p>Sign in to watch short videos</p>
-                        <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
-                    </div>
-                `;
-                return;
-            }
-            
-            tiktokFeed.innerHTML = '<div class="spinner"></div>';
-            
-            setTimeout(() => {
-                try {
-                    // Create some placeholder videos
-                    const videos = [
-                        {
-                            id: 1,
-                            username: 'user1',
-                            description: 'Check out this amazing trick!',
-                            likes: 1500,
-                            comments: 120,
-                            shares: 45
-                        },
-                        {
-                            id: 2,
-                            username: 'user2',
-                            description: 'Just having fun with friends',
-                            likes: 2300,
-                            comments: 180,
-                            shares: 67
-                        },
-                        {
-                            id: 3,
-                            username: 'user3',
-                            description: 'Learning new dance moves',
-                            likes: 3200,
-                            comments: 250,
-                            shares: 89
-                        }
-                    ];
-                    
-                    tiktokFeed.innerHTML = '';
-                    
-                    videos.forEach(video => {
-                        const videoEl = document.createElement('div');
-                        videoEl.className = 'tiktok-video';
-                        videoEl.innerHTML = `
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #ff0050, #00f2ea); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
-                                <div>Video Placeholder - ${video.username}</div>
-                            </div>
-                            <div class="video-info">
-                                <h3>@${video.username}</h3>
-                                <p>${video.description}</p>
-                                <div class="video-stats">
-                                    <span><i class="fas fa-music"></i> Original Sound</span>
-                                    <span><i class="fas fa-eye"></i> ${Math.floor(video.likes * 10)} views</span>
-                                </div>
-                            </div>
-                            <div class="video-sidebar">
-                                <div class="video-action">
-                                    <i class="fas fa-heart"></i>
-                                    <span>${video.likes}</span>
-                                </div>
-                                <div class="video-action">
-                                    <i class="fas fa-comment"></i>
-                                    <span>${video.comments}</span>
-                                </div>
-                                <div class="video-action">
-                                    <i class="fas fa-share"></i>
-                                    <span>${video.shares}</span>
-                                </div>
-                                <div class="video-action">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </div>
-                            </div>
-                        `;
-                        
-                        tiktokFeed.appendChild(videoEl);
-                    });
-                } catch (error) {
-                    console.error('Error loading TikTok feed:', error);
-                    tiktokFeed.innerHTML = `
-                        <div class="card text-center">
-                            <div style="padding: 40px 20px;">
-                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                <h3>Error loading videos</h3>
-                                <p>Please try again later</p>
-                            </div>
-                        </div>
-                    `;
-                }
-            }, 1000);
-        }
-
         // Update balance display
         function updateBalanceDisplay() {
             const yumeBalance = document.getElementById('balanceAmount');
             yumeBalance.textContent = userBalance;
         }
 
-        // Earn YUME tokens
-        function earnYume(amount, reason) {
-            userBalance += amount;
-            localStorage.setItem('yumeBalance', userBalance.toString());
-            updateBalanceDisplay();
-            
-            // Add notification
-            addNotification({
-                id: Date.now(),
-                type: 'earning',
-                title: 'YUME Tokens Earned',
-                message: `You earned ${amount} $YUME for ${reason}`,
-                read: false,
-                createdAt: new Date().toISOString()
-            });
-            
-            showSuccess(`+${amount} $YUME earned for ${reason}!`);
-        }
-
-        // Buy YUME with Paystack
-        function buyYumeWithPaystack() {
-            const amount = parseInt(document.getElementById('yumeAmount').value);
-            
-            if (amount < 10) {
-                alert('Minimum purchase is 10 $YUME');
-                return;
-            }
-            
-            // For demo purposes, we'll simulate a successful purchase
-            const cost = amount * 0.01; // $0.01 per YUME token
-            
-            if (confirm(`Purchase ${amount} $YUME for $${cost.toFixed(2)}?`)) {
-                userBalance += amount;
-                localStorage.setItem('yumeBalance', userBalance.toString());
-                updateBalanceDisplay();
-                
-                // Add notification
-                addNotification({
-                    id: Date.now(),
-                    type: 'purchase',
-                    title: 'YUME Tokens Purchased',
-                    message: `You purchased ${amount} $YUME tokens`,
-                    read: false,
-                    createdAt: new Date().toISOString()
-                });
-                
-                showSuccess(`Successfully purchased ${amount} $YUME!`);
-            }
-        }
-
-        // Share profile
-        function shareProfile() {
+        // Update profile display
+        function updateProfileDisplay() {
             if (!currentUser) return;
             
-            const profileUrl = `${window.location.origin}/profile/${currentUser.id}`;
+            document.getElementById('profileName').textContent = currentUser.display_name || currentUser.username;
+            document.getElementById('profileBio').textContent = currentUser.bio || 'Welcome to YUME! Start sharing your content.';
+            document.getElementById('profileAvatar').src = currentUser.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80';
             
-            if (navigator.share) {
-                navigator.share({
-                    title: `Check out ${currentUser.name}'s profile on YUME`,
-                    text: `Follow ${currentUser.name} on YUME`,
-                    url: profileUrl
+            document.getElementById('postsCount').textContent = currentUser.post_count || 0;
+            document.getElementById('followingCount').textContent = currentUser.following_count || 0;
+            document.getElementById('followersCount').textContent = currentUser.follower_count || 0;
+            document.getElementById('profileViewsCount').textContent = currentUser.profile_views || 0;
+        }
+
+        // Login user
+        async function loginUser(email, password) {
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
                 });
-            } else {
-                navigator.clipboard.writeText(profileUrl);
-                showSuccess('Profile link copied to clipboard!');
-            }
-        }
-
-        // Message current user
-        function messageCurrentUser() {
-            if (!currentUser) return;
-            
-            // For demo purposes, we'll show a message
-            alert(`This would open a chat with ${currentUser.name}`);
-        }
-
-        // Add notification
-        function addNotification(notification) {
-            notifications.push(notification);
-            localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
-            updateUnreadCount();
-            
-            if (currentPage === 'notificationsPage') {
-                loadNotifications();
-            }
-        }
-
-        // Update unread notification count
-        function updateUnreadCount() {
-            const unreadCount = notifications.filter(n => !n.read).length;
-            const badge = document.getElementById('notificationBadge');
-            
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-
-        // Load notifications
-        function loadNotifications() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const notificationsContainer = document.getElementById('notificationsContainer');
-            notificationsContainer.innerHTML = '<div class="spinner"></div>';
-            
-            setTimeout(() => {
-                try {
-                    // Filter notifications for current user
-                    const userNotifications = notifications.filter(n => 
-                        n.userId === currentUser.id || !n.userId
-                    );
+                
+                if (error) {
+                    showError('loginError', error.message);
+                    return;
+                }
+                
+                if (data.user) {
+                    await loadUserProfile(data.user.id);
+                    showPage('homePage');
+                    await loadInitialData();
                     
-                    // Sort notifications by date
-                    userNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    // Add welcome notification
+                    addNotification({
+                        type: 'welcome',
+                        title: 'Welcome to YUME!',
+                        message: 'Start earning $YUME tokens by engaging with content',
+                        read: false
+                    });
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('loginError', 'An error occurred during login');
+            }
+        }
+
+        // Register user
+        async function registerUser(name, username, email, password) {
+            try {
+                // Check if username is available
+                const { data: existingUser, error: checkError } = await supabase
+                    .from('profiles')
+                    .select('id')
+                    .eq('username', username)
+                    .single();
+                
+                if (existingUser) {
+                    showError('registerError', 'Username already taken');
+                    return;
+                }
+                
+                // Create user in Supabase Auth
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            display_name: name,
+                            username: username
+                        }
+                    }
+                });
+                
+                if (error) {
+                    showError('registerError', error.message);
+                    return;
+                }
+                
+                if (data.user) {
+                    // Create user profile
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: data.user.id,
+                                display_name: name,
+                                username: username,
+                                email: email,
+                                avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                                bio: '',
+                                yume_balance: 100, // Starting balance
+                                follower_count: 0,
+                                following_count: 0,
+                                post_count: 0,
+                                profile_views: 0,
+                                is_verified: false
+                            }
+                        ]);
                     
-                    notificationsContainer.innerHTML = '';
-                    
-                    if (userNotifications.length === 0) {
-                        notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    if (profileError) {
+                        console.error('Profile creation error:', profileError);
+                        showError('registerError', 'Error creating user profile');
                         return;
                     }
                     
-                    for (const notif of userNotifications) {
-                        const notifEl = document.createElement('div');
-                        notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
-                        notifEl.innerHTML = `
-                            <div class="notification-icon">
-                                <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'purchase' ? 'shopping-cart' : 'bell'}"></i>
-                            </div>
-                            <div>
-                                <h4>${notif.title}</h4>
-                                <p>${notif.message}</p>
-                                <div class="timestamp">${formatDate(notif.createdAt)}</div>
-                            </div>
-                        `;
-                        
-                        // Mark as read when clicked
-                        if (!notif.read) {
-                            notifEl.addEventListener('click', () => {
-                                notif.read = true;
-                                localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
-                                updateUnreadCount();
-                                loadNotifications();
-                            });
-                        }
-                        
-                        notificationsContainer.appendChild(notifEl);
-                    }
-                } catch (error) {
-                    console.error('Error loading notifications:', error);
-                    notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
+                    showSuccess('Registration successful! Please check your email to verify your account.');
+                    showPage('loginForm');
                 }
-            }, 500);
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('registerError', 'An error occurred during registration');
+            }
+        }
+
+        // Login with Google
+        async function loginWithGoogle() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) {
+                    console.error('Google login error:', error);
+                    showError('loginError', 'Error with Google login');
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                showError('loginError', 'Error with Google login');
+            }
+        }
+
+        // Continue as guest
+        function continueAsGuest() {
+            // For demo purposes, we'll just show the home page
+            showPage('homePage');
+        }
+
+        // Logout user
+        async function logoutUser() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    console.error('Logout error:', error);
+                }
+                
+                currentUser = null;
+                userBalance = 0;
+                showPage('authPage');
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
         }
 
         // Load feed posts
-        function loadFeed() {
+        async function loadFeed() {
             const feedContainer = document.getElementById('feedContainer');
             
             if (!currentUser) {
@@ -2718,342 +2075,266 @@
                         <div class="skeleton skeleton-image"></div>
                     </div>
                 </div>
-                <div class="card post-card">
-                    <div class="user-info">
-                        <div class="skeleton skeleton-avatar"></div>
-                        <div style="flex: 1;">
-                            <div class="skeleton skeleton-text short"></div>
-                            <div class="skeleton skeleton-text" style="width: 40%;"></div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
-                    </div>
-                </div>
             `;
             
-            setTimeout(() => {
-                try {
-                    // Get posts from followed users
-                    const followedUserIds = [currentUser.id]; // Include current user's posts
-                    
-                    // In a real app, you would filter by followed users
-                    const userPosts = posts.filter(post => followedUserIds.includes(post.userId));
-                    
-                    // Sort posts by date
-                    userPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    
-                    feedContainer.innerHTML = '';
-                    
-                    if (userPosts.length === 0) {
-                        feedContainer.innerHTML = `
-                            <div class="card text-center">
-                                <div style="padding: 40px 20px;">
-                                    <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                    <h3>Your feed is empty</h3>
-                                    <p>Follow some users to see their posts here</p>
-                                    <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
-                                </div>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    for (const post of userPosts) {
-                        const user = users.find(u => u.id === post.userId) || {
-                            name: 'Unknown User',
-                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        };
-                        
-                        const isLiked = post.likedBy && post.likedBy.includes(currentUser.id);
-                        const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
-                        
-                        const postEl = document.createElement('div');
-                        postEl.className = 'card post-card';
-                        postEl.innerHTML = `
-                            <div class="user-info">
-                                <img src="${user.avatar}" alt="${user.name}" class="avatar">
-                                <div style="flex: 1;">
-                                    <div class="username">${user.name}</div>
-                                    <div class="timestamp">${formatDate(post.createdAt)}</div>
-                                </div>
-                                <div class="post-options">
-                                    <button class="options-btn">
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="post-content">
-                                <p>${post.text}</p>
-                                ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
-                                ${post.video ? `<video controls class="post-video"><source src="${post.video}" type="video/mp4"></video>` : ''}
-                                ${post.isRepost ? `<p style="color: #888; font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-retweet"></i> Reposted</p>` : ''}
-                            </div>
-                            <div class="post-actions">
-                                <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
-                                    <i class="fas fa-heart"></i> <span>${post.likeCount || 0}</span>
-                                </button>
-                                <button class="action-btn" data-post-id="${post.id}">
-                                    <i class="fas fa-comment"></i> <span>${post.commentCount || 0}</span>
-                                </button>
-                                <button class="action-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}">
-                                    <i class="fas fa-bookmark"></i>
-                                </button>
-                                <button class="action-btn" data-post-id="${post.id}">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                            </div>
-                        `;
-                        
-                        // Add like functionality
-                        const likeBtn = postEl.querySelector('.action-btn:first-child');
-                        likeBtn.addEventListener('click', () => {
-                            toggleLike(post.id);
-                        });
-                        
-                        // Add comment functionality
-                        const commentBtn = postEl.querySelectorAll('.action-btn')[1];
-                        commentBtn.addEventListener('click', () => {
-                            showComments(post.id);
-                        });
-                        
-                        // Add bookmark functionality
-                        const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
-                        bookmarkBtn.addEventListener('click', () => {
-                            toggleBookmark(post.id);
-                        });
-                        
-                        // Add share functionality
-                        const shareBtn = postEl.querySelectorAll('.action-btn')[3];
-                        shareBtn.addEventListener('click', () => {
-                            sharePost(post.id);
-                        });
-                        
-                        // Add options functionality
-                        const optionsBtn = postEl.querySelector('.options-btn');
-                        optionsBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            showPostOptions(post);
-                        });
-                        
-                        feedContainer.appendChild(postEl);
-                    }
-                } catch (error) {
-                    console.error('Error loading feed:', error);
+            try {
+                // Get posts from followed users and current user
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            display_name,
+                            username,
+                            avatar_url,
+                            is_verified
+                        ),
+                        likes!left (
+                            id
+                        ),
+                        comments!left (
+                            id
+                        )
+                    `)
+                    .in('user_id', [...following.map(f => f.following_id), currentUser.id])
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                feedContainer.innerHTML = '';
+                
+                if (!data || data.length === 0) {
                     feedContainer.innerHTML = `
                         <div class="card text-center">
                             <div style="padding: 40px 20px;">
-                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                <h3>Error loading feed</h3>
-                                <p>Please try again later</p>
+                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Your feed is empty</h3>
+                                <p>Follow some users to see their posts here</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
                             </div>
                         </div>
                     `;
+                    return;
                 }
-            }, 1000); // Simulate loading delay
-        }
-
-        // Load stories
-        function loadStories() {
-            const storiesContainer = document.getElementById('storiesContainer');
-            
-            if (!currentUser) {
-                return;
+                
+                for (const post of data) {
+                    const isLiked = post.likes && post.likes.some(like => like.user_id === currentUser.id);
+                    const likeCount = post.likes ? post.likes.length : 0;
+                    const commentCount = post.comments ? post.comments.length : 0;
+                    
+                    const postEl = document.createElement('div');
+                    postEl.className = 'card post-card';
+                    postEl.innerHTML = `
+                        <div class="user-info">
+                            <img src="${post.profiles.avatar_url}" alt="${post.profiles.display_name}" class="avatar">
+                            <div style="flex: 1;">
+                                <div class="username">
+                                    ${post.profiles.display_name}
+                                    ${post.profiles.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
+                                </div>
+                                <div class="timestamp">${formatDate(post.created_at)}</div>
+                            </div>
+                            <div class="post-options">
+                                <button class="options-btn">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>${post.content}</p>
+                            ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image">` : ''}
+                            ${post.video_url ? `<video controls class="post-video"><source src="${post.video_url}" type="video/mp4"></video>` : ''}
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                                <i class="fas fa-heart"></i> <span>${likeCount}</span>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-comment"></i> <span>${commentCount}</span>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add like functionality
+                    const likeBtn = postEl.querySelector('.action-btn:first-child');
+                    likeBtn.addEventListener('click', () => {
+                        toggleLike(post.id);
+                    });
+                    
+                    // Add comment functionality
+                    const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+                    commentBtn.addEventListener('click', () => {
+                        showComments(post.id);
+                    });
+                    
+                    // Add bookmark functionality
+                    const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
+                    bookmarkBtn.addEventListener('click', () => {
+                        toggleBookmark(post.id);
+                    });
+                    
+                    // Add share functionality
+                    const shareBtn = postEl.querySelectorAll('.action-btn')[3];
+                    shareBtn.addEventListener('click', () => {
+                        sharePost(post.id);
+                    });
+                    
+                    // Add options functionality
+                    const optionsBtn = postEl.querySelector('.options-btn');
+                    optionsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showPostOptions(post);
+                    });
+                    
+                    feedContainer.appendChild(postEl);
+                }
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                feedContainer.innerHTML = `
+                    <div class="card text-center">
+                        <div style="padding: 40px 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                            <h3>Error loading feed</h3>
+                            <p>Please try again later</p>
+                        </div>
+                    </div>
+                `;
             }
-            
-            storiesContainer.innerHTML = '<div class="spinner"></div>';
-            
-            setTimeout(() => {
-                try {
-                    // Create some placeholder stories
-                    const demoStories = [
-                        {
-                            id: 1,
-                            userId: 'user1',
-                            username: 'user1',
-                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        },
-                        {
-                            id: 2,
-                            userId: 'user2',
-                            username: 'user2',
-                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        },
-                        {
-                            id: 3,
-                            userId: 'user3',
-                            username: 'user3',
-                            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        }
-                    ];
-                    
-                    storiesContainer.innerHTML = '';
-                    
-                    // Add current user's story first with create option
-                    const addStoryEl = document.createElement('div');
-                    addStoryEl.className = 'story';
-                    addStoryEl.innerHTML = `
-                        <div style="position: relative;">
-                            <img src="${currentUser.avatar}" alt="Your story" class="story-avatar">
-                            <div style="position: absolute; bottom: 0; right: 0; background: var(--primary-color); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
-                            </div>
-                        </div>
-                        <div class="story-username">Your story</div>
-                    `;
-                    
-                    addStoryEl.addEventListener('click', () => {
-                        alert('Create story functionality would go here');
-                    });
-                    
-                    storiesContainer.appendChild(addStoryEl);
-                    
-                    // Add other users' stories
-                    demoStories.forEach(story => {
-                        const storyEl = document.createElement('div');
-                        storyEl.className = 'story';
-                        storyEl.innerHTML = `
-                            <img src="${story.avatar}" alt="${story.username}" class="story-avatar">
-                            <div class="story-username">${story.username}</div>
-                        `;
-                        
-                        storyEl.addEventListener('click', () => {
-                            alert(`View ${story.username}'s story`);
-                        });
-                        
-                        storiesContainer.appendChild(storyEl);
-                    });
-                } catch (error) {
-                    console.error('Error loading stories:', error);
-                    storiesContainer.innerHTML = '';
-                }
-            }, 500); // Simulate loading delay
         }
 
         // Load user profile
-        function loadProfile() {
+        async function loadProfile() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
-            // Update profile info
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileBio').textContent = currentUser.bio || '';
-            document.getElementById('profileAvatar').src = currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80';
-            
             try {
                 // Get user's posts
-                const userPosts = posts.filter(post => post.userId === currentUser.id);
-                const postCount = userPosts.length;
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        likes!left (
+                            id
+                        ),
+                        comments!left (
+                            id
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
                 
-                // Update stats
-                document.getElementById('postsCount').textContent = postCount;
-                document.getElementById('followingCount').textContent = currentUser.followingCount || 0;
-                document.getElementById('followersCount').textContent = currentUser.followersCount || 0;
-                document.getElementById('profileViewsCount').textContent = currentUser.profileViews || 0;
+                if (error) {
+                    throw error;
+                }
+                
+                // Update profile info
+                updateProfileDisplay();
                 
                 // Load user's posts
                 const postsContainer = document.getElementById('userPostsContainer');
-                postsContainer.innerHTML = '<div class="spinner"></div>';
+                postsContainer.innerHTML = '';
                 
-                // Sort posts by date
-                userPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                if (!data || data.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No posts yet</h3>
+                                <p>Share your first post with the world</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
                 
-                setTimeout(() => {
-                    postsContainer.innerHTML = '';
+                for (const post of data) {
+                    const isLiked = post.likes && post.likes.some(like => like.user_id === currentUser.id);
+                    const likeCount = post.likes ? post.likes.length : 0;
+                    const commentCount = post.comments ? post.comments.length : 0;
                     
-                    if (userPosts.length === 0) {
-                        postsContainer.innerHTML = `
-                            <div class="card text-center">
-                                <div style="padding: 40px 20px;">
-                                    <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                    <h3>No posts yet</h3>
-                                    <p>Share your first post with the world</p>
-                                    <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                    const postEl = document.createElement('div');
+                    postEl.className = 'card post-card';
+                    postEl.innerHTML = `
+                        <div class="user-info">
+                            <img src="${currentUser.avatar_url}" alt="${currentUser.display_name}" class="avatar">
+                            <div>
+                                <div class="username">
+                                    ${currentUser.display_name}
+                                    ${currentUser.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
                                 </div>
+                                <div class="timestamp">${formatDate(post.created_at)}</div>
                             </div>
-                        `;
-                        return;
-                    }
+                            <div class="post-options">
+                                <button class="options-btn">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>${post.content}</p>
+                            ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image">` : ''}
+                            ${post.video_url ? `<video controls class="post-video"><source src="${post.video_url}" type="video/mp4"></video>` : ''}
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                                <i class="fas fa-heart"></i> <span>${likeCount}</span>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-comment"></i> <span>${commentCount}</span>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                            <button class="action-btn" data-post-id="${post.id}">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    `;
                     
-                    for (const post of userPosts) {
-                        const isLiked = post.likedBy && post.likedBy.includes(currentUser.id);
-                        const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
-                        
-                        const postEl = document.createElement('div');
-                        postEl.className = 'card post-card';
-                        postEl.innerHTML = `
-                            <div class="user-info">
-                                <img src="${currentUser.avatar}" alt="${currentUser.name}" class="avatar">
-                                <div>
-                                    <div class="username">${currentUser.name}</div>
-                                    <div class="timestamp">${formatDate(post.createdAt)}</div>
-                                </div>
-                                <div class="post-options">
-                                    <button class="options-btn">
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="post-content">
-                                <p>${post.text}</p>
-                                ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
-                                ${post.video ? `<video controls class="post-video"><source src="${post.video}" type="video/mp4"></video>` : ''}
-                                ${post.isRepost ? `<p style="color: #888; font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-retweet"></i> Reposted</p>` : ''}
-                            </div>
-                            <div class="post-actions">
-                                <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
-                                    <i class="fas fa-heart"></i> <span>${post.likeCount || 0}</span>
-                                </button>
-                                <button class="action-btn" data-post-id="${post.id}">
-                                    <i class="fas fa-comment"></i> <span>${post.commentCount || 0}</span>
-                                </button>
-                                <button class="action-btn ${isBookmarked ? 'bookmarked' : ''}" data-post-id="${post.id}">
-                                    <i class="fas fa-bookmark"></i>
-                                </button>
-                                <button class="action-btn" data-post-id="${post.id}">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                            </div>
-                        `;
-                        
-                        // Add like functionality
-                        const likeBtn = postEl.querySelector('.action-btn:first-child');
-                        likeBtn.addEventListener('click', () => {
-                            toggleLike(post.id);
-                        });
-                        
-                        // Add comment functionality
-                        const commentBtn = postEl.querySelectorAll('.action-btn')[1];
-                        commentBtn.addEventListener('click', () => {
-                            showComments(post.id);
-                        });
-                        
-                        // Add bookmark functionality
-                        const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
-                        bookmarkBtn.addEventListener('click', () => {
-                            toggleBookmark(post.id);
-                        });
-                        
-                        // Add share functionality
-                        const shareBtn = postEl.querySelectorAll('.action-btn')[3];
-                        shareBtn.addEventListener('click', () => {
-                            sharePost(post.id);
-                        });
-                        
-                        // Add options functionality
-                        const optionsBtn = postEl.querySelector('.options-btn');
-                        optionsBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            showPostOptions(post);
-                        });
-                        
-                        postsContainer.appendChild(postEl);
-                    }
-                }, 500); // Simulate loading delay
+                    // Add like functionality
+                    const likeBtn = postEl.querySelector('.action-btn:first-child');
+                    likeBtn.addEventListener('click', () => {
+                        toggleLike(post.id);
+                    });
+                    
+                    // Add comment functionality
+                    const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+                    commentBtn.addEventListener('click', () => {
+                        showComments(post.id);
+                    });
+                    
+                    // Add bookmark functionality
+                    const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
+                    bookmarkBtn.addEventListener('click', () => {
+                        toggleBookmark(post.id);
+                    });
+                    
+                    // Add share functionality
+                    const shareBtn = postEl.querySelectorAll('.action-btn')[3];
+                    shareBtn.addEventListener('click', () => {
+                        sharePost(post.id);
+                    });
+                    
+                    // Add options functionality
+                    const optionsBtn = postEl.querySelector('.options-btn');
+                    optionsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showPostOptions(post);
+                    });
+                    
+                    postsContainer.appendChild(postEl);
+                }
             } catch (error) {
                 console.error('Error loading profile:', error);
                 document.getElementById('userPostsContainer').innerHTML = `
@@ -3068,119 +2349,8 @@
             }
         }
 
-        // Login user
-        function loginUser(email, password) {
-            // For demo purposes, we'll use a simple check
-            const user = users.find(u => u.email === email && u.password === password);
-            
-            if (user) {
-                currentUser = { ...user };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showPage('homePage');
-                loadStories();
-                loadFeed();
-                updateUnreadCount();
-                updateBalanceDisplay();
-                
-                // Add welcome notification
-                addNotification({
-                    id: Date.now(),
-                    type: 'welcome',
-                    title: 'Welcome to YUME!',
-                    message: 'Start earning $YUME tokens by engaging with content',
-                    read: false,
-                    createdAt: new Date().toISOString()
-                });
-            } else {
-                showError('loginError', 'Invalid email or password');
-            }
-        }
-
-        // Register user
-        function registerUser(name, email, password) {
-            // Check if user already exists
-            const existingUser = users.find(u => u.email === email);
-            
-            if (existingUser) {
-                showError('registerError', 'User with this email already exists');
-                return;
-            }
-            
-            // Create new user
-            const newUser = {
-                id: 'user' + (users.length + 1),
-                name,
-                email,
-                password,
-                bio: '',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                profileViews: 0,
-                followingCount: 0,
-                followersCount: 0,
-                isVerified: false,
-                subscriptionTier: 'free',
-                totalEarnings: 0,
-                createdAt: new Date().toISOString()
-            };
-            
-            users.push(newUser);
-            localStorage.setItem('yumeUsers', JSON.stringify(users));
-            
-            currentUser = { ...newUser };
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showPage('homePage');
-            loadStories();
-            loadFeed();
-            updateBalanceDisplay();
-            
-            // Add welcome notification
-            addNotification({
-                id: Date.now(),
-                type: 'welcome',
-                title: 'Welcome to YUME!',
-                message: 'Start earning $YUME tokens by engaging with content',
-                read: false,
-                createdAt: new Date().toISOString()
-            });
-        }
-
-        // Login with Google
-        function loginWithGoogle() {
-            alert('Google login would be implemented here');
-        }
-
-        // Continue as guest
-        function continueAsGuest() {
-            currentUser = {
-                id: 'guest',
-                name: 'Guest User',
-                email: 'guest@yume.com',
-                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                bio: 'Welcome to YUME! Start sharing your content.',
-                profileViews: 0,
-                followingCount: 0,
-                followersCount: 0,
-                isVerified: false,
-                subscriptionTier: 'free',
-                totalEarnings: 0,
-                createdAt: new Date().toISOString()
-            };
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showPage('homePage');
-            loadStories();
-            loadFeed();
-            updateBalanceDisplay();
-        }
-
-        // Logout user
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showPage('authPage');
-        }
-
         // Create a new post
-        function createPost(content, imageFile, videoFile) {
+        async function createPost(content, imageFile, videoFile) {
             if (!currentUser) {
                 alert('Please login to create a post');
                 showPage('authPage');
@@ -3188,37 +2358,68 @@
             }
             
             try {
-                // Create post
-                const newPost = {
-                    id: 'post' + (posts.length + 1),
-                    userId: currentUser.id,
-                    text: content,
-                    image: imageFile ? URL.createObjectURL(imageFile) : null,
-                    video: videoFile ? URL.createObjectURL(videoFile) : null,
-                    likeCount: 0,
-                    commentCount: 0,
-                    shareCount: 0,
-                    repostCount: 0,
-                    likedBy: [],
-                    bookmarkedBy: [],
-                    createdAt: new Date().toISOString()
-                };
+                let imageUrl = null;
+                let videoUrl = null;
                 
-                posts.push(newPost);
-                localStorage.setItem('yumePosts', JSON.stringify(posts));
+                // Upload image if provided
+                if (imageFile) {
+                    const { data: imageData, error: imageError } = await supabase.storage
+                        .from('post-images')
+                        .upload(`${currentUser.id}/${Date.now()}-${imageFile.name}`, imageFile);
+                    
+                    if (imageError) throw imageError;
+                    
+                    imageUrl = supabase.storage
+                        .from('post-images')
+                        .getPublicUrl(imageData.path).data.publicUrl;
+                }
+                
+                // Upload video if provided
+                if (videoFile) {
+                    const { data: videoData, error: videoError } = await supabase.storage
+                        .from('post-videos')
+                        .upload(`${currentUser.id}/${Date.now()}-${videoFile.name}`, videoFile);
+                    
+                    if (videoError) throw videoError;
+                    
+                    videoUrl = supabase.storage
+                        .from('post-videos')
+                        .getPublicUrl(videoData.path).data.publicUrl;
+                }
+                
+                // Create post in database
+                const { data, error } = await supabase
+                    .from('posts')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            content: content,
+                            image_url: imageUrl,
+                            video_url: videoUrl
+                        }
+                    ])
+                    .select();
+                
+                if (error) throw error;
+                
+                // Update user's post count
+                await supabase
+                    .from('profiles')
+                    .update({ post_count: (currentUser.post_count || 0) + 1 })
+                    .eq('id', currentUser.id);
                 
                 // Reset form and go back to feed
                 document.getElementById('newPostForm').reset();
                 document.getElementById('charCount').textContent = '0';
                 document.getElementById('mediaPreview').style.display = 'none';
                 showPage('homePage');
-                loadFeed();
+                await loadFeed();
                 
                 // Show success message
                 showSuccess('Post created successfully!');
                 
                 // Earn YUME for creating content
-                earnYume(2, 'Creating a post');
+                await earnYume(2, 'Creating a post');
             } catch (error) {
                 console.error('Error creating post:', error);
                 alert('Error creating post. Please try again.');
@@ -3226,279 +2427,80 @@
         }
 
         // Toggle like on a post
-        function toggleLike(postId) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const postIndex = posts.findIndex(p => p.id === postId);
-            
-            if (postIndex !== -1) {
-                const post = posts[postIndex];
-                
-                if (!post.likedBy) {
-                    post.likedBy = [];
-                }
-                
-                const isLiked = post.likedBy.includes(currentUser.id);
-                
-                if (isLiked) {
-                    post.likedBy = post.likedBy.filter(id => id !== currentUser.id);
-                    post.likeCount--;
-                } else {
-                    post.likedBy.push(currentUser.id);
-                    post.likeCount++;
-                    
-                    // Earn YUME for liking content
-                    earnYume(1, 'Liking a post');
-                }
-                
-                posts[postIndex] = post;
-                localStorage.setItem('yumePosts', JSON.stringify(posts));
-                
-                // Update UI
-                if (currentPage === 'homePage') {
-                    loadFeed();
-                } else if (currentPage === 'profilePage') {
-                    loadProfile();
-                }
-            }
-        }
-
-        // Toggle bookmark on a post
-        function toggleBookmark(postId) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const postIndex = posts.findIndex(p => p.id === postId);
-            
-            if (postIndex !== -1) {
-                const post = posts[postIndex];
-                
-                if (!post.bookmarkedBy) {
-                    post.bookmarkedBy = [];
-                }
-                
-                const isBookmarked = post.bookmarkedBy.includes(currentUser.id);
-                
-                if (isBookmarked) {
-                    post.bookmarkedBy = post.bookmarkedBy.filter(id => id !== currentUser.id);
-                } else {
-                    post.bookmarkedBy.push(currentUser.id);
-                }
-                
-                posts[postIndex] = post;
-                localStorage.setItem('yumePosts', JSON.stringify(posts));
-                
-                // Update UI
-                if (currentPage === 'homePage') {
-                    loadFeed();
-                } else if (currentPage === 'profilePage') {
-                    loadProfile();
-                }
-                
-                showSuccess(isBookmarked ? 'Post removed from bookmarks' : 'Post added to bookmarks');
-            }
-        }
-
-        // Share a post
-        function sharePost(postId) {
+        async function toggleLike(postId) {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
             try {
-                if (navigator.share) {
-                    // Use Web Share API if available
-                    navigator.share({
-                        title: 'Check out this post on YUME',
-                        text: 'I found this interesting post on YUME social app',
-                        url: window.location.href + '?post=' + postId
-                    });
+                // Check if user already liked the post
+                const { data: existingLike, error: checkError } = await supabase
+                    .from('likes')
+                    .select('id')
+                    .eq('post_id', postId)
+                    .eq('user_id', currentUser.id)
+                    .single();
+                
+                if (checkError && checkError.code !== 'PGRST116') {
+                    throw checkError;
+                }
+                
+                if (existingLike) {
+                    // Unlike the post
+                    const { error: deleteError } = await supabase
+                        .from('likes')
+                        .delete()
+                        .eq('id', existingLike.id);
+                    
+                    if (deleteError) throw deleteError;
                 } else {
-                    // Fallback to copying to clipboard
-                    const shareUrl = window.location.href + '?post=' + postId;
-                    navigator.clipboard.writeText(shareUrl);
-                    showSuccess('Post link copied to clipboard');
-                }
-                
-                // Track share
-                const postIndex = posts.findIndex(p => p.id === postId);
-                
-                if (postIndex !== -1) {
-                    const post = posts[postIndex];
-                    post.shareCount = (post.shareCount || 0) + 1;
-                    posts[postIndex] = post;
-                    localStorage.setItem('yumePosts', JSON.stringify(posts));
-                }
-                
-                // Earn YUME for sharing content
-                earnYume(3, 'Sharing a post');
-            } catch (error) {
-                console.error('Error sharing post:', error);
-            }
-        }
-
-        // Show post options
-        function showPostOptions(post) {
-            const modal = document.getElementById('postOptionsModal');
-            const optionsList = modal.querySelector('.options-list');
-            
-            // Clear previous options
-            optionsList.innerHTML = '';
-            
-            // Add save option
-            const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(currentUser.id);
-            optionsList.innerHTML += `
-                <div class="option-item" data-action="save">
-                    <i class="fas fa-bookmark"></i> ${isBookmarked ? 'Unsave Post' : 'Save Post'}
-                </div>
-            `;
-            
-            // Add share option
-            optionsList.innerHTML += `
-                <div class="option-item" data-action="share">
-                    <i class="fas fa-share"></i> Share Post
-                </div>
-            `;
-            
-            // Add repost option
-            optionsList.innerHTML += `
-                <div class="option-item" data-action="repost">
-                    <i class="fas fa-retweet"></i> Repost
-                </div>
-            `;
-            
-            // Add report option (if not current user's post)
-            if (post.userId !== currentUser.id) {
-                optionsList.innerHTML += `
-                    <div class="option-item" data-action="report">
-                        <i class="fas fa-flag"></i> Report Post
-                    </div>
-                `;
-            }
-            
-            // Add delete option (if current user's post)
-            if (post.userId === currentUser.id) {
-                optionsList.innerHTML += `
-                    <div class="option-item" data-action="delete" style="color: var(--error-color);">
-                        <i class="fas fa-trash"></i> Delete Post
-                    </div>
-                `;
-            }
-            
-            // Add event listeners
-            modal.querySelectorAll('.option-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const action = item.getAttribute('data-action');
-                    handlePostOption(action, post);
-                    modal.style.display = 'none';
-                });
-            });
-            
-            modal.style.display = 'flex';
-        }
-
-        // Handle post option selection
-        function handlePostOption(action, post) {
-            switch (action) {
-                case 'save':
-                    toggleBookmark(post.id);
-                    break;
-                case 'share':
-                    sharePost(post.id);
-                    break;
-                case 'repost':
-                    repostPost(post.id);
-                    break;
-                case 'report':
-                    alert('Report post functionality would go here');
-                    break;
-                case 'delete':
-                    if (confirm('Are you sure you want to delete this post?')) {
-                        deletePost(post.id);
+                    // Like the post
+                    const { error: insertError } = await supabase
+                        .from('likes')
+                        .insert([
+                            {
+                                post_id: postId,
+                                user_id: currentUser.id
+                            }
+                        ]);
+                    
+                    if (insertError) throw insertError;
+                    
+                    // Earn YUME for liking content
+                    await earnYume(1, 'Liking a post');
+                    
+                    // Create notification for post owner
+                    const { data: post } = await supabase
+                        .from('posts')
+                        .select('user_id')
+                        .eq('id', postId)
+                        .single();
+                    
+                    if (post && post.user_id !== currentUser.id) {
+                        await addNotification({
+                            user_id: post.user_id,
+                            type: 'like',
+                            title: 'New Like',
+                            message: `${currentUser.display_name} liked your post`,
+                            read: false
+                        });
                     }
-                    break;
-            }
-        }
-
-        // Repost functionality
-        function repostPost(postId) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const originalPost = posts.find(p => p.id === postId);
-            
-            if (originalPost) {
-                // Create repost
-                const repost = {
-                    id: 'post' + (posts.length + 1),
-                    userId: currentUser.id,
-                    text: originalPost.text,
-                    image: originalPost.image,
-                    video: originalPost.video,
-                    isRepost: true,
-                    originalPostId: postId,
-                    likeCount: 0,
-                    commentCount: 0,
-                    shareCount: 0,
-                    repostCount: 0,
-                    likedBy: [],
-                    bookmarkedBy: [],
-                    createdAt: new Date().toISOString()
-                };
-                
-                posts.push(repost);
-                
-                // Update original post repost count
-                const originalPostIndex = posts.findIndex(p => p.id === postId);
-                if (originalPostIndex !== -1) {
-                    posts[originalPostIndex].repostCount = (posts[originalPostIndex].repostCount || 0) + 1;
                 }
-                
-                localStorage.setItem('yumePosts', JSON.stringify(posts));
-                
-                showSuccess('Post reposted successfully!');
                 
                 // Update UI
                 if (currentPage === 'homePage') {
-                    loadFeed();
+                    await loadFeed();
                 } else if (currentPage === 'profilePage') {
-                    loadProfile();
+                    await loadProfile();
                 }
-                
-                // Earn YUME for reposting content
-                earnYume(2, 'Reposting a post');
-            }
-        }
-
-        // Delete a post
-        function deletePost(postId) {
-            const postIndex = posts.findIndex(p => p.id === postId);
-            
-            if (postIndex !== -1) {
-                posts.splice(postIndex, 1);
-                localStorage.setItem('yumePosts', JSON.stringify(posts));
-                
-                showSuccess('Post deleted successfully');
-                
-                // Update UI
-                if (currentPage === 'homePage') {
-                    loadFeed();
-                } else if (currentPage === 'profilePage') {
-                    loadProfile();
-                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
             }
         }
 
         // Show comments for a post
-        function showComments(postId) {
+        async function showComments(postId) {
             if (!currentUser) {
                 alert('Please login to view comments');
                 showPage('authPage');
@@ -3507,59 +2509,57 @@
             
             currentPostId = postId;
             document.getElementById('commentModal').style.display = 'flex';
-            loadComments();
+            await loadComments();
         }
 
         // Load comments for a post
-        function loadComments() {
+        async function loadComments() {
             const commentsContainer = document.getElementById('commentsContainer');
             commentsContainer.innerHTML = '<div class="spinner"></div>';
             
-            // For demo purposes, we'll create some placeholder comments
-            setTimeout(() => {
-                const comments = [
-                    {
-                        id: 1,
-                        userId: 'user2',
-                        username: 'user2',
-                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                        text: 'This is amazing!',
-                        createdAt: new Date(Date.now() - 3600000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        userId: 'user3',
-                        username: 'user3',
-                        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                        text: 'Great content!',
-                        createdAt: new Date(Date.now() - 7200000).toISOString()
-                    }
-                ];
+            try {
+                const { data, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            display_name,
+                            username,
+                            avatar_url
+                        )
+                    `)
+                    .eq('post_id', currentPostId)
+                    .order('created_at', { ascending: true });
+                
+                if (error) throw error;
                 
                 commentsContainer.innerHTML = '';
                 
-                if (comments.length === 0) {
+                if (!data || data.length === 0) {
                     commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
                 } else {
-                    for (const comment of comments) {
+                    for (const comment of data) {
                         const commentEl = document.createElement('div');
                         commentEl.className = 'comment';
                         commentEl.innerHTML = `
-                            <img src="${comment.avatar}" alt="${comment.username}" class="comment-avatar">
+                            <img src="${comment.profiles.avatar_url}" alt="${comment.profiles.display_name}" class="comment-avatar">
                             <div class="comment-content">
-                                <div class="username">${comment.username}</div>
-                                <p>${comment.text}</p>
-                                <div class="timestamp">${formatDate(comment.createdAt)}</div>
+                                <div class="username">${comment.profiles.display_name}</div>
+                                <p>${comment.content}</p>
+                                <div class="timestamp">${formatDate(comment.created_at)}</div>
                             </div>
                         `;
                         commentsContainer.appendChild(commentEl);
                     }
                 }
-            }, 500); // Simulate loading delay
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
+            }
         }
 
         // Post a comment
-        function postComment() {
+        async function postComment() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
@@ -3570,65 +2570,51 @@
             
             if (!content) return;
             
-            // For demo purposes, we'll just show a success message
-            showSuccess('Comment posted!');
-            
-            // Clear input
-            commentInput.value = '';
-            
-            // Earn YUME for commenting
-            earnYume(1, 'Commenting on a post');
-        }
-
-        // Show edit profile modal
-        function showEditProfileModal() {
-            document.getElementById('editDisplayName').value = currentUser.name;
-            document.getElementById('editBio').value = currentUser.bio || '';
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        // Update user profile
-        function updateProfile(displayName, bio, avatarFile) {
             try {
-                // Update current user
-                currentUser.name = displayName;
-                currentUser.bio = bio;
+                const { error } = await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: currentPostId,
+                            user_id: currentUser.id,
+                            content: content
+                        }
+                    ]);
                 
-                if (avatarFile) {
-                    currentUser.avatar = URL.createObjectURL(avatarFile);
+                if (error) throw error;
+                
+                // Clear input
+                commentInput.value = '';
+                
+                // Reload comments
+                await loadComments();
+                
+                // Earn YUME for commenting
+                await earnYume(1, 'Commenting on a post');
+                
+                // Create notification for post owner
+                const { data: post } = await supabase
+                    .from('posts')
+                    .select('user_id')
+                    .eq('id', currentPostId)
+                    .single();
+                
+                if (post && post.user_id !== currentUser.id) {
+                    await addNotification({
+                        user_id: post.user_id,
+                        type: 'comment',
+                        title: 'New Comment',
+                        message: `${currentUser.display_name} commented on your post`,
+                        read: false
+                    });
                 }
-                
-                // Update in users array
-                const userIndex = users.findIndex(u => u.id === currentUser.id);
-                if (userIndex !== -1) {
-                    users[userIndex] = currentUser;
-                    localStorage.setItem('yumeUsers', JSON.stringify(users));
-                }
-                
-                // Save to localStorage
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Update UI
-                document.getElementById('profileName').textContent = displayName;
-                document.getElementById('profileBio').textContent = bio;
-                
-                if (avatarFile) {
-                    document.getElementById('profileAvatar').src = URL.createObjectURL(avatarFile);
-                }
-                
-                // Close modal
-                document.getElementById('editProfileModal').style.display = 'none';
-                
-                // Show success message
-                showSuccess('Profile updated successfully!');
             } catch (error) {
-                console.error('Error updating profile:', error);
-                alert('Error updating profile. Please try again.');
+                console.error('Error posting comment:', error);
             }
         }
 
         // Load conversations
-        function loadConversations() {
+        async function loadConversations() {
             if (!currentUser) {
                 showPage('authPage');
                 return;
@@ -3637,30 +2623,31 @@
             const conversationsContainer = document.getElementById('conversationsContainer');
             conversationsContainer.innerHTML = '<div class="spinner"></div>';
             
-            // For demo purposes, we'll create some placeholder conversations
-            setTimeout(() => {
-                const demoConversations = [
-                    {
-                        id: 1,
-                        userId: 'user2',
-                        username: 'user2',
-                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                        lastMessage: 'Hey, how are you?',
-                        lastMessageTime: new Date(Date.now() - 3600000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        userId: 'user3',
-                        username: 'user3',
-                        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                        lastMessage: 'Check out my new post!',
-                        lastMessageTime: new Date(Date.now() - 7200000).toISOString()
-                    }
-                ];
+            try {
+                // Get conversations where user is either sender or receiver
+                const { data, error } = await supabase
+                    .from('conversations')
+                    .select(`
+                        *,
+                        user1:user1_id (
+                            display_name,
+                            username,
+                            avatar_url
+                        ),
+                        user2:user2_id (
+                            display_name,
+                            username,
+                            avatar_url
+                        )
+                    `)
+                    .or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`)
+                    .order('updated_at', { ascending: false });
+                
+                if (error) throw error;
                 
                 conversationsContainer.innerHTML = '';
                 
-                if (demoConversations.length === 0) {
+                if (!data || data.length === 0) {
                     conversationsContainer.innerHTML = `
                         <div class="card text-center">
                             <div style="padding: 40px 20px;">
@@ -3674,20 +2661,36 @@
                     return;
                 }
                 
-                for (const conversation of demoConversations) {
+                for (const conversation of data) {
+                    const otherUser = conversation.user1_id === currentUser.id ? 
+                        conversation.user2 : conversation.user1;
+                    
+                    // Get last message
+                    const { data: lastMessage, error: messageError } = await supabase
+                        .from('messages')
+                        .select('*')
+                        .eq('conversation_id', conversation.id)
+                        .order('created_at', { ascending: false })
+                        .limit(1)
+                        .single();
+                    
+                    if (messageError && messageError.code !== 'PGRST116') {
+                        console.error('Error getting last message:', messageError);
+                    }
+                    
                     const conversationEl = document.createElement('div');
                     conversationEl.className = 'card';
                     conversationEl.style.padding = '15px';
                     conversationEl.style.marginBottom = '10px';
                     conversationEl.innerHTML = `
                         <div style="display: flex; align-items: center;">
-                            <img src="${conversation.avatar}" alt="${conversation.username}" class="avatar">
+                            <img src="${otherUser.avatar_url}" alt="${otherUser.display_name}" class="avatar">
                             <div style="flex: 1; margin-left: 10px; cursor: pointer;">
                                 <div style="display: flex; justify-content: space-between;">
-                                    <div class="username">${conversation.username}</div>
-                                    <div class="timestamp">${formatDate(conversation.lastMessageTime)}</div>
+                                    <div class="username">${otherUser.display_name}</div>
+                                    <div class="timestamp">${lastMessage ? formatDate(lastMessage.created_at) : ''}</div>
                                 </div>
-                                <p>${conversation.lastMessage}</p>
+                                <p>${lastMessage ? lastMessage.content : 'No messages yet'}</p>
                             </div>
                         </div>
                     `;
@@ -3695,13 +2698,14 @@
                     // Add click event to open chat
                     conversationEl.addEventListener('click', () => {
                         currentChatUser = {
-                            id: conversation.userId,
-                            name: conversation.username,
-                            avatar: conversation.avatar
+                            id: otherUser.id,
+                            name: otherUser.display_name,
+                            avatar: otherUser.avatar_url,
+                            conversation_id: conversation.id
                         };
                         
-                        document.getElementById('chatUserName').textContent = conversation.username;
-                        document.getElementById('chatUserAvatar').src = conversation.avatar;
+                        document.getElementById('chatUserName').textContent = otherUser.display_name;
+                        document.getElementById('chatUserAvatar').src = otherUser.avatar_url;
                         
                         showPage('chatPage');
                         loadChat(currentChatUser);
@@ -3709,60 +2713,51 @@
                     
                     conversationsContainer.appendChild(conversationEl);
                 }
-            }, 500); // Simulate loading delay
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
+            }
         }
 
         // Load chat with a user
-        function loadChat(user) {
+        async function loadChat(user) {
             const messageThread = document.getElementById('messageThread');
             messageThread.innerHTML = '<div class="spinner"></div>';
             
-            // For demo purposes, we'll create some placeholder messages
-            setTimeout(() => {
-                const demoMessages = [
-                    {
-                        id: 1,
-                        senderId: user.id,
-                        text: 'Hey, how are you?',
-                        createdAt: new Date(Date.now() - 3600000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        senderId: currentUser.id,
-                        text: 'I\'m good, thanks! How about you?',
-                        createdAt: new Date(Date.now() - 3500000).toISOString()
-                    },
-                    {
-                        id: 3,
-                        senderId: user.id,
-                        text: 'Doing great! Just posted a new video',
-                        createdAt: new Date(Date.now() - 3400000).toISOString()
-                    }
-                ];
+            try {
+                const { data, error } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .eq('conversation_id', user.conversation_id)
+                    .order('created_at', { ascending: true });
                 
-                // Sort messages by date
-                demoMessages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                if (error) throw error;
                 
                 messageThread.innerHTML = '';
                 
-                demoMessages.forEach(msg => {
-                    const messageEl = document.createElement('div');
-                    messageEl.className = `message ${msg.senderId === currentUser.id ? 'sent' : 'received'}`;
-                    messageEl.innerHTML = `
-                        <div>${msg.text}</div>
-                        <div class="message-time">${formatTime(msg.createdAt)}</div>
-                    `;
-                    messageThread.appendChild(messageEl);
-                });
-                
-                // Scroll to bottom
-                messageThread.scrollTop = messageThread.scrollHeight;
-            }, 500); // Simulate loading delay
+                if (data && data.length > 0) {
+                    data.forEach(msg => {
+                        const messageEl = document.createElement('div');
+                        messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
+                        messageEl.innerHTML = `
+                            <div>${msg.content}</div>
+                            <div class="message-time">${formatTime(msg.created_at)}</div>
+                        `;
+                        messageThread.appendChild(messageEl);
+                    });
+                    
+                    // Scroll to bottom
+                    messageThread.scrollTop = messageThread.scrollHeight;
+                }
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
+            }
         }
 
         // Send a message
-        function sendMessage() {
-            if (!currentUser) {
+        async function sendMessage() {
+            if (!currentUser || !currentChatUser) {
                 showPage('authPage');
                 return;
             }
@@ -3770,27 +2765,49 @@
             const messageInput = document.getElementById('messageInput');
             const content = messageInput.value.trim();
             
-            if (!content || !currentChatUser) return;
+            if (!content) return;
             
-            // For demo purposes, we'll just add it to the UI
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message sent';
-            messageEl.innerHTML = `
-                <div>${content}</div>
-                <div class="message-time">${formatTime(new Date())}</div>
-            `;
-            
-            document.getElementById('messageThread').appendChild(messageEl);
-            
-            // Clear input
-            messageInput.value = '';
-            
-            // Scroll to bottom
-            const messageThread = document.getElementById('messageThread');
-            messageThread.scrollTop = messageThread.scrollHeight;
-            
-            // Earn YUME for messaging
-            earnYume(1, 'Sending a message');
+            try {
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([
+                        {
+                            conversation_id: currentChatUser.conversation_id,
+                            sender_id: currentUser.id,
+                            content: content
+                        }
+                    ]);
+                
+                if (error) throw error;
+                
+                // Update conversation timestamp
+                await supabase
+                    .from('conversations')
+                    .update({ updated_at: new Date().toISOString() })
+                    .eq('id', currentChatUser.conversation_id);
+                
+                // Add message to UI
+                const messageEl = document.createElement('div');
+                messageEl.className = 'message sent';
+                messageEl.innerHTML = `
+                    <div>${content}</div>
+                    <div class="message-time">${formatTime(new Date())}</div>
+                `;
+                
+                document.getElementById('messageThread').appendChild(messageEl);
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Scroll to bottom
+                const messageThread = document.getElementById('messageThread');
+                messageThread.scrollTop = messageThread.scrollHeight;
+                
+                // Earn YUME for messaging
+                await earnYume(1, 'Sending a message');
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
         }
 
         // Initialize search
@@ -3800,7 +2817,7 @@
         }
 
         // Handle search input
-        function handleSearch() {
+        async function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const searchResults = document.getElementById('searchResults');
             
@@ -3810,39 +2827,45 @@
             }
             
             try {
-                const filteredUsers = users.filter(user => 
-                    user.name.toLowerCase().includes(query) && user.id !== currentUser.id
-                );
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
+                    .neq('id', currentUser.id)
+                    .limit(20);
+                
+                if (error) throw error;
                 
                 searchResults.innerHTML = '';
                 
-                if (filteredUsers.length === 0) {
+                if (!data || data.length === 0) {
                     searchResults.innerHTML = '<p class="text-center">No users found</p>';
                     return;
                 }
                 
-                for (const user of filteredUsers) {
+                for (const user of data) {
+                    // Check if current user is following this user
+                    const isFollowing = following.some(f => f.following_id === user.id);
+                    
                     const userEl = document.createElement('div');
                     userEl.className = 'card user-item';
                     userEl.innerHTML = `
-                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
                         <div style="flex: 1;">
-                            <div class="username">${user.name}</div>
+                            <div class="username">
+                                ${user.display_name}
+                                ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
+                            </div>
+                            <div>@${user.username}</div>
                             <div>${user.bio || ''}</div>
                         </div>
-                        <button class="btn btn-primary" data-user-id="${user.id}">Follow</button>
+                        <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                            ${isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
                     `;
                     
                     // Add follow functionality
                     const followBtn = userEl.querySelector('button');
-                    const isFollowing = user.followers && user.followers.includes(currentUser.id);
-                    
-                    if (isFollowing) {
-                        followBtn.textContent = 'Unfollow';
-                        followBtn.classList.remove('btn-primary');
-                        followBtn.classList.add('btn-secondary');
-                    }
-                    
                     followBtn.addEventListener('click', () => {
                         toggleFollow(user.id);
                     });
@@ -3879,548 +2902,580 @@
         }
 
         // Toggle follow
-        function toggleFollow(userId) {
+        async function toggleFollow(userId) {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
-            const userIndex = users.findIndex(u => u.id === userId);
-            
-            if (userIndex !== -1) {
-                const user = users[userIndex];
-                
-                if (!user.followers) {
-                    user.followers = [];
-                }
-                
-                const isFollowing = user.followers.includes(currentUser.id);
+            try {
+                // Check if already following
+                const isFollowing = following.some(f => f.following_id === userId);
                 
                 if (isFollowing) {
                     // Unfollow
-                    user.followers = user.followers.filter(id => id !== currentUser.id);
-                    user.followersCount--;
+                    const { error } = await supabase
+                        .from('follows')
+                        .delete()
+                        .eq('follower_id', currentUser.id)
+                        .eq('following_id', userId);
                     
-                    // Update current user's following count
-                    currentUser.followingCount--;
+                    if (error) throw error;
+                    
+                    // Update follower count for the user
+                    await supabase
+                        .from('profiles')
+                        .update({ follower_count: (currentUser.follower_count || 0) - 1 })
+                        .eq('id', userId);
+                    
+                    // Update following count for current user
+                    await supabase
+                        .from('profiles')
+                        .update({ following_count: (currentUser.following_count || 0) - 1 })
+                        .eq('id', currentUser.id);
                 } else {
                     // Follow
-                    user.followers.push(currentUser.id);
-                    user.followersCount++;
+                    const { error } = await supabase
+                        .from('follows')
+                        .insert([
+                            {
+                                follower_id: currentUser.id,
+                                following_id: userId
+                            }
+                        ]);
                     
-                    // Update current user's following count
-                    currentUser.followingCount++;
+                    if (error) throw error;
                     
-                    // Add notification
-                    addNotification({
-                        id: Date.now(),
-                        userId: userId,
+                    // Update follower count for the user
+                    await supabase
+                        .from('profiles')
+                        .update({ follower_count: (currentUser.follower_count || 0) + 1 })
+                        .eq('id', userId);
+                    
+                    // Update following count for current user
+                    await supabase
+                        .from('profiles')
+                        .update({ following_count: (currentUser.following_count || 0) + 1 })
+                        .eq('id', currentUser.id);
+                    
+                    // Create notification
+                    await addNotification({
+                        user_id: userId,
                         type: 'follow',
                         title: 'New Follower',
-                        message: `${currentUser.name} started following you`,
-                        read: false,
-                        createdAt: new Date().toISOString()
+                        message: `${currentUser.display_name} started following you`,
+                        read: false
                     });
                     
                     // Earn YUME for following
-                    earnYume(5, 'Following a user');
+                    await earnYume(5, 'Following a user');
                 }
                 
-                users[userIndex] = user;
-                localStorage.setItem('yumeUsers', JSON.stringify(users));
-                
-                // Update current user in localStorage
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                // Reload follow data
+                await loadFollowData();
                 
                 // Update UI
                 handleSearch();
                 
                 // Update profile stats if on profile page
                 if (currentPage === 'profilePage') {
-                    loadProfile();
+                    await loadProfile();
                 }
                 
                 showSuccess(isFollowing ? 'Unfollowed user' : 'Followed user');
-            }
-        }
-
-        // NEW: Load gifts for the gifting page
-        function loadGifts() {
-            const giftsContainer = document.getElementById('giftsContainer');
-            const modalGiftsContainer = document.getElementById('modalGiftsContainer');
-            
-            if (!giftsContainer && !modalGiftsContainer) return;
-            
-            let html = '';
-            
-            gifts.forEach(gift => {
-                html += `
-                    <div class="gift-item" data-gift-id="${gift.id}">
-                        <div class="gift-icon">
-                            <i class="${gift.icon}"></i>
-                        </div>
-                        <div class="gift-name">${gift.name}</div>
-                        <div class="gift-price">${gift.price} $YUME</div>
-                    </div>
-                `;
-            });
-            
-            if (giftsContainer) giftsContainer.innerHTML = html;
-            if (modalGiftsContainer) modalGiftsContainer.innerHTML = html;
-            
-            // Add event listeners to gift items
-            document.querySelectorAll('.gift-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    // Remove selected class from all gifts
-                    document.querySelectorAll('.gift-item').forEach(g => {
-                        g.classList.remove('selected');
-                    });
-                    
-                    // Add selected class to clicked gift
-                    item.classList.add('selected');
-                    
-                    // Set selected gift
-                    const giftId = parseInt(item.getAttribute('data-gift-id'));
-                    selectedGift = gifts.find(g => g.id === giftId);
-                    
-                    // Enable send button if recipient is selected
-                    const sendBtn = document.getElementById('sendGiftBtn');
-                    const recipient = document.getElementById('giftRecipient');
-                    if (sendBtn && recipient && recipient.value) {
-                        sendBtn.disabled = false;
-                    }
-                    
-                    // Update modal gift cost
-                    const giftCost = document.getElementById('giftCost');
-                    if (giftCost && selectedGift) {
-                        giftCost.textContent = selectedGift.price;
-                    }
-                });
-            });
-            
-            // Load users for recipient dropdown
-            loadGiftRecipients();
-        }
-
-        // NEW: Load users for gift recipient dropdown
-        function loadGiftRecipients() {
-            const recipientSelect = document.getElementById('giftRecipient');
-            if (!recipientSelect) return;
-            
-            try {
-                // For demo, we'll use the local users array
-                recipientSelect.innerHTML = '<option value="">Select a user</option>';
-                
-                users.forEach(user => {
-                    if (user.id !== currentUser.id) {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = user.name;
-                        recipientSelect.appendChild(option);
-                    }
-                });
-                
-                // Add event listener to enable send button when recipient is selected
-                recipientSelect.addEventListener('change', () => {
-                    const sendBtn = document.getElementById('sendGiftBtn');
-                    if (sendBtn && selectedGift && recipientSelect.value) {
-                        sendBtn.disabled = false;
-                    } else if (sendBtn) {
-                        sendBtn.disabled = true;
-                    }
-                });
             } catch (error) {
-                console.error('Error loading gift recipients:', error);
+                console.error('Error toggling follow:', error);
             }
         }
 
-        // NEW: Send gift function
-        function sendGift() {
-            if (!currentUser || !selectedGift) {
-                alert('Please select a gift and recipient');
-                return;
-            }
-            
-            const recipientSelect = document.getElementById('giftRecipient');
-            const recipientId = recipientSelect.value;
-            
-            if (!recipientId) {
-                alert('Please select a recipient');
-                return;
-            }
-            
-            // Check if user has enough balance
-            if (userBalance < selectedGift.price) {
-                alert('Insufficient $YUME balance');
-                return;
-            }
+        // Load follow data
+        async function loadFollowData() {
+            if (!currentUser) return;
             
             try {
-                // Deduct from sender's balance
-                userBalance -= selectedGift.price;
-                localStorage.setItem('yumeBalance', userBalance.toString());
+                // Get followers
+                const { data: followersData, error: followersError } = await supabase
+                    .from('follows')
+                    .select('follower_id')
+                    .eq('following_id', currentUser.id);
+                
+                if (followersError) throw followersError;
+                
+                followers = followersData || [];
+                
+                // Get following
+                const { data: followingData, error: followingError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+                
+                if (followingError) throw followingError;
+                
+                following = followingData || [];
+            } catch (error) {
+                console.error('Error loading follow data:', error);
+            }
+        }
+
+        // Show following list
+        async function showFollowingList() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .in('id', following.map(f => f.following_id));
+                
+                if (error) throw error;
+                
+                let userListHtml = '';
+                data.forEach(user => {
+                    userListHtml += `
+                        <div class="card user-item">
+                            <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
+                            <div style="flex: 1;">
+                                <div class="username">
+                                    ${user.display_name}
+                                    ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
+                                </div>
+                                <div>@${user.username}</div>
+                            </div>
+                            <button class="btn btn-secondary" data-user-id="${user.id}">Unfollow</button>
+                        </div>
+                    `;
+                });
+                
+                // Show modal with following list
+                alert('Following list modal would show here with: ' + userListHtml);
+            } catch (error) {
+                console.error('Error loading following list:', error);
+            }
+        }
+
+        // Show followers list
+        async function showFollowersList() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .in('id', followers.map(f => f.follower_id));
+                
+                if (error) throw error;
+                
+                let userListHtml = '';
+                data.forEach(user => {
+                    const isFollowing = following.some(f => f.following_id === user.id);
+                    
+                    userListHtml += `
+                        <div class="card user-item">
+                            <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
+                            <div style="flex: 1;">
+                                <div class="username">
+                                    ${user.display_name}
+                                    ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
+                                </div>
+                                <div>@${user.username}</div>
+                            </div>
+                            <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                                ${isFollowing ? 'Unfollow' : 'Follow'}
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                // Show modal with followers list
+                alert('Followers list modal would show here with: ' + userListHtml);
+            } catch (error) {
+                console.error('Error loading followers list:', error);
+            }
+        }
+
+        // Load notifications
+        async function loadNotifications() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            notificationsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                notificationsContainer.innerHTML = '';
+                
+                if (!data || data.length === 0) {
+                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    return;
+                }
+                
+                for (const notif of data) {
+                    const notifEl = document.createElement('div');
+                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                    notifEl.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'follow' ? 'user-plus' : 'bell'}"></i>
+                        </div>
+                        <div>
+                            <h4>${notif.title}</h4>
+                            <p>${notif.message}</p>
+                            <div class="timestamp">${formatDate(notif.created_at)}</div>
+                        </div>
+                    `;
+                    
+                    // Mark as read when clicked
+                    if (!notif.read) {
+                        notifEl.addEventListener('click', async () => {
+                            const { error } = await supabase
+                                .from('notifications')
+                                .update({ read: true })
+                                .eq('id', notif.id);
+                            
+                            if (!error) {
+                                notif.read = true;
+                                updateUnreadCounts();
+                                await loadNotifications();
+                            }
+                        });
+                    }
+                    
+                    notificationsContainer.appendChild(notifEl);
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
+            }
+        }
+
+        // Add notification
+        async function addNotification(notification) {
+            try {
+                const { error } = await supabase
+                    .from('notifications')
+                    .insert([notification]);
+                
+                if (error) throw error;
+                
+                updateUnreadCounts();
+            } catch (error) {
+                console.error('Error adding notification:', error);
+            }
+        }
+
+        // Update unread counts
+        async function updateUnreadCounts() {
+            if (!currentUser) return;
+            
+            try {
+                // Get unread notifications count
+                const { count: notificationCount, error: notificationError } = await supabase
+                    .from('notifications')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
+                
+                if (notificationError) throw notificationError;
+                
+                // Get unread messages count
+                const { count: messageCount, error: messageError } = await supabase
+                    .from('messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('conversation_id', currentUser.id) // This would need to be adjusted based on your schema
+                    .eq('read', false);
+                
+                if (messageError) throw messageError;
+                
+                // Update notification badge
+                const notificationBadge = document.getElementById('notificationBadge');
+                if (notificationCount > 0) {
+                    notificationBadge.textContent = notificationCount;
+                    notificationBadge.style.display = 'flex';
+                } else {
+                    notificationBadge.style.display = 'none';
+                }
+                
+                // Update message badge
+                const messageBadge = document.getElementById('messageBadge');
+                if (messageCount > 0) {
+                    messageBadge.textContent = messageCount;
+                    messageBadge.style.display = 'flex';
+                } else {
+                    messageBadge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating unread counts:', error);
+            }
+        }
+
+        // Earn YUME tokens
+        async function earnYume(amount, reason) {
+            try {
+                // Update user balance
+                const newBalance = userBalance + amount;
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ yume_balance: newBalance })
+                    .eq('id', currentUser.id);
+                
+                if (error) throw error;
+                
+                userBalance = newBalance;
                 updateBalanceDisplay();
                 
-                // Add to recipient's earnings if they're a creator
-                const recipient = users.find(u => u.id === recipientId);
-                if (recipient && recipient.subscriptionTier !== 'free') {
-                    // For demo, we'll just show a success message
+                // Add notification
+                await addNotification({
+                    user_id: currentUser.id,
+                    type: 'earning',
+                    title: 'YUME Tokens Earned',
+                    message: `You earned ${amount} $YUME for ${reason}`,
+                    read: false
+                });
+                
+                showSuccess(`+${amount} $YUME earned for ${reason}!`);
+            } catch (error) {
+                console.error('Error earning YUME:', error);
+            }
+        }
+
+        // Buy YUME with Stripe
+        async function buyYumeWithStripe() {
+            const yumeAmount = parseInt(document.getElementById('yumeAmount').value);
+            
+            if (yumeAmount < 100) {
+                alert('Minimum purchase is 100 $YUME');
+                return;
+            }
+            
+            const usdAmount = yumeAmount * YUME_TO_USD;
+            
+            try {
+                // Create a payment intent on your server
+                // This would typically call your backend API
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: usdAmount * 100, // Convert to cents
+                        currency: 'usd',
+                        yume_amount: yumeAmount,
+                        user_id: currentUser.id
+                    })
+                });
+                
+                const { clientSecret } = await response.json();
+                
+                // Confirm the payment with Stripe
+                const { error } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: elements.getElement('card'),
+                        billing_details: {
+                            name: currentUser.display_name,
+                        },
+                    }
+                });
+                
+                if (error) {
+                    console.error('Payment error:', error);
+                    alert('Payment failed: ' + error.message);
+                } else {
+                    // Payment successful
+                    await earnYume(yumeAmount, 'Purchasing tokens');
+                    showSuccess(`Successfully purchased ${yumeAmount} $YUME!`);
                 }
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                alert('Error processing payment. Please try again.');
+            }
+        }
+
+        // Load user posts
+        async function loadUserPosts() {
+            if (!currentUser) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .eq('user_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                posts = data || [];
+            } catch (error) {
+                console.error('Error loading user posts:', error);
+            }
+        }
+
+        // Load stories
+        async function loadStories() {
+            const storiesContainer = document.getElementById('storiesContainer');
+            
+            if (!currentUser) {
+                return;
+            }
+            
+            storiesContainer.innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                // Get users that current user follows (for their stories)
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .in('id', following.map(f => f.following_id))
+                    .limit(10);
+                
+                if (error) throw error;
+                
+                storiesContainer.innerHTML = '';
+                
+                // Add current user's story first with create option
+                const addStoryEl = document.createElement('div');
+                addStoryEl.className = 'story';
+                addStoryEl.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${currentUser.avatar_url}" alt="Your story" class="story-avatar">
+                        <div style="position: absolute; bottom: 0; right: 0; background: var(--primary-color); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
+                        </div>
+                    </div>
+                    <div class="story-username">Your story</div>
+                `;
+                
+                addStoryEl.addEventListener('click', () => {
+                    alert('Create story functionality would go here');
+                });
+                
+                storiesContainer.appendChild(addStoryEl);
+                
+                // Add other users' stories
+                if (data && data.length > 0) {
+                    data.forEach(user => {
+                        const storyEl = document.createElement('div');
+                        storyEl.className = 'story';
+                        storyEl.innerHTML = `
+                            <img src="${user.avatar_url}" alt="${user.display_name}" class="story-avatar">
+                            <div class="story-username">${user.display_name}</div>
+                        `;
+                        
+                        storyEl.addEventListener('click', () => {
+                            alert(`View ${user.display_name}'s story`);
+                        });
+                        
+                        storiesContainer.appendChild(storyEl);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading stories:', error);
+                storiesContainer.innerHTML = '';
+            }
+        }
+
+        // Show edit profile modal
+        function showEditProfileModal() {
+            document.getElementById('editDisplayName').value = currentUser.display_name || '';
+            document.getElementById('editUsername').value = currentUser.username || '';
+            document.getElementById('editBio').value = currentUser.bio || '';
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        // Update user profile
+        async function updateProfile(displayName, username, bio, avatarFile) {
+            try {
+                let avatarUrl = currentUser.avatar_url;
+                
+                // Upload new avatar if provided
+                if (avatarFile) {
+                    const { data: avatarData, error: avatarError } = await supabase.storage
+                        .from('avatars')
+                        .upload(`${currentUser.id}/${Date.now()}-${avatarFile.name}`, avatarFile);
+                    
+                    if (avatarError) throw avatarError;
+                    
+                    avatarUrl = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(avatarData.path).data.publicUrl;
+                }
+                
+                // Check if username is available (if changed)
+                if (username !== currentUser.username) {
+                    const { data: existingUser, error: checkError } = await supabase
+                        .from('profiles')
+                        .select('id')
+                        .eq('username', username)
+                        .neq('id', currentUser.id)
+                        .single();
+                    
+                    if (existingUser) {
+                        alert('Username already taken');
+                        return;
+                    }
+                }
+                
+                // Update profile in database
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        display_name: displayName,
+                        username: username,
+                        bio: bio,
+                        avatar_url: avatarUrl
+                    })
+                    .eq('id', currentUser.id);
+                
+                if (error) throw error;
+                
+                // Update current user object
+                currentUser.display_name = displayName;
+                currentUser.username = username;
+                currentUser.bio = bio;
+                currentUser.avatar_url = avatarUrl;
+                
+                // Update UI
+                updateProfileDisplay();
+                
+                // Close modal
+                document.getElementById('editProfileModal').style.display = 'none';
                 
                 // Show success message
-                showSuccess(`Sent ${selectedGift.name} to ${recipient.name}!`);
-                
-                // Reset selection
-                selectedGift = null;
-                document.querySelectorAll('.gift-item').forEach(g => {
-                    g.classList.remove('selected');
+                showSuccess('Profile updated successfully!');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile. Please try again.');
+            }
+        }
+
+        // Share profile
+        function shareProfile() {
+            if (!currentUser) return;
+            
+            const profileUrl = `${window.location.origin}/profile/${currentUser.username}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `Check out ${currentUser.display_name}'s profile on YUME`,
+                    text: `Follow ${currentUser.display_name} on YUME`,
+                    url: profileUrl
                 });
-                document.getElementById('sendGiftBtn').disabled = true;
-                recipientSelect.value = '';
-                
-                // Reload received gifts if on gifting page
-                if (currentPage === 'giftingPage') {
-                    loadReceivedGifts();
-                }
-            } catch (error) {
-                console.error('Error sending gift:', error);
-                alert('Error sending gift. Please try again.');
+            } else {
+                navigator.clipboard.writeText(profileUrl);
+                showSuccess('Profile link copied to clipboard!');
             }
         }
 
-        // NEW: Load received gifts
-        function loadReceivedGifts() {
-            const receivedGiftsContainer = document.getElementById('receivedGifts');
-            if (!receivedGiftsContainer) return;
+        // Message current user
+        function messageCurrentUser() {
+            if (!currentUser) return;
             
-            try {
-                // For demo, we'll create some placeholder gifts
-                const demoGifts = [
-                    {
-                        id: 1,
-                        sender_name: 'User1',
-                        gift_type: 1,
-                        created_at: new Date(Date.now() - 3600000).toISOString()
-                    },
-                    {
-                        id: 2,
-                        sender_name: 'User2',
-                        gift_type: 3,
-                        created_at: new Date(Date.now() - 7200000).toISOString()
-                    }
-                ];
-                
-                if (demoGifts.length === 0) {
-                    receivedGiftsContainer.innerHTML = '<p class="text-center">No gifts received yet</p>';
-                    return;
-                }
-                
-                let html = '';
-                
-                demoGifts.forEach(gift => {
-                    const giftInfo = gifts.find(g => g.id === gift.gift_type);
-                    html += `
-                        <div class="gift-notification">
-                            <i class="${giftInfo.icon}" style="color: var(--primary-color);"></i>
-                            <div>
-                                <strong>${gift.sender_name}</strong> sent you a ${giftInfo.name}
-                                <div class="timestamp">${formatDate(gift.created_at)}</div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                receivedGiftsContainer.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading received gifts:', error);
-                receivedGiftsContainer.innerHTML = '<p class="text-center">Error loading gifts</p>';
-            }
-        }
-
-        // NEW: Start live stream
-        function startStream() {
-            if (!currentUser) {
-                alert('Please login to start a live stream');
-                showPage('authPage');
-                return;
-            }
-            
-            const streamTitle = document.getElementById('streamTitle').value;
-            const streamCategory = document.getElementById('streamCategory').value;
-            
-            if (!streamTitle) {
-                alert('Please enter a stream title');
-                return;
-            }
-            
-            try {
-                // For demo purposes, we'll simulate a live stream
-                activeStream = {
-                    id: 'stream' + Date.now(),
-                    user_id: currentUser.id,
-                    title: streamTitle,
-                    category: streamCategory,
-                    is_live: true,
-                    viewer_count: 0,
-                    started_at: new Date().toISOString()
-                };
-                
-                // Update UI
-                document.getElementById('startStreamBtn').style.display = 'none';
-                document.getElementById('stopStreamBtn').style.display = 'inline-flex';
-                document.getElementById('streamPreview').style.display = 'block';
-                
-                // Simulate video stream
-                const streamVideo = document.getElementById('streamVideo');
-                // This would be replaced with actual video stream in a real implementation
-                
-                showSuccess('Live stream started!');
-            } catch (error) {
-                console.error('Error starting stream:', error);
-                alert('Error starting stream. Please try again.');
-            }
-        }
-
-        // NEW: Stop live stream
-        function stopStream() {
-            if (!activeStream) return;
-            
-            try {
-                // Update UI
-                document.getElementById('startStreamBtn').style.display = 'inline-flex';
-                document.getElementById('stopStreamBtn').style.display = 'none';
-                document.getElementById('streamPreview').style.display = 'none';
-                
-                activeStream = null;
-                
-                showSuccess('Live stream ended');
-            } catch (error) {
-                console.error('Error stopping stream:', error);
-                alert('Error stopping stream. Please try again.');
-            }
-        }
-
-        // NEW: Load active streams
-        function loadActiveStreams() {
-            const activeStreamsContainer = document.getElementById('activeStreams');
-            if (!activeStreamsContainer) return;
-            
-            try {
-                // For demo, we'll create some placeholder streams
-                const demoStreams = [
-                    {
-                        id: 1,
-                        user_id: 'user1',
-                        title: 'Gaming Session Live!',
-                        category: 'gaming',
-                        viewer_count: 1250,
-                        started_at: new Date(Date.now() - 1800000).toISOString(),
-                        users: {
-                            name: 'GamerPro',
-                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        }
-                    },
-                    {
-                        id: 2,
-                        user_id: 'user2',
-                        title: 'Music Performance',
-                        category: 'music',
-                        viewer_count: 850,
-                        started_at: new Date(Date.now() - 3600000).toISOString(),
-                        users: {
-                            name: 'MusicLover',
-                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
-                        }
-                    }
-                ];
-                
-                if (demoStreams.length === 0) {
-                    activeStreamsContainer.innerHTML = '<p class="text-center">No active streams</p>';
-                    return;
-                }
-                
-                let html = '';
-                
-                demoStreams.forEach(stream => {
-                    html += `
-                        <div class="card" style="margin-bottom: 15px; position: relative;">
-                            <div class="live-indicator">LIVE</div>
-                            <div style="padding: 15px;">
-                                <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                                    <img src="${stream.users.avatar}" alt="${stream.users.name}" class="avatar">
-                                    <div style="margin-left: 10px;">
-                                        <div class="username">${stream.users.name}</div>
-                                        <div class="timestamp">${formatDate(stream.started_at)}</div>
-                                    </div>
-                                </div>
-                                <h4>${stream.title}</h4>
-                                <p>Category: ${stream.category}</p>
-                                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                                    <span><i class="fas fa-eye"></i> ${stream.viewer_count} viewers</span>
-                                    <button class="btn btn-primary" data-stream-id="${stream.id}">
-                                        <i class="fas fa-play"></i> Watch
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                activeStreamsContainer.innerHTML = html;
-                
-                // Add event listeners to watch buttons
-                document.querySelectorAll('[data-stream-id]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const streamId = e.target.getAttribute('data-stream-id');
-                        watchStream(streamId);
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading streams:', error);
-                activeStreamsContainer.innerHTML = '<p class="text-center">Error loading streams</p>';
-            }
-        }
-
-        // NEW: Watch a live stream
-        function watchStream(streamId) {
-            // For demo, we'll just show an alert
-            alert('This would open the live stream in a player');
-        }
-
-        // NEW: Load creator dashboard
-        function loadCreatorDashboard() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            // Update creator stats
-            document.getElementById('creatorFollowers').textContent = currentUser.followersCount || 0;
-            document.getElementById('creatorViews').textContent = '250'; // Placeholder
-            document.getElementById('creatorLikes').textContent = '350'; // Placeholder
-            
-            // Update progress bars
-            const followersProgress = Math.min((currentUser.followersCount || 0) / 10, 100);
-            const viewsProgress = Math.min(250 / 5, 100);
-            const likesProgress = Math.min(350 / 5, 100);
-            
-            document.getElementById('followersProgress').style.width = `${followersProgress}%`;
-            document.getElementById('viewsProgress').style.width = `${viewsProgress}%`;
-            document.getElementById('likesProgress').style.width = `${likesProgress}%`;
-            
-            // Update earnings
-            document.getElementById('totalEarnings').textContent = (currentUser.totalEarnings || 0).toFixed(2);
-            
-            // Update verification status
-            const monetizationStatus = document.getElementById('monetizationStatus');
-            if (currentUser.isVerified) {
-                monetizationStatus.innerHTML = `
-                    <div class="success-message">
-                        <h3>Account Verified!</h3>
-                        <p>You can now monetize your content</p>
-                    </div>
-                `;
-            }
-        }
-
-        // NEW: Subscribe to a plan
-        function subscribeToPlan(planId) {
-            if (!currentUser) {
-                alert('Please login to subscribe');
-                showPage('authPage');
-                return;
-            }
-            
-            const plan = subscriptions.find(p => p.id === planId);
-            
-            if (!plan) {
-                alert('Invalid plan selected');
-                return;
-            }
-            
-            try {
-                // For demo, we'll just update the user's subscription
-                currentUser.subscriptionTier = planId;
-                currentUser.isVerified = planId !== 'free';
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                showSuccess(`Successfully subscribed to ${plan.name} plan!`);
-                
-                // Go back to creator page
-                showPage('creatorPage');
-            } catch (error) {
-                console.error('Error subscribing:', error);
-                alert('Error subscribing. Please try again.');
-            }
-        }
-
-        // NEW: Show gift notification during live stream
-        function showGiftNotification(gift) {
-            const giftsReceived = document.getElementById('giftsReceived');
-            if (!giftsReceived) return;
-            
-            const giftInfo = gifts.find(g => g.id === gift.gift_type);
-            const sender = users.find(u => u.id === gift.sender_id);
-            
-            if (!giftInfo || !sender) return;
-            
-            const notification = document.createElement('div');
-            notification.className = 'gift-notification';
-            notification.innerHTML = `
-                <div class="gift-sender">
-                    <img src="${sender.avatar}" alt="${sender.name}">
-                    <div>
-                        <strong>${sender.name}</strong> sent a ${giftInfo.name}
-                        <div class="timestamp">Just now</div>
-                    </div>
-                </div>
-            `;
-            
-            giftsReceived.appendChild(notification);
-            
-            // Remove notification after 5 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        }
-
-        // NEW: Withdraw earnings
-        function withdrawEarnings() {
-            if (!currentUser) {
-                alert('Please login to withdraw earnings');
-                showPage('authPage');
-                return;
-            }
-            
-            if (currentUser.totalEarnings <= 0) {
-                alert('No earnings available to withdraw');
-                return;
-            }
-            
-            // For demo, we'll just show a confirmation
-            if (confirm(`Withdraw $${currentUser.totalEarnings.toFixed(2)} to your linked account?`)) {
-                // Process withdrawal
-                showSuccess(`Withdrawal request for $${currentUser.totalEarnings.toFixed(2)} submitted!`);
-                
-                // Reset earnings
-                currentUser.totalEarnings = 0;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Update UI
-                document.getElementById('totalEarnings').textContent = '0.00';
-            }
-        }
-
-        // NEW: Confirm send gift (for modal)
-        function confirmSendGift() {
-            if (!selectedGift) {
-                alert('Please select a gift');
-                return;
-            }
-            
-            // Close modal and send gift
-            document.getElementById('giftModal').style.display = 'none';
-            sendGift();
+            // For demo purposes, we'll show a message
+            alert(`This would open a chat with ${currentUser.display_name}`);
         }
 
         // Format date
