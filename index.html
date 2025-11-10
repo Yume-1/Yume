@@ -1363,7 +1363,7 @@
             </button>
             <div class="yume-balance" id="yumeBalance">
                 <i class="fas fa-coins"></i>
-                <span id="balanceAmount">0</span> $YUME
+                <span id="balanceAmount">100</span> $YUME
             </div>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
@@ -1385,18 +1385,18 @@
             
             <!-- Stories Section -->
             <div class="stories-container" id="storiesContainer">
-                <div class="spinner"></div>
+                <!-- Stories will be loaded here -->
             </div>
             
             <div id="feedContainer">
-                <div class="spinner"></div>
+                <!-- Feed posts will be loaded here -->
             </div>
         </section>
 
         <!-- TikTok Feed Page -->
         <section id="tiktokPage" class="page">
             <div class="tiktok-feed" id="tiktokFeed">
-                <div class="spinner"></div>
+                <!-- TikTok videos will be loaded here -->
             </div>
         </section>
 
@@ -1471,7 +1471,7 @@
         <section id="messagesPage" class="page">
             <h2 class="text-center">Messages</h2>
             <div id="conversationsContainer">
-                <div class="spinner"></div>
+                <!-- Conversations will be loaded here -->
             </div>
         </section>
 
@@ -1483,7 +1483,7 @@
                 <h3 id="chatUserName" style="margin-left: 10px;">User Name</h3>
             </div>
             <div class="message-thread" id="messageThread">
-                <div class="spinner"></div>
+                <!-- Messages will be loaded here -->
             </div>
             <div class="message-input">
                 <input type="text" id="messageInput" placeholder="Type a message...">
@@ -1528,16 +1528,16 @@
         <section id="notificationsPage" class="page">
             <h2 class="text-center">Notifications</h2>
             <div id="notificationsContainer">
-                <div class="spinner"></div>
+                <!-- Notifications will be loaded here -->
             </div>
         </section>
 
         <!-- Profile Page -->
         <section id="profilePage" class="page">
             <div class="profile-header">
-                <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
-                <h2 id="profileName">User Name</h2>
-                <p id="profileBio">Bio goes here</p>
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80" alt="Profile" class="profile-avatar" id="profileAvatar">
+                <h2 id="profileName">Guest User</h2>
+                <p id="profileBio">Welcome to YUME! Start sharing your content.</p>
                 <div class="profile-share">
                     <button class="share-btn" id="shareProfileBtn">
                         <i class="fas fa-share-alt"></i>
@@ -1577,7 +1577,7 @@
                 </div>
             </div>
             <div id="userPostsContainer">
-                <div class="spinner"></div>
+                <!-- User posts will be loaded here -->
             </div>
         </section>
 
@@ -1767,7 +1767,7 @@
                     <h3>Active Live Streams</h3>
                 </div>
                 <div style="padding: 15px;" id="activeStreams">
-                    <div class="spinner"></div>
+                    <!-- Active streams will be loaded here -->
                 </div>
             </div>
         </section>
@@ -1929,7 +1929,7 @@
                 <button class="close-btn">&times;</button>
             </div>
             <div id="commentsContainer">
-                <div class="spinner"></div>
+                <!-- Comments will be loaded here -->
             </div>
             <div class="comment-input">
                 <input type="text" id="commentInput" placeholder="Write a comment...">
@@ -1990,11 +1990,6 @@
     </div>
 
     <script>
-        // Supabase configuration
-        const supabaseUrl = 'https://xmjtlyfxdtklftuxajch.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtanRseWZ4ZHRrbGZ0dXhhamNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2ODg1NTQsImV4cCI6MjA3ODI2NDU1NH0.g6R8HumZRbDCQ1YWtdOEf5qLmAwUXueWPZDt44PtbB4';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
         // State Management
         let currentUser = null;
         let currentTheme = localStorage.getItem('theme') || 'light';
@@ -2025,107 +2020,57 @@
         ];
 
         // Initialize the app
-        async function initApp() {
+        function initApp() {
             // Set the theme
             setTheme(currentTheme);
             
             // Check if user is logged in
-            await checkAuthStatus();
+            checkAuthStatus();
             
             // Set up event listeners
             setupEventListeners();
             
-            // Load initial data if logged in
-            if (currentUser) {
-                await loadStories();
-                await loadFeed();
-                updateUnreadCount();
-                updateBalanceDisplay();
-                await loadGifts();
-                await loadActiveStreams();
-            }
+            // Load initial data
+            loadStories();
+            loadFeed();
+            updateUnreadCount();
+            updateBalanceDisplay();
+            loadGifts();
+            loadActiveStreams();
         }
 
         // Set theme function
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
+            const themeToggle = document.getElementById('themeToggle');
             themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
         }
 
-        // NEW: Check authentication status with Supabase
-        async function checkAuthStatus() {
-            const { data, error } = await supabase.auth.getSession();
-            
-            if (data.session) {
-                // User is logged in
-                const user = data.session.user;
-                
-                // Check if user exists in our users table
-                const { data: userData, error: userError } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-                
-                if (userError || !userData) {
-                    // Create new user if doesn't exist
-                    const newUser = {
-                        id: user.id,
-                        name: user.user_metadata.full_name || user.email.split('@')[0],
-                        email: user.email,
-                        avatar: user.user_metadata.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                        bio: '',
-                        profileViews: 0,
-                        followingCount: 0,
-                        followersCount: 0,
-                        isVerified: false,
-                        subscriptionTier: 'free',
-                        totalEarnings: 0,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    const { data: insertedUser, error: insertError } = await supabase
-                        .from('users')
-                        .insert([newUser])
-                        .select();
-                    
-                    if (insertError) {
-                        console.error('Error creating user:', insertError);
-                        showPage('authPage');
-                        return;
-                    }
-                    
-                    currentUser = insertedUser[0];
-                } else {
-                    currentUser = userData;
-                }
-                
+        // Check authentication status
+        function checkAuthStatus() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                showPage('homePage');
+            } else {
+                // Create a guest user
+                currentUser = {
+                    id: 'guest',
+                    name: 'Guest User',
+                    email: 'guest@yume.com',
+                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                    bio: 'Welcome to YUME! Start sharing your content.',
+                    profileViews: 0,
+                    followingCount: 0,
+                    followersCount: 0,
+                    isVerified: false,
+                    subscriptionTier: 'free',
+                    totalEarnings: 0,
+                    createdAt: new Date().toISOString()
+                };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 showPage('homePage');
-                
-                // Add welcome notification
-                addNotification({
-                    id: Date.now(),
-                    type: 'welcome',
-                    title: 'Welcome to YUME!',
-                    message: 'Start earning $YUME tokens by engaging with content',
-                    read: false,
-                    createdAt: new Date().toISOString()
-                });
-            } else {
-                // Check if we have a local user
-                const userData = localStorage.getItem('currentUser');
-                if (userData) {
-                    currentUser = JSON.parse(userData);
-                    showPage('homePage');
-                    await loadStories();
-                    await loadFeed();
-                    updateUnreadCount();
-                    updateBalanceDisplay();
-                } else {
-                    showPage('authPage');
-                }
             }
         }
 
@@ -2440,83 +2385,6 @@
             
             // NEW: Withdraw earnings
             document.getElementById('withdrawEarningsBtn')?.addEventListener('click', withdrawEarnings);
-            
-            // Set up real-time subscriptions for new features
-            setupRealtimeSubscriptions();
-        }
-
-        // NEW: Set up real-time subscriptions
-        function setupRealtimeSubscriptions() {
-            // Subscribe to new posts
-            supabase
-                .channel('posts')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'posts' },
-                    (payload) => {
-                        // Add new post to feed if it's from a followed user
-                        if (currentUser && currentUser.following && currentUser.following.includes(payload.new.user_id)) {
-                            loadFeed(); // Reload feed to show new post
-                        }
-                    }
-                )
-                .subscribe();
-
-            // Subscribe to new messages
-            supabase
-                .channel('messages')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'messages' },
-                    (payload) => {
-                        // If we're in a chat with the sender, add the message
-                        if (currentChatUser && payload.new.sender_id === currentChatUser.id) {
-                            loadChat(currentChatUser);
-                        }
-                    }
-                )
-                .subscribe();
-
-            // Subscribe to live streams
-            supabase
-                .channel('streams')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'streams' },
-                    (payload) => {
-                        // If we're on the live page, reload active streams
-                        if (currentPage === 'livePage') {
-                            loadActiveStreams();
-                        }
-                    }
-                )
-                .on('postgres_changes', 
-                    { event: 'DELETE', schema: 'public', table: 'streams' },
-                    (payload) => {
-                        // If we're on the live page, reload active streams
-                        if (currentPage === 'livePage') {
-                            loadActiveStreams();
-                        }
-                    }
-                )
-                .subscribe();
-
-            // Subscribe to gifts
-            supabase
-                .channel('gifts')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'gifts' },
-                    (payload) => {
-                        // If the gift is for the current user and they're in a live stream, show notification
-                        if (currentUser && payload.new.recipient_id === currentUser.id) {
-                            if (currentPage === 'livePage' && activeStream) {
-                                showGiftNotification(payload.new);
-                            }
-                            // Update received gifts list
-                            if (currentPage === 'giftingPage') {
-                                loadReceivedGifts();
-                            }
-                        }
-                    }
-                )
-                .subscribe();
         }
 
         // Show error message
@@ -2568,86 +2436,87 @@
             
             tiktokFeed.innerHTML = '<div class="spinner"></div>';
             
-            try {
-                // In a real app, you would fetch videos from your database
-                // For demo purposes, we'll create some placeholder videos
-                const videos = [
-                    {
-                        id: 1,
-                        username: 'user1',
-                        description: 'Check out this amazing trick!',
-                        likes: 1500,
-                        comments: 120,
-                        shares: 45
-                    },
-                    {
-                        id: 2,
-                        username: 'user2',
-                        description: 'Just having fun with friends',
-                        likes: 2300,
-                        comments: 180,
-                        shares: 67
-                    },
-                    {
-                        id: 3,
-                        username: 'user3',
-                        description: 'Learning new dance moves',
-                        likes: 3200,
-                        comments: 250,
-                        shares: 89
-                    }
-                ];
-                
-                tiktokFeed.innerHTML = '';
-                
-                videos.forEach(video => {
-                    const videoEl = document.createElement('div');
-                    videoEl.className = 'tiktok-video';
-                    videoEl.innerHTML = `
-                        <video autoplay loop muted>
-                            <source src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
-                        </video>
-                        <div class="video-info">
-                            <h3>@${video.username}</h3>
-                            <p>${video.description}</p>
-                            <div class="video-stats">
-                                <span><i class="fas fa-music"></i> Original Sound</span>
-                                <span><i class="fas fa-eye"></i> ${Math.floor(video.likes * 10)} views</span>
+            setTimeout(() => {
+                try {
+                    // Create some placeholder videos
+                    const videos = [
+                        {
+                            id: 1,
+                            username: 'user1',
+                            description: 'Check out this amazing trick!',
+                            likes: 1500,
+                            comments: 120,
+                            shares: 45
+                        },
+                        {
+                            id: 2,
+                            username: 'user2',
+                            description: 'Just having fun with friends',
+                            likes: 2300,
+                            comments: 180,
+                            shares: 67
+                        },
+                        {
+                            id: 3,
+                            username: 'user3',
+                            description: 'Learning new dance moves',
+                            likes: 3200,
+                            comments: 250,
+                            shares: 89
+                        }
+                    ];
+                    
+                    tiktokFeed.innerHTML = '';
+                    
+                    videos.forEach(video => {
+                        const videoEl = document.createElement('div');
+                        videoEl.className = 'tiktok-video';
+                        videoEl.innerHTML = `
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #ff0050, #00f2ea); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                                <div>Video Placeholder - ${video.username}</div>
                             </div>
-                        </div>
-                        <div class="video-sidebar">
-                            <div class="video-action">
-                                <i class="fas fa-heart"></i>
-                                <span>${video.likes}</span>
+                            <div class="video-info">
+                                <h3>@${video.username}</h3>
+                                <p>${video.description}</p>
+                                <div class="video-stats">
+                                    <span><i class="fas fa-music"></i> Original Sound</span>
+                                    <span><i class="fas fa-eye"></i> ${Math.floor(video.likes * 10)} views</span>
+                                </div>
                             </div>
-                            <div class="video-action">
-                                <i class="fas fa-comment"></i>
-                                <span>${video.comments}</span>
+                            <div class="video-sidebar">
+                                <div class="video-action">
+                                    <i class="fas fa-heart"></i>
+                                    <span>${video.likes}</span>
+                                </div>
+                                <div class="video-action">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${video.comments}</span>
+                                </div>
+                                <div class="video-action">
+                                    <i class="fas fa-share"></i>
+                                    <span>${video.shares}</span>
+                                </div>
+                                <div class="video-action">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </div>
                             </div>
-                            <div class="video-action">
-                                <i class="fas fa-share"></i>
-                                <span>${video.shares}</span>
-                            </div>
-                            <div class="video-action">
-                                <i class="fas fa-ellipsis-h"></i>
+                        `;
+                        
+                        tiktokFeed.appendChild(videoEl);
+                    });
+                } catch (error) {
+                    console.error('Error loading TikTok feed:', error);
+                    tiktokFeed.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Error loading videos</h3>
+                                <p>Please try again later</p>
                             </div>
                         </div>
                     `;
-                    
-                    tiktokFeed.appendChild(videoEl);
-                });
-            } catch (error) {
-                console.error('Error loading TikTok feed:', error);
-                tiktokFeed.innerHTML = `
-                    <div class="card text-center">
-                        <div style="padding: 40px 20px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                            <h3>Error loading videos</h3>
-                            <p>Please try again later</p>
-                        </div>
-                    </div>
-                `;
-            }
+                }
+            }, 1000);
         }
 
         // Update balance display
@@ -2661,15 +2530,6 @@
             userBalance += amount;
             localStorage.setItem('yumeBalance', userBalance.toString());
             updateBalanceDisplay();
-            
-            // Record earning
-            const earning = {
-                id: Date.now(),
-                userId: currentUser.id,
-                amount: amount,
-                reason: reason,
-                createdAt: new Date().toISOString()
-            };
             
             // Add notification
             addNotification({
@@ -2693,7 +2553,6 @@
                 return;
             }
             
-            // In a real implementation, this would integrate with Paystack API
             // For demo purposes, we'll simulate a successful purchase
             const cost = amount * 0.01; // $0.01 per YUME token
             
@@ -2738,7 +2597,6 @@
         function messageCurrentUser() {
             if (!currentUser) return;
             
-            // In a real app, this would open a chat with the current user
             // For demo purposes, we'll show a message
             alert(`This would open a chat with ${currentUser.name}`);
         }
@@ -2777,52 +2635,54 @@
             const notificationsContainer = document.getElementById('notificationsContainer');
             notificationsContainer.innerHTML = '<div class="spinner"></div>';
             
-            try {
-                // Filter notifications for current user
-                const userNotifications = notifications.filter(n => 
-                    n.userId === currentUser.id || !n.userId
-                );
-                
-                // Sort notifications by date
-                userNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                
-                notificationsContainer.innerHTML = '';
-                
-                if (userNotifications.length === 0) {
-                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
-                    return;
-                }
-                
-                for (const notif of userNotifications) {
-                    const notifEl = document.createElement('div');
-                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
-                    notifEl.innerHTML = `
-                        <div class="notification-icon">
-                            <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'purchase' ? 'shopping-cart' : 'bell'}"></i>
-                        </div>
-                        <div>
-                            <h4>${notif.title}</h4>
-                            <p>${notif.message}</p>
-                            <div class="timestamp">${formatDate(notif.createdAt)}</div>
-                        </div>
-                    `;
+            setTimeout(() => {
+                try {
+                    // Filter notifications for current user
+                    const userNotifications = notifications.filter(n => 
+                        n.userId === currentUser.id || !n.userId
+                    );
                     
-                    // Mark as read when clicked
-                    if (!notif.read) {
-                        notifEl.addEventListener('click', () => {
-                            notif.read = true;
-                            localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
-                            updateUnreadCount();
-                            loadNotifications();
-                        });
+                    // Sort notifications by date
+                    userNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    
+                    notificationsContainer.innerHTML = '';
+                    
+                    if (userNotifications.length === 0) {
+                        notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                        return;
                     }
                     
-                    notificationsContainer.appendChild(notifEl);
+                    for (const notif of userNotifications) {
+                        const notifEl = document.createElement('div');
+                        notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                        notifEl.innerHTML = `
+                            <div class="notification-icon">
+                                <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'purchase' ? 'shopping-cart' : 'bell'}"></i>
+                            </div>
+                            <div>
+                                <h4>${notif.title}</h4>
+                                <p>${notif.message}</p>
+                                <div class="timestamp">${formatDate(notif.createdAt)}</div>
+                            </div>
+                        `;
+                        
+                        // Mark as read when clicked
+                        if (!notif.read) {
+                            notifEl.addEventListener('click', () => {
+                                notif.read = true;
+                                localStorage.setItem('yumeNotifications', JSON.stringify(notifications));
+                                updateUnreadCount();
+                                loadNotifications();
+                            });
+                        }
+                        
+                        notificationsContainer.appendChild(notifEl);
+                    }
+                } catch (error) {
+                    console.error('Error loading notifications:', error);
+                    notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
                 }
-            } catch (error) {
-                console.error('Error loading notifications:', error);
-                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
-            }
+            }, 500);
         }
 
         // Load feed posts
@@ -3007,8 +2867,7 @@
             
             setTimeout(() => {
                 try {
-                    // In a real app, you would fetch stories from your database
-                    // For demo purposes, we'll create some placeholder stories
+                    // Create some placeholder stories
                     const demoStories = [
                         {
                             id: 1,
@@ -3209,111 +3068,19 @@
             }
         }
 
-        // NEW: Enhanced login with Supabase
-        async function loginUser(email, password) {
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password,
-                });
-
-                if (error) {
-                    showError('loginError', error.message);
-                    return;
-                }
-
-                // User logged in successfully
-                const user = data.user;
-                
-                // Get user data from our table
-                const { data: userData, error: userError } = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-                
-                if (userError) {
-                    showError('loginError', 'Error loading user data');
-                    return;
-                }
-                
-                currentUser = userData;
+        // Login user
+        function loginUser(email, password) {
+            // For demo purposes, we'll use a simple check
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = { ...user };
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 showPage('homePage');
-                
-                // Load user data
-                await loadStories();
-                await loadFeed();
+                loadStories();
+                loadFeed();
                 updateUnreadCount();
                 updateBalanceDisplay();
-                await loadGifts();
-                await loadActiveStreams();
-                
-                // Add welcome notification
-                addNotification({
-                    id: Date.now(),
-                    type: 'welcome',
-                    title: 'Welcome back to YUME!',
-                    message: 'Continue earning $YUME tokens',
-                    read: false,
-                    createdAt: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('loginError', 'An unexpected error occurred');
-            }
-        }
-
-        // NEW: Enhanced registration with Supabase
-        async function registerUser(name, email, password) {
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            full_name: name,
-                        }
-                    }
-                });
-
-                if (error) {
-                    showError('registerError', error.message);
-                    return;
-                }
-
-                // User registered successfully
-                const user = data.user;
-                
-                // Create user in our table
-                const newUser = {
-                    id: user.id,
-                    name: name,
-                    email: email,
-                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                    bio: '',
-                    profileViews: 0,
-                    followingCount: 0,
-                    followersCount: 0,
-                    isVerified: false,
-                    subscriptionTier: 'free',
-                    totalEarnings: 0,
-                    createdAt: new Date().toISOString()
-                };
-                
-                const { data: insertedUser, error: insertError } = await supabase
-                    .from('users')
-                    .insert([newUser])
-                    .select();
-                
-                if (insertError) {
-                    showError('registerError', 'Error creating user profile');
-                    return;
-                }
-                
-                currentUser = insertedUser[0];
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                showPage('homePage');
                 
                 // Add welcome notification
                 addNotification({
@@ -3324,10 +3091,57 @@
                     read: false,
                     createdAt: new Date().toISOString()
                 });
-            } catch (error) {
-                console.error('Registration error:', error);
-                showError('registerError', 'An unexpected error occurred');
+            } else {
+                showError('loginError', 'Invalid email or password');
             }
+        }
+
+        // Register user
+        function registerUser(name, email, password) {
+            // Check if user already exists
+            const existingUser = users.find(u => u.email === email);
+            
+            if (existingUser) {
+                showError('registerError', 'User with this email already exists');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: 'user' + (users.length + 1),
+                name,
+                email,
+                password,
+                bio: '',
+                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                profileViews: 0,
+                followingCount: 0,
+                followersCount: 0,
+                isVerified: false,
+                subscriptionTier: 'free',
+                totalEarnings: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('yumeUsers', JSON.stringify(users));
+            
+            currentUser = { ...newUser };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showPage('homePage');
+            loadStories();
+            loadFeed();
+            updateBalanceDisplay();
+            
+            // Add welcome notification
+            addNotification({
+                id: Date.now(),
+                type: 'welcome',
+                title: 'Welcome to YUME!',
+                message: 'Start earning $YUME tokens by engaging with content',
+                read: false,
+                createdAt: new Date().toISOString()
+            });
         }
 
         // Login with Google
@@ -3337,7 +3151,21 @@
 
         // Continue as guest
         function continueAsGuest() {
-            currentUser = null;
+            currentUser = {
+                id: 'guest',
+                name: 'Guest User',
+                email: 'guest@yume.com',
+                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                bio: 'Welcome to YUME! Start sharing your content.',
+                profileViews: 0,
+                followingCount: 0,
+                followersCount: 0,
+                isVerified: false,
+                subscriptionTier: 'free',
+                totalEarnings: 0,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             showPage('homePage');
             loadStories();
             loadFeed();
@@ -3687,7 +3515,6 @@
             const commentsContainer = document.getElementById('commentsContainer');
             commentsContainer.innerHTML = '<div class="spinner"></div>';
             
-            // In a real app, you would fetch comments from your database
             // For demo purposes, we'll create some placeholder comments
             setTimeout(() => {
                 const comments = [
@@ -3743,7 +3570,6 @@
             
             if (!content) return;
             
-            // In a real app, you would save the comment to your database
             // For demo purposes, we'll just show a success message
             showSuccess('Comment posted!');
             
@@ -3811,7 +3637,6 @@
             const conversationsContainer = document.getElementById('conversationsContainer');
             conversationsContainer.innerHTML = '<div class="spinner"></div>';
             
-            // In a real app, you would fetch conversations from your database
             // For demo purposes, we'll create some placeholder conversations
             setTimeout(() => {
                 const demoConversations = [
@@ -3892,7 +3717,6 @@
             const messageThread = document.getElementById('messageThread');
             messageThread.innerHTML = '<div class="spinner"></div>';
             
-            // In a real app, you would fetch messages from your database
             // For demo purposes, we'll create some placeholder messages
             setTimeout(() => {
                 const demoMessages = [
@@ -3948,7 +3772,6 @@
             
             if (!content || !currentChatUser) return;
             
-            // In a real app, you would save the message to your database
             // For demo purposes, we'll just add it to the UI
             const messageEl = document.createElement('div');
             messageEl.className = 'message sent';
@@ -4122,7 +3945,7 @@
         }
 
         // NEW: Load gifts for the gifting page
-        async function loadGifts() {
+        function loadGifts() {
             const giftsContainer = document.getElementById('giftsContainer');
             const modalGiftsContainer = document.getElementById('modalGiftsContainer');
             
@@ -4176,16 +3999,15 @@
             });
             
             // Load users for recipient dropdown
-            await loadGiftRecipients();
+            loadGiftRecipients();
         }
 
         // NEW: Load users for gift recipient dropdown
-        async function loadGiftRecipients() {
+        function loadGiftRecipients() {
             const recipientSelect = document.getElementById('giftRecipient');
             if (!recipientSelect) return;
             
             try {
-                // In a real app, you would fetch users from Supabase
                 // For demo, we'll use the local users array
                 recipientSelect.innerHTML = '<option value="">Select a user</option>';
                 
@@ -4213,7 +4035,7 @@
         }
 
         // NEW: Send gift function
-        async function sendGift() {
+        function sendGift() {
             if (!currentUser || !selectedGift) {
                 alert('Please select a gift and recipient');
                 return;
@@ -4234,25 +4056,6 @@
             }
             
             try {
-                // Create gift record in Supabase
-                const { data, error } = await supabase
-                    .from('gifts')
-                    .insert([{
-                        sender_id: currentUser.id,
-                        recipient_id: recipientId,
-                        gift_type: selectedGift.id,
-                        gift_value: selectedGift.price,
-                        message: '',
-                        created_at: new Date().toISOString()
-                    }])
-                    .select();
-                
-                if (error) {
-                    console.error('Error sending gift:', error);
-                    alert('Error sending gift. Please try again.');
-                    return;
-                }
-                
                 // Deduct from sender's balance
                 userBalance -= selectedGift.price;
                 localStorage.setItem('yumeBalance', userBalance.toString());
@@ -4261,7 +4064,6 @@
                 // Add to recipient's earnings if they're a creator
                 const recipient = users.find(u => u.id === recipientId);
                 if (recipient && recipient.subscriptionTier !== 'free') {
-                    // In a real app, you would update the recipient's earnings in the database
                     // For demo, we'll just show a success message
                 }
                 
@@ -4287,12 +4089,11 @@
         }
 
         // NEW: Load received gifts
-        async function loadReceivedGifts() {
+        function loadReceivedGifts() {
             const receivedGiftsContainer = document.getElementById('receivedGifts');
             if (!receivedGiftsContainer) return;
             
             try {
-                // In a real app, you would fetch gifts from Supabase
                 // For demo, we'll create some placeholder gifts
                 const demoGifts = [
                     {
@@ -4337,7 +4138,7 @@
         }
 
         // NEW: Start live stream
-        async function startStream() {
+        function startStream() {
             if (!currentUser) {
                 alert('Please login to start a live stream');
                 showPage('authPage');
@@ -4353,36 +4154,23 @@
             }
             
             try {
-                // In a real app, you would set up a live stream with a service like Agora or Twitch
                 // For demo purposes, we'll simulate a live stream
-                
-                // Create stream record in Supabase
-                const { data, error } = await supabase
-                    .from('streams')
-                    .insert([{
-                        user_id: currentUser.id,
-                        title: streamTitle,
-                        category: streamCategory,
-                        is_live: true,
-                        viewer_count: 0,
-                        started_at: new Date().toISOString()
-                    }])
-                    .select();
-                
-                if (error) {
-                    console.error('Error starting stream:', error);
-                    alert('Error starting stream. Please try again.');
-                    return;
-                }
-                
-                activeStream = data[0];
+                activeStream = {
+                    id: 'stream' + Date.now(),
+                    user_id: currentUser.id,
+                    title: streamTitle,
+                    category: streamCategory,
+                    is_live: true,
+                    viewer_count: 0,
+                    started_at: new Date().toISOString()
+                };
                 
                 // Update UI
                 document.getElementById('startStreamBtn').style.display = 'none';
                 document.getElementById('stopStreamBtn').style.display = 'inline-flex';
                 document.getElementById('streamPreview').style.display = 'block';
                 
-                // Simulate video stream (in a real app, this would be actual video)
+                // Simulate video stream
                 const streamVideo = document.getElementById('streamVideo');
                 // This would be replaced with actual video stream in a real implementation
                 
@@ -4394,26 +4182,10 @@
         }
 
         // NEW: Stop live stream
-        async function stopStream() {
+        function stopStream() {
             if (!activeStream) return;
             
             try {
-                // Update stream record in Supabase
-                const { data, error } = await supabase
-                    .from('streams')
-                    .update({
-                        is_live: false,
-                        ended_at: new Date().toISOString()
-                    })
-                    .eq('id', activeStream.id)
-                    .select();
-                
-                if (error) {
-                    console.error('Error stopping stream:', error);
-                    alert('Error stopping stream. Please try again.');
-                    return;
-                }
-                
                 // Update UI
                 document.getElementById('startStreamBtn').style.display = 'inline-flex';
                 document.getElementById('stopStreamBtn').style.display = 'none';
@@ -4429,32 +4201,47 @@
         }
 
         // NEW: Load active streams
-        async function loadActiveStreams() {
+        function loadActiveStreams() {
             const activeStreamsContainer = document.getElementById('activeStreams');
             if (!activeStreamsContainer) return;
             
             try {
-                // Fetch active streams from Supabase
-                const { data, error } = await supabase
-                    .from('streams')
-                    .select('*, users(name, avatar)')
-                    .eq('is_live', true)
-                    .order('started_at', { ascending: false });
+                // For demo, we'll create some placeholder streams
+                const demoStreams = [
+                    {
+                        id: 1,
+                        user_id: 'user1',
+                        title: 'Gaming Session Live!',
+                        category: 'gaming',
+                        viewer_count: 1250,
+                        started_at: new Date(Date.now() - 1800000).toISOString(),
+                        users: {
+                            name: 'GamerPro',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        }
+                    },
+                    {
+                        id: 2,
+                        user_id: 'user2',
+                        title: 'Music Performance',
+                        category: 'music',
+                        viewer_count: 850,
+                        started_at: new Date(Date.now() - 3600000).toISOString(),
+                        users: {
+                            name: 'MusicLover',
+                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        }
+                    }
+                ];
                 
-                if (error) {
-                    console.error('Error loading streams:', error);
-                    activeStreamsContainer.innerHTML = '<p class="text-center">Error loading streams</p>';
-                    return;
-                }
-                
-                if (data.length === 0) {
+                if (demoStreams.length === 0) {
                     activeStreamsContainer.innerHTML = '<p class="text-center">No active streams</p>';
                     return;
                 }
                 
                 let html = '';
                 
-                data.forEach(stream => {
+                demoStreams.forEach(stream => {
                     html += `
                         <div class="card" style="margin-bottom: 15px; position: relative;">
                             <div class="live-indicator">LIVE</div>
@@ -4496,7 +4283,6 @@
 
         // NEW: Watch a live stream
         function watchStream(streamId) {
-            // In a real app, this would open the stream in a player
             // For demo, we'll just show an alert
             alert('This would open the live stream in a player');
         }
@@ -4538,7 +4324,7 @@
         }
 
         // NEW: Subscribe to a plan
-        async function subscribeToPlan(planId) {
+        function subscribeToPlan(planId) {
             if (!currentUser) {
                 alert('Please login to subscribe');
                 showPage('authPage');
@@ -4553,27 +4339,9 @@
             }
             
             try {
-                // In a real app, you would process payment here
                 // For demo, we'll just update the user's subscription
-                
-                // Update user in Supabase
-                const { data, error } = await supabase
-                    .from('users')
-                    .update({
-                        subscriptionTier: planId,
-                        isVerified: planId !== 'free'
-                    })
-                    .eq('id', currentUser.id)
-                    .select();
-                
-                if (error) {
-                    console.error('Error updating subscription:', error);
-                    alert('Error subscribing. Please try again.');
-                    return;
-                }
-                
-                // Update current user
-                currentUser = data[0];
+                currentUser.subscriptionTier = planId;
+                currentUser.isVerified = planId !== 'free';
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 
                 showSuccess(`Successfully subscribed to ${plan.name} plan!`);
@@ -4617,7 +4385,7 @@
         }
 
         // NEW: Withdraw earnings
-        async function withdrawEarnings() {
+        function withdrawEarnings() {
             if (!currentUser) {
                 alert('Please login to withdraw earnings');
                 showPage('authPage');
@@ -4629,13 +4397,12 @@
                 return;
             }
             
-            // In a real app, you would integrate with a payment processor
             // For demo, we'll just show a confirmation
             if (confirm(`Withdraw $${currentUser.totalEarnings.toFixed(2)} to your linked account?`)) {
                 // Process withdrawal
                 showSuccess(`Withdrawal request for $${currentUser.totalEarnings.toFixed(2)} submitted!`);
                 
-                // Reset earnings (in a real app, you would update the database)
+                // Reset earnings
                 currentUser.totalEarnings = 0;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 
