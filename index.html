@@ -6,7 +6,6 @@
     <title>YUME - Social Media with Earning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary-color: #6a11cb;
@@ -316,30 +315,6 @@
             font-weight: bold;
             margin-top: 10px;
             display: inline-block;
-        }
-
-        /* Shareable Profile */
-        .profile-share {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .share-btn {
-            background: var(--primary-color);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .share-btn:hover {
-            transform: scale(1.1);
         }
 
         /* Forms */
@@ -1439,195 +1414,76 @@
     </div>
 
     <script>
-        // Supabase Configuration
+        // Configuration - REPLACE WITH YOUR ACTUAL VALUES
         const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
         const SUPABASE_ANON_KEY = 'your-anon-key'; // Replace with your Supabase anon key
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Stripe Configuration
-        const stripe = Stripe('pk_test_your_publishable_key'); // Replace with your Stripe publishable key
-
-        // State Management
-        let currentUser = null;
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let currentPage = 'homePage';
-        let currentPostId = null;
-        let currentChatUser = null;
-        let userBalance = 0;
-        let notifications = [];
-        let users = [];
-        let posts = [];
-        let messages = [];
-        let conversations = [];
-        let followers = [];
-        let following = [];
         
-        // YUME to USD conversion rate
-        const YUME_TO_USD = 0.0005;
+        // Initialize Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // App State
+        let currentUser = null;
+        let userBalance = 0;
+        let currentPage = 'homePage';
+        let currentTheme = localStorage.getItem('theme') || 'light';
 
         // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
         async function initApp() {
-            // Set the theme
             setTheme(currentTheme);
-            
-            // Check if user is logged in
-            await checkAuthStatus();
-            
-            // Set up event listeners
             setupEventListeners();
-            
-            // Load initial data
-            await loadInitialData();
+            await checkAuthStatus();
         }
 
-        // Set theme function
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             const themeToggle = document.getElementById('themeToggle');
-            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-        }
-
-        // Check authentication status
-        async function checkAuthStatus() {
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (session) {
-                // User is logged in
-                await loadUserProfile(session.user.id);
-                showPage('homePage');
-            } else {
-                // No user session, show auth page
-                showPage('authPage');
+            if (themeToggle) {
+                themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             }
         }
 
-        // Load user profile
-        async function loadUserProfile(userId) {
-            try {
-                // Get user profile from database
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-                
-                if (error) {
-                    console.error('Error loading user profile:', error);
-                    return;
-                }
-                
-                if (data) {
-                    currentUser = data;
-                    userBalance = data.yume_balance || 0;
-                    updateBalanceDisplay();
-                    updateProfileDisplay();
-                }
-            } catch (error) {
-                console.error('Error loading user profile:', error);
-            }
-        }
-
-        // Load initial data
-        async function loadInitialData() {
-            if (!currentUser) return;
-            
-            try {
-                // Load user's posts
-                await loadUserPosts();
-                
-                // Load feed
-                await loadFeed();
-                
-                // Load notifications
-                await loadNotifications();
-                
-                // Load conversations
-                await loadConversations();
-                
-                // Load followers and following
-                await loadFollowData();
-                
-                // Update unread counts
-                updateUnreadCounts();
-            } catch (error) {
-                console.error('Error loading initial data:', error);
-            }
-        }
-
-        // Show specific page
-        async function showPage(pageId) {
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            currentPage = pageId;
-            
-            // Update navigation
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-page') === pageId) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Load content for the page if needed
-            if (pageId === 'homePage') {
-                await loadStories();
-                await loadFeed();
-            }
-            if (pageId === 'earnPage') updateBalanceDisplay();
-            if (pageId === 'profilePage') await loadProfile();
-            if (pageId === 'notificationsPage') await loadNotifications();
-            if (pageId === 'messagesPage') await loadConversations();
-            if (pageId === 'searchPage') initSearch();
-        }
-
-        // Set up event listeners
         function setupEventListeners() {
-            // Navigation
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const pageId = item.getAttribute('data-page');
-                    showPage(pageId);
-                });
-            });
-            
             // Theme toggle
-            const themeToggle = document.getElementById('themeToggle');
-            themeToggle.addEventListener('click', () => {
+            document.getElementById('themeToggle').addEventListener('click', function() {
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 setTheme(newTheme);
                 currentTheme = newTheme;
             });
-            
+
             // Search toggle
-            const searchToggle = document.getElementById('searchToggle');
-            searchToggle.addEventListener('click', () => {
+            document.getElementById('searchToggle').addEventListener('click', function() {
                 const searchBar = document.getElementById('searchBar');
                 searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
             });
-            
+
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+
             // Floating action button
-            const newPostFloatBtn = document.getElementById('newPostFloatBtn');
-            newPostFloatBtn.addEventListener('click', () => {
+            document.getElementById('newPostFloatBtn').addEventListener('click', function() {
                 if (!currentUser) {
                     showPage('authPage');
                     return;
                 }
                 showPage('newPostPage');
             });
-            
+
             // Auth tabs
-            const authTabs = document.querySelectorAll('.auth-tab');
-            authTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabName = tab.getAttribute('data-tab');
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
                     
                     if (tabName === 'login') {
                         document.getElementById('loginForm').style.display = 'block';
@@ -1638,17 +1494,17 @@
                     }
                 });
             });
-            
+
             // Login form
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
                 await loginUser(email, password);
             });
-            
+
             // Register form
-            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const name = document.getElementById('registerName').value;
                 const username = document.getElementById('registerUsername').value;
@@ -1663,268 +1519,206 @@
                 
                 await registerUser(name, username, email, password);
             });
-            
+
             // Google login
-            document.getElementById('googleLogin').addEventListener('click', async () => {
+            document.getElementById('googleLogin').addEventListener('click', async function() {
                 await loginWithGoogle();
             });
-            
+
             // Continue as guest
-            document.getElementById('continueAsGuest').addEventListener('click', () => {
+            document.getElementById('continueAsGuest').addEventListener('click', function() {
                 continueAsGuest();
             });
-            
+
             // New post form
-            document.getElementById('newPostForm').addEventListener('submit', async (e) => {
+            document.getElementById('newPostForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const content = document.getElementById('postContent').value;
-                const imageFile = document.getElementById('postImage').files[0];
-                const videoFile = document.getElementById('postVideo').files[0];
-                await createPost(content, imageFile, videoFile);
+                await createPost(content);
             });
-            
+
             // Character count for post content
-            document.getElementById('postContent').addEventListener('input', (e) => {
+            document.getElementById('postContent').addEventListener('input', function(e) {
                 document.getElementById('charCount').textContent = e.target.value.length;
             });
-            
+
             // YUME amount input for currency conversion
-            document.getElementById('yumeAmount').addEventListener('input', (e) => {
+            document.getElementById('yumeAmount').addEventListener('input', function(e) {
                 const yumeAmount = parseInt(e.target.value) || 0;
-                const usdAmount = (yumeAmount * YUME_TO_USD).toFixed(2);
+                const usdAmount = (yumeAmount * 0.0005).toFixed(2);
                 document.getElementById('currencyDisplay').textContent = `≈ $${usdAmount} USD`;
             });
-            
-            // Media preview for new post
-            document.getElementById('postImage').addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.getElementById('mediaPreview').style.display = 'block';
-                        document.getElementById('imagePreview').src = event.target.result;
-                        document.getElementById('imagePreview').style.display = 'block';
-                        document.getElementById('videoPreview').style.display = 'none';
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
+
+            // Back to messages button
+            document.getElementById('backToMessages').addEventListener('click', function() {
+                showPage('messagesPage');
+            });
+
+            // Send message button
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
                 }
             });
-            
-            document.getElementById('postVideo').addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const url = URL.createObjectURL(e.target.files[0]);
-                    document.getElementById('mediaPreview').style.display = 'block';
-                    document.getElementById('videoPreview').src = url;
-                    document.getElementById('videoPreview').style.display = 'block';
-                    document.getElementById('imagePreview').style.display = 'none';
+
+            // Post comment button
+            document.getElementById('postCommentBtn').addEventListener('click', postComment);
+
+            // Comment input enter key
+            document.getElementById('commentInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    postComment();
                 }
             });
-            
-            // Remove media button
-            document.getElementById('removeMedia').addEventListener('click', () => {
-                document.getElementById('postImage').value = '';
-                document.getElementById('postVideo').value = '';
-                document.getElementById('mediaPreview').style.display = 'none';
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('globalSearch').addEventListener('input', handleGlobalSearch);
+
+            // Earning buttons
+            document.getElementById('watchAdBtn').addEventListener('click', function() {
+                earnYume(5, 'Watched ad');
             });
-            
+
+            document.getElementById('inviteFriendBtn').addEventListener('click', function() {
+                earnYume(20, 'Invited friend');
+            });
+
+            document.getElementById('dailyRewardBtn').addEventListener('click', function() {
+                earnYume(10, 'Daily reward');
+            });
+
+            document.getElementById('buyYumeBtn').addEventListener('click', function() {
+                buyYumeWithStripe();
+            });
+
             // Edit profile button
-            document.getElementById('editProfileBtn').addEventListener('click', () => {
+            document.getElementById('editProfileBtn').addEventListener('click', function() {
                 showEditProfileModal();
             });
-            
+
             // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', () => {
+            document.getElementById('logoutBtn').addEventListener('click', function() {
                 logoutUser();
             });
-            
+
             // Close modal buttons
             document.querySelectorAll('.close-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', function() {
                     document.getElementById('editProfileModal').style.display = 'none';
                     document.getElementById('commentModal').style.display = 'none';
                     document.getElementById('postOptionsModal').style.display = 'none';
                 });
             });
-            
+
             // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const displayName = document.getElementById('editDisplayName').value;
                 const username = document.getElementById('editUsername').value;
                 const bio = document.getElementById('editBio').value;
-                const avatarFile = document.getElementById('editAvatar').files[0];
-                await updateProfile(displayName, username, bio, avatarFile);
+                await updateProfile(displayName, username, bio);
             });
-            
-            // Avatar preview for edit profile
-            document.getElementById('editAvatar').addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.getElementById('avatarPreview').style.display = 'block';
-                        document.getElementById('avatarPreview').querySelector('img').src = event.target.result;
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
+        }
+
+        async function checkAuthStatus() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    console.error('Error getting session:', error);
+                    showPage('authPage');
+                    return;
                 }
-            });
-            
-            // Back to messages button
-            document.getElementById('backToMessages').addEventListener('click', () => {
-                showPage('messagesPage');
-            });
-            
-            // Send message button
-            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
-            
-            // Message input enter key
-            document.getElementById('messageInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage();
+
+                if (session) {
+                    await loadUserProfile(session.user.id);
+                    showPage('homePage');
+                } else {
+                    showPage('authPage');
                 }
-            });
-            
-            // Post comment button
-            document.getElementById('postCommentBtn').addEventListener('click', postComment);
-            
-            // Comment input enter key
-            document.getElementById('commentInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    postComment();
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                showPage('authPage');
+            }
+        }
+
+        async function loadUserProfile(userId) {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) {
+                    console.error('Error loading profile:', error);
+                    // Create profile if it doesn't exist
+                    await createUserProfile(userId);
+                    return;
                 }
-            });
-            
-            // Search input
-            document.getElementById('searchInput').addEventListener('input', handleSearch);
-            document.getElementById('globalSearch').addEventListener('input', handleGlobalSearch);
-            
-            // Profile stats clicks
-            document.getElementById('postsStat').addEventListener('click', () => {
-                document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            document.getElementById('followingStat').addEventListener('click', async () => {
-                await showFollowingList();
-            });
-            
-            document.getElementById('followersStat').addEventListener('click', async () => {
-                await showFollowersList();
-            });
-            
-            document.getElementById('profileViewsStat').addEventListener('click', () => {
-                alert('Profile views analytics would be shown here');
-            });
-            
-            // Post options
-            document.querySelectorAll('.option-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const action = item.getAttribute('data-action');
-                    handlePostOption(action);
-                });
-            });
-            
-            // Earning buttons
-            document.getElementById('watchAdBtn').addEventListener('click', () => {
-                earnYume(5, 'Watched ad');
-            });
-            
-            document.getElementById('inviteFriendBtn').addEventListener('click', () => {
-                earnYume(20, 'Invited friend');
-            });
-            
-            document.getElementById('dailyRewardBtn').addEventListener('click', () => {
-                earnYume(10, 'Daily reward');
-            });
-            
-            document.getElementById('buyYumeBtn').addEventListener('click', () => {
-                buyYumeWithStripe();
-            });
-            
-            // Share profile button
-            document.getElementById('shareProfileBtn').addEventListener('click', () => {
-                shareProfile();
-            });
-            
-            // Message profile button
-            document.getElementById('messageProfileBtn').addEventListener('click', () => {
-                messageCurrentUser();
-            });
+
+                if (data) {
+                    currentUser = data;
+                    userBalance = data.yume_balance || 0;
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Error in loadUserProfile:', error);
+            }
         }
 
-        // Show error message
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-            
-            setTimeout(() => {
-                errorElement.style.display = 'none';
-            }, 5000);
+        async function createUserProfile(userId) {
+            try {
+                const { data: authUser, error: authError } = await supabase.auth.getUser();
+                
+                if (authError) throw authError;
+                
+                const { error } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: userId,
+                            username: authUser.user.user_metadata.username || `user${userId.substring(0, 8)}`,
+                            display_name: authUser.user.user_metadata.display_name || 'New User',
+                            email: authUser.user.email,
+                            avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
+                            yume_balance: 100,
+                            follower_count: 0,
+                            following_count: 0,
+                            post_count: 0,
+                            profile_views: 0,
+                            is_verified: false
+                        }
+                    ]);
+
+                if (error) throw error;
+                
+                await loadUserProfile(userId);
+            } catch (error) {
+                console.error('Error creating user profile:', error);
+            }
         }
 
-        // Show success message
-        function showSuccess(message) {
-            // Create a temporary success message element
-            const successElement = document.createElement('div');
-            successElement.className = 'success-message';
-            successElement.textContent = message;
-            successElement.style.position = 'fixed';
-            successElement.style.top = '70px';
-            successElement.style.left = '50%';
-            successElement.style.transform = 'translateX(-50%)';
-            successElement.style.zIndex = '1000';
-            successElement.style.maxWidth = '90%';
-            
-            document.body.appendChild(successElement);
-            
-            setTimeout(() => {
-                successElement.remove();
-            }, 3000);
-        }
-
-        // Update balance display
-        function updateBalanceDisplay() {
-            const yumeBalance = document.getElementById('balanceAmount');
-            yumeBalance.textContent = userBalance;
-        }
-
-        // Update profile display
-        function updateProfileDisplay() {
-            if (!currentUser) return;
-            
-            document.getElementById('profileName').textContent = currentUser.display_name || currentUser.username;
-            document.getElementById('profileBio').textContent = currentUser.bio || 'Welcome to YUME! Start sharing your content.';
-            document.getElementById('profileAvatar').src = currentUser.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80';
-            
-            document.getElementById('postsCount').textContent = currentUser.post_count || 0;
-            document.getElementById('followingCount').textContent = currentUser.following_count || 0;
-            document.getElementById('followersCount').textContent = currentUser.follower_count || 0;
-            document.getElementById('profileViewsCount').textContent = currentUser.profile_views || 0;
-        }
-
-        // Login user
         async function loginUser(email, password) {
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password
                 });
-                
+
                 if (error) {
                     showError('loginError', error.message);
                     return;
                 }
-                
+
                 if (data.user) {
                     await loadUserProfile(data.user.id);
                     showPage('homePage');
-                    await loadInitialData();
-                    
-                    // Add welcome notification
-                    addNotification({
-                        type: 'welcome',
-                        title: 'Welcome to YUME!',
-                        message: 'Start earning $YUME tokens by engaging with content',
-                        read: false
-                    });
+                    showSuccess('Login successful!');
                 }
             } catch (error) {
                 console.error('Login error:', error);
@@ -1932,22 +1726,21 @@
             }
         }
 
-        // Register user
         async function registerUser(name, username, email, password) {
             try {
-                // Check if username is available
+                // First check if username is available
                 const { data: existingUser, error: checkError } = await supabase
                     .from('profiles')
                     .select('id')
                     .eq('username', username)
                     .single();
-                
+
                 if (existingUser) {
                     showError('registerError', 'Username already taken');
                     return;
                 }
-                
-                // Create user in Supabase Auth
+
+                // Create auth user
                 const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
@@ -1958,41 +1751,19 @@
                         }
                     }
                 });
-                
+
                 if (error) {
                     showError('registerError', error.message);
                     return;
                 }
-                
+
                 if (data.user) {
-                    // Create user profile
-                    const { error: profileError } = await supabase
-                        .from('profiles')
-                        .insert([
-                            {
-                                id: data.user.id,
-                                display_name: name,
-                                username: username,
-                                email: email,
-                                avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-                                bio: '',
-                                yume_balance: 100, // Starting balance
-                                follower_count: 0,
-                                following_count: 0,
-                                post_count: 0,
-                                profile_views: 0,
-                                is_verified: false
-                            }
-                        ]);
-                    
-                    if (profileError) {
-                        console.error('Profile creation error:', profileError);
-                        showError('registerError', 'Error creating user profile');
-                        return;
-                    }
-                    
                     showSuccess('Registration successful! Please check your email to verify your account.');
-                    showPage('loginForm');
+                    // Switch to login form
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('registerForm').style.display = 'none';
                 }
             } catch (error) {
                 console.error('Registration error:', error);
@@ -2000,7 +1771,6 @@
             }
         }
 
-        // Login with Google
         async function loginWithGoogle() {
             try {
                 const { data, error } = await supabase.auth.signInWithOAuth({
@@ -2020,13 +1790,11 @@
             }
         }
 
-        // Continue as guest
         function continueAsGuest() {
-            // For demo purposes, we'll just show the home page
             showPage('homePage');
+            showSuccess('Continuing as guest. Some features may be limited.');
         }
 
-        // Logout user
         async function logoutUser() {
             try {
                 const { error } = await supabase.auth.signOut();
@@ -2037,13 +1805,40 @@
                 currentUser = null;
                 userBalance = 0;
                 showPage('authPage');
+                showSuccess('Logged out successfully');
             } catch (error) {
                 console.error('Logout error:', error);
             }
         }
 
-        // Load feed posts
-        async function loadFeed() {
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load page-specific content
+            if (pageId === 'homePage') loadHomePage();
+            if (pageId === 'profilePage') loadProfilePage();
+            if (pageId === 'earnPage') updateBalanceDisplay();
+            if (pageId === 'notificationsPage') loadNotifications();
+            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'searchPage') initSearch();
+        }
+
+        function loadHomePage() {
             const feedContainer = document.getElementById('feedContainer');
             
             if (!currentUser) {
@@ -2058,299 +1853,68 @@
                 return;
             }
             
-            // Show skeleton loading
             feedContainer.innerHTML = `
-                <div class="card post-card">
-                    <div class="user-info">
-                        <div class="skeleton skeleton-avatar"></div>
-                        <div style="flex: 1;">
-                            <div class="skeleton skeleton-text short"></div>
-                            <div class="skeleton skeleton-text" style="width: 40%;"></div>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text"></div>
-                        <div class="skeleton skeleton-text" style="width: 60%;"></div>
-                        <div class="skeleton skeleton-image"></div>
+                <div class="card">
+                    <h3>Welcome, ${currentUser.display_name}!</h3>
+                    <p>You have ${userBalance} $YUME tokens</p>
+                    <p>This is your feed. Posts from users you follow will appear here.</p>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="earnYume(10, 'Testing')">
+                        Earn 10 YUME (Test)
+                    </button>
+                </div>
+                <div class="card">
+                    <h4>Sample Post</h4>
+                    <p>This is a sample post. In a real application, you would see posts from users you follow here.</p>
+                    <div class="post-actions">
+                        <button class="action-btn"><i class="fas fa-heart"></i> 12</button>
+                        <button class="action-btn"><i class="fas fa-comment"></i> 3</button>
+                        <button class="action-btn"><i class="fas fa-share"></i></button>
                     </div>
                 </div>
             `;
-            
-            try {
-                // Get posts from followed users and current user
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select(`
-                        *,
-                        profiles:user_id (
-                            display_name,
-                            username,
-                            avatar_url,
-                            is_verified
-                        ),
-                        likes!left (
-                            id
-                        ),
-                        comments!left (
-                            id
-                        )
-                    `)
-                    .in('user_id', [...following.map(f => f.following_id), currentUser.id])
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    throw error;
-                }
-                
-                feedContainer.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    feedContainer.innerHTML = `
-                        <div class="card text-center">
-                            <div style="padding: 40px 20px;">
-                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                <h3>Your feed is empty</h3>
-                                <p>Follow some users to see their posts here</p>
-                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                for (const post of data) {
-                    const isLiked = post.likes && post.likes.some(like => like.user_id === currentUser.id);
-                    const likeCount = post.likes ? post.likes.length : 0;
-                    const commentCount = post.comments ? post.comments.length : 0;
-                    
-                    const postEl = document.createElement('div');
-                    postEl.className = 'card post-card';
-                    postEl.innerHTML = `
-                        <div class="user-info">
-                            <img src="${post.profiles.avatar_url}" alt="${post.profiles.display_name}" class="avatar">
-                            <div style="flex: 1;">
-                                <div class="username">
-                                    ${post.profiles.display_name}
-                                    ${post.profiles.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                </div>
-                                <div class="timestamp">${formatDate(post.created_at)}</div>
-                            </div>
-                            <div class="post-options">
-                                <button class="options-btn">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <p>${post.content}</p>
-                            ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image">` : ''}
-                            ${post.video_url ? `<video controls class="post-video"><source src="${post.video_url}" type="video/mp4"></video>` : ''}
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
-                                <i class="fas fa-heart"></i> <span>${likeCount}</span>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-comment"></i> <span>${commentCount}</span>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-bookmark"></i>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Add like functionality
-                    const likeBtn = postEl.querySelector('.action-btn:first-child');
-                    likeBtn.addEventListener('click', () => {
-                        toggleLike(post.id);
-                    });
-                    
-                    // Add comment functionality
-                    const commentBtn = postEl.querySelectorAll('.action-btn')[1];
-                    commentBtn.addEventListener('click', () => {
-                        showComments(post.id);
-                    });
-                    
-                    // Add bookmark functionality
-                    const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
-                    bookmarkBtn.addEventListener('click', () => {
-                        toggleBookmark(post.id);
-                    });
-                    
-                    // Add share functionality
-                    const shareBtn = postEl.querySelectorAll('.action-btn')[3];
-                    shareBtn.addEventListener('click', () => {
-                        sharePost(post.id);
-                    });
-                    
-                    // Add options functionality
-                    const optionsBtn = postEl.querySelector('.options-btn');
-                    optionsBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showPostOptions(post);
-                    });
-                    
-                    feedContainer.appendChild(postEl);
-                }
-            } catch (error) {
-                console.error('Error loading feed:', error);
-                feedContainer.innerHTML = `
-                    <div class="card text-center">
-                        <div style="padding: 40px 20px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                            <h3>Error loading feed</h3>
-                            <p>Please try again later</p>
-                        </div>
-                    </div>
-                `;
-            }
         }
 
-        // Load user profile
-        async function loadProfile() {
+        function loadProfilePage() {
+            const profileInfo = document.getElementById('profileInfo');
+            const userPostsContainer = document.getElementById('userPostsContainer');
+            
             if (!currentUser) {
-                showPage('authPage');
+                document.getElementById('profileName').textContent = 'Guest User';
+                document.getElementById('profileBio').textContent = 'Welcome to YUME! Start sharing your content.';
+                document.getElementById('profileAvatar').src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80';
+                
+                document.getElementById('postsCount').textContent = '0';
+                document.getElementById('followingCount').textContent = '0';
+                document.getElementById('followersCount').textContent = '0';
+                document.getElementById('profileViewsCount').textContent = '0';
+                
+                userPostsContainer.innerHTML = '<p class="text-center">Please login to view your profile</p>';
                 return;
             }
             
-            try {
-                // Get user's posts
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select(`
-                        *,
-                        likes!left (
-                            id
-                        ),
-                        comments!left (
-                            id
-                        )
-                    `)
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    throw error;
-                }
-                
-                // Update profile info
-                updateProfileDisplay();
-                
-                // Load user's posts
-                const postsContainer = document.getElementById('userPostsContainer');
-                postsContainer.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    postsContainer.innerHTML = `
-                        <div class="card text-center">
-                            <div style="padding: 40px 20px;">
-                                <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                <h3>No posts yet</h3>
-                                <p>Share your first post with the world</p>
-                                <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                for (const post of data) {
-                    const isLiked = post.likes && post.likes.some(like => like.user_id === currentUser.id);
-                    const likeCount = post.likes ? post.likes.length : 0;
-                    const commentCount = post.comments ? post.comments.length : 0;
-                    
-                    const postEl = document.createElement('div');
-                    postEl.className = 'card post-card';
-                    postEl.innerHTML = `
-                        <div class="user-info">
-                            <img src="${currentUser.avatar_url}" alt="${currentUser.display_name}" class="avatar">
-                            <div>
-                                <div class="username">
-                                    ${currentUser.display_name}
-                                    ${currentUser.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                </div>
-                                <div class="timestamp">${formatDate(post.created_at)}</div>
-                            </div>
-                            <div class="post-options">
-                                <button class="options-btn">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="post-content">
-                            <p>${post.content}</p>
-                            ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image">` : ''}
-                            ${post.video_url ? `<video controls class="post-video"><source src="${post.video_url}" type="video/mp4"></video>` : ''}
-                        </div>
-                        <div class="post-actions">
-                            <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
-                                <i class="fas fa-heart"></i> <span>${likeCount}</span>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-comment"></i> <span>${commentCount}</span>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-bookmark"></i>
-                            </button>
-                            <button class="action-btn" data-post-id="${post.id}">
-                                <i class="fas fa-share"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Add like functionality
-                    const likeBtn = postEl.querySelector('.action-btn:first-child');
-                    likeBtn.addEventListener('click', () => {
-                        toggleLike(post.id);
-                    });
-                    
-                    // Add comment functionality
-                    const commentBtn = postEl.querySelectorAll('.action-btn')[1];
-                    commentBtn.addEventListener('click', () => {
-                        showComments(post.id);
-                    });
-                    
-                    // Add bookmark functionality
-                    const bookmarkBtn = postEl.querySelectorAll('.action-btn')[2];
-                    bookmarkBtn.addEventListener('click', () => {
-                        toggleBookmark(post.id);
-                    });
-                    
-                    // Add share functionality
-                    const shareBtn = postEl.querySelectorAll('.action-btn')[3];
-                    shareBtn.addEventListener('click', () => {
-                        sharePost(post.id);
-                    });
-                    
-                    // Add options functionality
-                    const optionsBtn = postEl.querySelector('.options-btn');
-                    optionsBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showPostOptions(post);
-                    });
-                    
-                    postsContainer.appendChild(postEl);
-                }
-            } catch (error) {
-                console.error('Error loading profile:', error);
-                document.getElementById('userPostsContainer').innerHTML = `
-                    <div class="card text-center">
-                        <div style="padding: 40px 20px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                            <h3>Error loading profile</h3>
-                            <p>Please try again later</p>
-                        </div>
-                    </div>
-                `;
-            }
+            // Update profile info
+            document.getElementById('profileName').textContent = currentUser.display_name;
+            document.getElementById('profileBio').textContent = currentUser.bio || 'Welcome to YUME! Start sharing your content.';
+            document.getElementById('profileAvatar').src = currentUser.avatar_url;
+            
+            document.getElementById('postsCount').textContent = currentUser.post_count || '0';
+            document.getElementById('followingCount').textContent = currentUser.following_count || '0';
+            document.getElementById('followersCount').textContent = currentUser.follower_count || '0';
+            document.getElementById('profileViewsCount').textContent = currentUser.profile_views || '0';
+            
+            // Load user posts
+            userPostsContainer.innerHTML = `
+                <div class="card">
+                    <h4>Your Posts</h4>
+                    <p>You haven't created any posts yet.</p>
+                    <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">
+                        <i class="fas fa-plus"></i> Create Your First Post
+                    </button>
+                </div>
+            `;
         }
 
-        // Create a new post
-        async function createPost(content, imageFile, videoFile) {
+        async function createPost(content) {
             if (!currentUser) {
                 alert('Please login to create a post');
                 showPage('authPage');
@@ -2358,48 +1922,15 @@
             }
             
             try {
-                let imageUrl = null;
-                let videoUrl = null;
-                
-                // Upload image if provided
-                if (imageFile) {
-                    const { data: imageData, error: imageError } = await supabase.storage
-                        .from('post-images')
-                        .upload(`${currentUser.id}/${Date.now()}-${imageFile.name}`, imageFile);
-                    
-                    if (imageError) throw imageError;
-                    
-                    imageUrl = supabase.storage
-                        .from('post-images')
-                        .getPublicUrl(imageData.path).data.publicUrl;
-                }
-                
-                // Upload video if provided
-                if (videoFile) {
-                    const { data: videoData, error: videoError } = await supabase.storage
-                        .from('post-videos')
-                        .upload(`${currentUser.id}/${Date.now()}-${videoFile.name}`, videoFile);
-                    
-                    if (videoError) throw videoError;
-                    
-                    videoUrl = supabase.storage
-                        .from('post-videos')
-                        .getPublicUrl(videoData.path).data.publicUrl;
-                }
-                
-                // Create post in database
-                const { data, error } = await supabase
+                const { error } = await supabase
                     .from('posts')
                     .insert([
                         {
                             user_id: currentUser.id,
-                            content: content,
-                            image_url: imageUrl,
-                            video_url: videoUrl
+                            content: content
                         }
-                    ])
-                    .select();
-                
+                    ]);
+
                 if (error) throw error;
                 
                 // Update user's post count
@@ -2411,9 +1942,7 @@
                 // Reset form and go back to feed
                 document.getElementById('newPostForm').reset();
                 document.getElementById('charCount').textContent = '0';
-                document.getElementById('mediaPreview').style.display = 'none';
                 showPage('homePage');
-                await loadFeed();
                 
                 // Show success message
                 showSuccess('Post created successfully!');
@@ -2426,984 +1955,83 @@
             }
         }
 
-        // Toggle like on a post
-        async function toggleLike(postId) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            try {
-                // Check if user already liked the post
-                const { data: existingLike, error: checkError } = await supabase
-                    .from('likes')
-                    .select('id')
-                    .eq('post_id', postId)
-                    .eq('user_id', currentUser.id)
-                    .single();
-                
-                if (checkError && checkError.code !== 'PGRST116') {
-                    throw checkError;
-                }
-                
-                if (existingLike) {
-                    // Unlike the post
-                    const { error: deleteError } = await supabase
-                        .from('likes')
-                        .delete()
-                        .eq('id', existingLike.id);
-                    
-                    if (deleteError) throw deleteError;
-                } else {
-                    // Like the post
-                    const { error: insertError } = await supabase
-                        .from('likes')
-                        .insert([
-                            {
-                                post_id: postId,
-                                user_id: currentUser.id
-                            }
-                        ]);
-                    
-                    if (insertError) throw insertError;
-                    
-                    // Earn YUME for liking content
-                    await earnYume(1, 'Liking a post');
-                    
-                    // Create notification for post owner
-                    const { data: post } = await supabase
-                        .from('posts')
-                        .select('user_id')
-                        .eq('id', postId)
-                        .single();
-                    
-                    if (post && post.user_id !== currentUser.id) {
-                        await addNotification({
-                            user_id: post.user_id,
-                            type: 'like',
-                            title: 'New Like',
-                            message: `${currentUser.display_name} liked your post`,
-                            read: false
-                        });
-                    }
-                }
-                
-                // Update UI
-                if (currentPage === 'homePage') {
-                    await loadFeed();
-                } else if (currentPage === 'profilePage') {
-                    await loadProfile();
-                }
-            } catch (error) {
-                console.error('Error toggling like:', error);
-            }
-        }
-
-        // Show comments for a post
-        async function showComments(postId) {
-            if (!currentUser) {
-                alert('Please login to view comments');
-                showPage('authPage');
-                return;
-            }
-            
-            currentPostId = postId;
-            document.getElementById('commentModal').style.display = 'flex';
-            await loadComments();
-        }
-
-        // Load comments for a post
-        async function loadComments() {
-            const commentsContainer = document.getElementById('commentsContainer');
-            commentsContainer.innerHTML = '<div class="spinner"></div>';
-            
-            try {
-                const { data, error } = await supabase
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (
-                            display_name,
-                            username,
-                            avatar_url
-                        )
-                    `)
-                    .eq('post_id', currentPostId)
-                    .order('created_at', { ascending: true });
-                
-                if (error) throw error;
-                
-                commentsContainer.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
-                } else {
-                    for (const comment of data) {
-                        const commentEl = document.createElement('div');
-                        commentEl.className = 'comment';
-                        commentEl.innerHTML = `
-                            <img src="${comment.profiles.avatar_url}" alt="${comment.profiles.display_name}" class="comment-avatar">
-                            <div class="comment-content">
-                                <div class="username">${comment.profiles.display_name}</div>
-                                <p>${comment.content}</p>
-                                <div class="timestamp">${formatDate(comment.created_at)}</div>
-                            </div>
-                        `;
-                        commentsContainer.appendChild(commentEl);
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading comments:', error);
-                commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
-            }
-        }
-
-        // Post a comment
-        async function postComment() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const commentInput = document.getElementById('commentInput');
-            const content = commentInput.value.trim();
-            
-            if (!content) return;
-            
-            try {
-                const { error } = await supabase
-                    .from('comments')
-                    .insert([
-                        {
-                            post_id: currentPostId,
-                            user_id: currentUser.id,
-                            content: content
-                        }
-                    ]);
-                
-                if (error) throw error;
-                
-                // Clear input
-                commentInput.value = '';
-                
-                // Reload comments
-                await loadComments();
-                
-                // Earn YUME for commenting
-                await earnYume(1, 'Commenting on a post');
-                
-                // Create notification for post owner
-                const { data: post } = await supabase
-                    .from('posts')
-                    .select('user_id')
-                    .eq('id', currentPostId)
-                    .single();
-                
-                if (post && post.user_id !== currentUser.id) {
-                    await addNotification({
-                        user_id: post.user_id,
-                        type: 'comment',
-                        title: 'New Comment',
-                        message: `${currentUser.display_name} commented on your post`,
-                        read: false
-                    });
-                }
-            } catch (error) {
-                console.error('Error posting comment:', error);
-            }
-        }
-
-        // Load conversations
-        async function loadConversations() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const conversationsContainer = document.getElementById('conversationsContainer');
-            conversationsContainer.innerHTML = '<div class="spinner"></div>';
-            
-            try {
-                // Get conversations where user is either sender or receiver
-                const { data, error } = await supabase
-                    .from('conversations')
-                    .select(`
-                        *,
-                        user1:user1_id (
-                            display_name,
-                            username,
-                            avatar_url
-                        ),
-                        user2:user2_id (
-                            display_name,
-                            username,
-                            avatar_url
-                        )
-                    `)
-                    .or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`)
-                    .order('updated_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                conversationsContainer.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    conversationsContainer.innerHTML = `
-                        <div class="card text-center">
-                            <div style="padding: 40px 20px;">
-                                <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
-                                <h3>No messages yet</h3>
-                                <p>Start a conversation with someone</p>
-                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
-                            </div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                for (const conversation of data) {
-                    const otherUser = conversation.user1_id === currentUser.id ? 
-                        conversation.user2 : conversation.user1;
-                    
-                    // Get last message
-                    const { data: lastMessage, error: messageError } = await supabase
-                        .from('messages')
-                        .select('*')
-                        .eq('conversation_id', conversation.id)
-                        .order('created_at', { ascending: false })
-                        .limit(1)
-                        .single();
-                    
-                    if (messageError && messageError.code !== 'PGRST116') {
-                        console.error('Error getting last message:', messageError);
-                    }
-                    
-                    const conversationEl = document.createElement('div');
-                    conversationEl.className = 'card';
-                    conversationEl.style.padding = '15px';
-                    conversationEl.style.marginBottom = '10px';
-                    conversationEl.innerHTML = `
-                        <div style="display: flex; align-items: center;">
-                            <img src="${otherUser.avatar_url}" alt="${otherUser.display_name}" class="avatar">
-                            <div style="flex: 1; margin-left: 10px; cursor: pointer;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div class="username">${otherUser.display_name}</div>
-                                    <div class="timestamp">${lastMessage ? formatDate(lastMessage.created_at) : ''}</div>
-                                </div>
-                                <p>${lastMessage ? lastMessage.content : 'No messages yet'}</p>
-                            </div>
-                        </div>
-                    `;
-                    
-                    // Add click event to open chat
-                    conversationEl.addEventListener('click', () => {
-                        currentChatUser = {
-                            id: otherUser.id,
-                            name: otherUser.display_name,
-                            avatar: otherUser.avatar_url,
-                            conversation_id: conversation.id
-                        };
-                        
-                        document.getElementById('chatUserName').textContent = otherUser.display_name;
-                        document.getElementById('chatUserAvatar').src = otherUser.avatar_url;
-                        
-                        showPage('chatPage');
-                        loadChat(currentChatUser);
-                    });
-                    
-                    conversationsContainer.appendChild(conversationEl);
-                }
-            } catch (error) {
-                console.error('Error loading conversations:', error);
-                conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
-            }
-        }
-
-        // Load chat with a user
-        async function loadChat(user) {
-            const messageThread = document.getElementById('messageThread');
-            messageThread.innerHTML = '<div class="spinner"></div>';
-            
-            try {
-                const { data, error } = await supabase
-                    .from('messages')
-                    .select('*')
-                    .eq('conversation_id', user.conversation_id)
-                    .order('created_at', { ascending: true });
-                
-                if (error) throw error;
-                
-                messageThread.innerHTML = '';
-                
-                if (data && data.length > 0) {
-                    data.forEach(msg => {
-                        const messageEl = document.createElement('div');
-                        messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
-                        messageEl.innerHTML = `
-                            <div>${msg.content}</div>
-                            <div class="message-time">${formatTime(msg.created_at)}</div>
-                        `;
-                        messageThread.appendChild(messageEl);
-                    });
-                    
-                    // Scroll to bottom
-                    messageThread.scrollTop = messageThread.scrollHeight;
-                }
-            } catch (error) {
-                console.error('Error loading chat:', error);
-                messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
-            }
-        }
-
-        // Send a message
-        async function sendMessage() {
-            if (!currentUser || !currentChatUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const messageInput = document.getElementById('messageInput');
-            const content = messageInput.value.trim();
-            
-            if (!content) return;
-            
-            try {
-                const { error } = await supabase
-                    .from('messages')
-                    .insert([
-                        {
-                            conversation_id: currentChatUser.conversation_id,
-                            sender_id: currentUser.id,
-                            content: content
-                        }
-                    ]);
-                
-                if (error) throw error;
-                
-                // Update conversation timestamp
-                await supabase
-                    .from('conversations')
-                    .update({ updated_at: new Date().toISOString() })
-                    .eq('id', currentChatUser.conversation_id);
-                
-                // Add message to UI
-                const messageEl = document.createElement('div');
-                messageEl.className = 'message sent';
-                messageEl.innerHTML = `
-                    <div>${content}</div>
-                    <div class="message-time">${formatTime(new Date())}</div>
-                `;
-                
-                document.getElementById('messageThread').appendChild(messageEl);
-                
-                // Clear input
-                messageInput.value = '';
-                
-                // Scroll to bottom
-                const messageThread = document.getElementById('messageThread');
-                messageThread.scrollTop = messageThread.scrollHeight;
-                
-                // Earn YUME for messaging
-                await earnYume(1, 'Sending a message');
-            } catch (error) {
-                console.error('Error sending message:', error);
-            }
-        }
-
-        // Initialize search
-        function initSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
-        }
-
-        // Handle search input
-        async function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const searchResults = document.getElementById('searchResults');
-            
-            if (query.length < 2) {
-                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
-                return;
-            }
-            
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
-                    .neq('id', currentUser.id)
-                    .limit(20);
-                
-                if (error) throw error;
-                
-                searchResults.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    searchResults.innerHTML = '<p class="text-center">No users found</p>';
-                    return;
-                }
-                
-                for (const user of data) {
-                    // Check if current user is following this user
-                    const isFollowing = following.some(f => f.following_id === user.id);
-                    
-                    const userEl = document.createElement('div');
-                    userEl.className = 'card user-item';
-                    userEl.innerHTML = `
-                        <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
-                        <div style="flex: 1;">
-                            <div class="username">
-                                ${user.display_name}
-                                ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                            </div>
-                            <div>@${user.username}</div>
-                            <div>${user.bio || ''}</div>
-                        </div>
-                        <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
-                            ${isFollowing ? 'Unfollow' : 'Follow'}
-                        </button>
-                    `;
-                    
-                    // Add follow functionality
-                    const followBtn = userEl.querySelector('button');
-                    followBtn.addEventListener('click', () => {
-                        toggleFollow(user.id);
-                    });
-                    
-                    searchResults.appendChild(userEl);
-                }
-            } catch (error) {
-                console.error('Error searching users:', error);
-                searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
-            }
-        }
-
-        // Handle global search
-        function handleGlobalSearch() {
-            const query = document.getElementById('globalSearch').value.toLowerCase();
-            
-            if (query.length < 2) {
-                return;
-            }
-            
-            // If we're not already on the search page, go there
-            if (currentPage !== 'searchPage') {
-                showPage('searchPage');
-                // Small delay to allow the page to render before triggering search
-                setTimeout(() => {
-                    document.getElementById('searchInput').value = query;
-                    handleSearch();
-                }, 100);
-            } else {
-                // If we're already on the search page, just trigger the search
-                document.getElementById('searchInput').value = query;
-                handleSearch();
-            }
-        }
-
-        // Toggle follow
-        async function toggleFollow(userId) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            try {
-                // Check if already following
-                const isFollowing = following.some(f => f.following_id === userId);
-                
-                if (isFollowing) {
-                    // Unfollow
-                    const { error } = await supabase
-                        .from('follows')
-                        .delete()
-                        .eq('follower_id', currentUser.id)
-                        .eq('following_id', userId);
-                    
-                    if (error) throw error;
-                    
-                    // Update follower count for the user
-                    await supabase
-                        .from('profiles')
-                        .update({ follower_count: (currentUser.follower_count || 0) - 1 })
-                        .eq('id', userId);
-                    
-                    // Update following count for current user
-                    await supabase
-                        .from('profiles')
-                        .update({ following_count: (currentUser.following_count || 0) - 1 })
-                        .eq('id', currentUser.id);
-                } else {
-                    // Follow
-                    const { error } = await supabase
-                        .from('follows')
-                        .insert([
-                            {
-                                follower_id: currentUser.id,
-                                following_id: userId
-                            }
-                        ]);
-                    
-                    if (error) throw error;
-                    
-                    // Update follower count for the user
-                    await supabase
-                        .from('profiles')
-                        .update({ follower_count: (currentUser.follower_count || 0) + 1 })
-                        .eq('id', userId);
-                    
-                    // Update following count for current user
-                    await supabase
-                        .from('profiles')
-                        .update({ following_count: (currentUser.following_count || 0) + 1 })
-                        .eq('id', currentUser.id);
-                    
-                    // Create notification
-                    await addNotification({
-                        user_id: userId,
-                        type: 'follow',
-                        title: 'New Follower',
-                        message: `${currentUser.display_name} started following you`,
-                        read: false
-                    });
-                    
-                    // Earn YUME for following
-                    await earnYume(5, 'Following a user');
-                }
-                
-                // Reload follow data
-                await loadFollowData();
-                
-                // Update UI
-                handleSearch();
-                
-                // Update profile stats if on profile page
-                if (currentPage === 'profilePage') {
-                    await loadProfile();
-                }
-                
-                showSuccess(isFollowing ? 'Unfollowed user' : 'Followed user');
-            } catch (error) {
-                console.error('Error toggling follow:', error);
-            }
-        }
-
-        // Load follow data
-        async function loadFollowData() {
-            if (!currentUser) return;
-            
-            try {
-                // Get followers
-                const { data: followersData, error: followersError } = await supabase
-                    .from('follows')
-                    .select('follower_id')
-                    .eq('following_id', currentUser.id);
-                
-                if (followersError) throw followersError;
-                
-                followers = followersData || [];
-                
-                // Get following
-                const { data: followingData, error: followingError } = await supabase
-                    .from('follows')
-                    .select('following_id')
-                    .eq('follower_id', currentUser.id);
-                
-                if (followingError) throw followingError;
-                
-                following = followingData || [];
-            } catch (error) {
-                console.error('Error loading follow data:', error);
-            }
-        }
-
-        // Show following list
-        async function showFollowingList() {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .in('id', following.map(f => f.following_id));
-                
-                if (error) throw error;
-                
-                let userListHtml = '';
-                data.forEach(user => {
-                    userListHtml += `
-                        <div class="card user-item">
-                            <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
-                            <div style="flex: 1;">
-                                <div class="username">
-                                    ${user.display_name}
-                                    ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                </div>
-                                <div>@${user.username}</div>
-                            </div>
-                            <button class="btn btn-secondary" data-user-id="${user.id}">Unfollow</button>
-                        </div>
-                    `;
-                });
-                
-                // Show modal with following list
-                alert('Following list modal would show here with: ' + userListHtml);
-            } catch (error) {
-                console.error('Error loading following list:', error);
-            }
-        }
-
-        // Show followers list
-        async function showFollowersList() {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .in('id', followers.map(f => f.follower_id));
-                
-                if (error) throw error;
-                
-                let userListHtml = '';
-                data.forEach(user => {
-                    const isFollowing = following.some(f => f.following_id === user.id);
-                    
-                    userListHtml += `
-                        <div class="card user-item">
-                            <img src="${user.avatar_url}" alt="${user.display_name}" class="avatar">
-                            <div style="flex: 1;">
-                                <div class="username">
-                                    ${user.display_name}
-                                    ${user.is_verified ? '<span class="verified-badge"><i class="fas fa-check"></i></span>' : ''}
-                                </div>
-                                <div>@${user.username}</div>
-                            </div>
-                            <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
-                                ${isFollowing ? 'Unfollow' : 'Follow'}
-                            </button>
-                        </div>
-                    `;
-                });
-                
-                // Show modal with followers list
-                alert('Followers list modal would show here with: ' + userListHtml);
-            } catch (error) {
-                console.error('Error loading followers list:', error);
-            }
-        }
-
-        // Load notifications
-        async function loadNotifications() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            const notificationsContainer = document.getElementById('notificationsContainer');
-            notificationsContainer.innerHTML = '<div class="spinner"></div>';
-            
-            try {
-                const { data, error } = await supabase
-                    .from('notifications')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                notificationsContainer.innerHTML = '';
-                
-                if (!data || data.length === 0) {
-                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
-                    return;
-                }
-                
-                for (const notif of data) {
-                    const notifEl = document.createElement('div');
-                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
-                    notifEl.innerHTML = `
-                        <div class="notification-icon">
-                            <i class="fas fa-${notif.type === 'earning' ? 'coins' : notif.type === 'follow' ? 'user-plus' : 'bell'}"></i>
-                        </div>
-                        <div>
-                            <h4>${notif.title}</h4>
-                            <p>${notif.message}</p>
-                            <div class="timestamp">${formatDate(notif.created_at)}</div>
-                        </div>
-                    `;
-                    
-                    // Mark as read when clicked
-                    if (!notif.read) {
-                        notifEl.addEventListener('click', async () => {
-                            const { error } = await supabase
-                                .from('notifications')
-                                .update({ read: true })
-                                .eq('id', notif.id);
-                            
-                            if (!error) {
-                                notif.read = true;
-                                updateUnreadCounts();
-                                await loadNotifications();
-                            }
-                        });
-                    }
-                    
-                    notificationsContainer.appendChild(notifEl);
-                }
-            } catch (error) {
-                console.error('Error loading notifications:', error);
-                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
-            }
-        }
-
-        // Add notification
-        async function addNotification(notification) {
-            try {
-                const { error } = await supabase
-                    .from('notifications')
-                    .insert([notification]);
-                
-                if (error) throw error;
-                
-                updateUnreadCounts();
-            } catch (error) {
-                console.error('Error adding notification:', error);
-            }
-        }
-
-        // Update unread counts
-        async function updateUnreadCounts() {
-            if (!currentUser) return;
-            
-            try {
-                // Get unread notifications count
-                const { count: notificationCount, error: notificationError } = await supabase
-                    .from('notifications')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id)
-                    .eq('read', false);
-                
-                if (notificationError) throw notificationError;
-                
-                // Get unread messages count
-                const { count: messageCount, error: messageError } = await supabase
-                    .from('messages')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('conversation_id', currentUser.id) // This would need to be adjusted based on your schema
-                    .eq('read', false);
-                
-                if (messageError) throw messageError;
-                
-                // Update notification badge
-                const notificationBadge = document.getElementById('notificationBadge');
-                if (notificationCount > 0) {
-                    notificationBadge.textContent = notificationCount;
-                    notificationBadge.style.display = 'flex';
-                } else {
-                    notificationBadge.style.display = 'none';
-                }
-                
-                // Update message badge
-                const messageBadge = document.getElementById('messageBadge');
-                if (messageCount > 0) {
-                    messageBadge.textContent = messageCount;
-                    messageBadge.style.display = 'flex';
-                } else {
-                    messageBadge.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Error updating unread counts:', error);
-            }
-        }
-
-        // Earn YUME tokens
         async function earnYume(amount, reason) {
+            if (!currentUser) return;
+            
             try {
-                // Update user balance
                 const newBalance = userBalance + amount;
+                
                 const { error } = await supabase
                     .from('profiles')
                     .update({ yume_balance: newBalance })
                     .eq('id', currentUser.id);
-                
+
                 if (error) throw error;
                 
                 userBalance = newBalance;
-                updateBalanceDisplay();
+                currentUser.yume_balance = newBalance;
+                updateUI();
                 
-                // Add notification
-                await addNotification({
-                    user_id: currentUser.id,
-                    type: 'earning',
-                    title: 'YUME Tokens Earned',
-                    message: `You earned ${amount} $YUME for ${reason}`,
-                    read: false
-                });
-                
-                showSuccess(`+${amount} $YUME earned for ${reason}!`);
+                showSuccess(`You earned ${amount} $YUME for ${reason}!`);
             } catch (error) {
                 console.error('Error earning YUME:', error);
+                showError('Error earning YUME');
             }
         }
 
-        // Buy YUME with Stripe
-        async function buyYumeWithStripe() {
-            const yumeAmount = parseInt(document.getElementById('yumeAmount').value);
+        function updateUI() {
+            // Update balance display
+            document.getElementById('balanceAmount').textContent = userBalance;
             
-            if (yumeAmount < 100) {
-                alert('Minimum purchase is 100 $YUME');
-                return;
-            }
-            
-            const usdAmount = yumeAmount * YUME_TO_USD;
-            
-            try {
-                // Create a payment intent on your server
-                // This would typically call your backend API
-                const response = await fetch('/api/create-payment-intent', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        amount: usdAmount * 100, // Convert to cents
-                        currency: 'usd',
-                        yume_amount: yumeAmount,
-                        user_id: currentUser.id
-                    })
-                });
+            // Refresh current page
+            if (currentPage === 'homePage') loadHomePage();
+            if (currentPage === 'profilePage') loadProfilePage();
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
                 
-                const { clientSecret } = await response.json();
-                
-                // Confirm the payment with Stripe
-                const { error } = await stripe.confirmCardPayment(clientSecret, {
-                    payment_method: {
-                        card: elements.getElement('card'),
-                        billing_details: {
-                            name: currentUser.display_name,
-                        },
-                    }
-                });
-                
-                if (error) {
-                    console.error('Payment error:', error);
-                    alert('Payment failed: ' + error.message);
-                } else {
-                    // Payment successful
-                    await earnYume(yumeAmount, 'Purchasing tokens');
-                    showSuccess(`Successfully purchased ${yumeAmount} $YUME!`);
-                }
-            } catch (error) {
-                console.error('Error processing payment:', error);
-                alert('Error processing payment. Please try again.');
+                setTimeout(() => {
+                    errorElement.style.display = 'none';
+                }, 5000);
+            } else {
+                alert(message);
             }
         }
 
-        // Load user posts
-        async function loadUserPosts() {
+        function showSuccess(message) {
+            // Create a temporary success message
+            const successElement = document.createElement('div');
+            successElement.className = 'success-message';
+            successElement.textContent = message;
+            successElement.style.position = 'fixed';
+            successElement.style.top = '70px';
+            successElement.style.left = '50%';
+            successElement.style.transform = 'translateX(-50%)';
+            successElement.style.zIndex = '1000';
+            successElement.style.maxWidth = '90%';
+            
+            document.body.appendChild(successElement);
+            
+            setTimeout(() => {
+                successElement.remove();
+            }, 3000);
+        }
+
+        function showEditProfileModal() {
             if (!currentUser) return;
             
-            try {
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select('*')
-                    .eq('user_id', currentUser.id);
-                
-                if (error) throw error;
-                
-                posts = data || [];
-            } catch (error) {
-                console.error('Error loading user posts:', error);
-            }
-        }
-
-        // Load stories
-        async function loadStories() {
-            const storiesContainer = document.getElementById('storiesContainer');
-            
-            if (!currentUser) {
-                return;
-            }
-            
-            storiesContainer.innerHTML = '<div class="spinner"></div>';
-            
-            try {
-                // Get users that current user follows (for their stories)
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .in('id', following.map(f => f.following_id))
-                    .limit(10);
-                
-                if (error) throw error;
-                
-                storiesContainer.innerHTML = '';
-                
-                // Add current user's story first with create option
-                const addStoryEl = document.createElement('div');
-                addStoryEl.className = 'story';
-                addStoryEl.innerHTML = `
-                    <div style="position: relative;">
-                        <img src="${currentUser.avatar_url}" alt="Your story" class="story-avatar">
-                        <div style="position: absolute; bottom: 0; right: 0; background: var(--primary-color); color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-plus" style="font-size: 0.7rem;"></i>
-                        </div>
-                    </div>
-                    <div class="story-username">Your story</div>
-                `;
-                
-                addStoryEl.addEventListener('click', () => {
-                    alert('Create story functionality would go here');
-                });
-                
-                storiesContainer.appendChild(addStoryEl);
-                
-                // Add other users' stories
-                if (data && data.length > 0) {
-                    data.forEach(user => {
-                        const storyEl = document.createElement('div');
-                        storyEl.className = 'story';
-                        storyEl.innerHTML = `
-                            <img src="${user.avatar_url}" alt="${user.display_name}" class="story-avatar">
-                            <div class="story-username">${user.display_name}</div>
-                        `;
-                        
-                        storyEl.addEventListener('click', () => {
-                            alert(`View ${user.display_name}'s story`);
-                        });
-                        
-                        storiesContainer.appendChild(storyEl);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading stories:', error);
-                storiesContainer.innerHTML = '';
-            }
-        }
-
-        // Show edit profile modal
-        function showEditProfileModal() {
             document.getElementById('editDisplayName').value = currentUser.display_name || '';
             document.getElementById('editUsername').value = currentUser.username || '';
             document.getElementById('editBio').value = currentUser.bio || '';
             document.getElementById('editProfileModal').style.display = 'flex';
         }
 
-        // Update user profile
-        async function updateProfile(displayName, username, bio, avatarFile) {
+        async function updateProfile(displayName, username, bio) {
             try {
-                let avatarUrl = currentUser.avatar_url;
-                
-                // Upload new avatar if provided
-                if (avatarFile) {
-                    const { data: avatarData, error: avatarError } = await supabase.storage
-                        .from('avatars')
-                        .upload(`${currentUser.id}/${Date.now()}-${avatarFile.name}`, avatarFile);
-                    
-                    if (avatarError) throw avatarError;
-                    
-                    avatarUrl = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(avatarData.path).data.publicUrl;
-                }
-                
                 // Check if username is available (if changed)
                 if (username !== currentUser.username) {
                     const { data: existingUser, error: checkError } = await supabase
@@ -3425,8 +2053,7 @@
                     .update({
                         display_name: displayName,
                         username: username,
-                        bio: bio,
-                        avatar_url: avatarUrl
+                        bio: bio
                     })
                     .eq('id', currentUser.id);
                 
@@ -3436,10 +2063,9 @@
                 currentUser.display_name = displayName;
                 currentUser.username = username;
                 currentUser.bio = bio;
-                currentUser.avatar_url = avatarUrl;
                 
                 // Update UI
-                updateProfileDisplay();
+                loadProfilePage();
                 
                 // Close modal
                 document.getElementById('editProfileModal').style.display = 'none';
@@ -3452,55 +2078,170 @@
             }
         }
 
-        // Share profile
-        function shareProfile() {
-            if (!currentUser) return;
+        function buyYumeWithStripe() {
+            alert('Stripe integration would be implemented here. For now, use the "Earn YUME" buttons to test the functionality.');
+        }
+
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
             
-            const profileUrl = `${window.location.origin}/profile/${currentUser.username}`;
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
+                return;
+            }
             
-            if (navigator.share) {
-                navigator.share({
-                    title: `Check out ${currentUser.display_name}'s profile on YUME`,
-                    text: `Follow ${currentUser.display_name} on YUME`,
-                    url: profileUrl
-                });
+            // For demo purposes, show some sample results
+            searchResults.innerHTML = `
+                <div class="card user-item">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80" alt="User 1" class="avatar">
+                    <div style="flex: 1;">
+                        <div class="username">User One</div>
+                        <div>@user1</div>
+                    </div>
+                    <button class="btn btn-primary">Follow</button>
+                </div>
+                <div class="card user-item">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80" alt="User 2" class="avatar">
+                    <div style="flex: 1;">
+                        <div class="username">User Two</div>
+                        <div>@user2</div>
+                    </div>
+                    <button class="btn btn-primary">Follow</button>
+                </div>
+            `;
+        }
+
+        function handleGlobalSearch() {
+            const query = document.getElementById('globalSearch').value.toLowerCase();
+            
+            if (query.length < 2) {
+                return;
+            }
+            
+            if (currentPage !== 'searchPage') {
+                showPage('searchPage');
+                setTimeout(() => {
+                    document.getElementById('searchInput').value = query;
+                    handleSearch();
+                }, 100);
             } else {
-                navigator.clipboard.writeText(profileUrl);
-                showSuccess('Profile link copied to clipboard!');
+                document.getElementById('searchInput').value = query;
+                handleSearch();
             }
         }
 
-        // Message current user
-        function messageCurrentUser() {
-            if (!currentUser) return;
+        async function loadNotifications() {
+            const notificationsContainer = document.getElementById('notificationsContainer');
             
-            // For demo purposes, we'll show a message
-            alert(`This would open a chat with ${currentUser.display_name}`);
+            if (!currentUser) {
+                notificationsContainer.innerHTML = '<p class="text-center">Please login to view notifications</p>';
+                return;
+            }
+            
+            notificationsContainer.innerHTML = `
+                <div class="card notification-item">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div>
+                        <h4>Welcome to YUME!</h4>
+                        <p>Start exploring and earning $YUME tokens</p>
+                        <div class="timestamp">Just now</div>
+                    </div>
+                </div>
+            `;
         }
 
-        // Format date
-        function formatDate(date) {
-            const now = new Date();
-            const diff = now - new Date(date);
-            const minutes = Math.floor(diff / 60000);
-            const hours = Math.floor(diff / 3600000);
-            const days = Math.floor(diff / 86400000);
+        async function loadConversations() {
+            const conversationsContainer = document.getElementById('conversationsContainer');
             
-            if (minutes < 1) return 'Just now';
-            if (minutes < 60) return `${minutes}m ago`;
-            if (hours < 24) return `${hours}h ago`;
-            if (days < 7) return `${days}d ago`;
+            if (!currentUser) {
+                conversationsContainer.innerHTML = '<p class="text-center">Please login to view messages</p>';
+                return;
+            }
             
-            return new Date(date).toLocaleDateString();
+            conversationsContainer.innerHTML = `
+                <div class="card" style="padding: 15px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80" alt="User 1" class="avatar">
+                        <div style="flex: 1; margin-left: 10px; cursor: pointer;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div class="username">User One</div>
+                                <div class="timestamp">2h ago</div>
+                            </div>
+                            <p>Hey, how are you?</p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        // Format time
-        function formatTime(date) {
-            return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        function sendMessage() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+            
+            // For demo purposes, just add it to the UI
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message sent';
+            messageEl.innerHTML = `
+                <div>${content}</div>
+                <div class="message-time">Just now</div>
+            `;
+            
+            document.getElementById('messageThread').appendChild(messageEl);
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Scroll to bottom
+            const messageThread = document.getElementById('messageThread');
+            messageThread.scrollTop = messageThread.scrollHeight;
         }
 
-        // Initialize the app when the DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        function postComment() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+            
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+            
+            if (!content) return;
+            
+            // For demo purposes, just show a success message
+            showSuccess('Comment posted!');
+            
+            // Clear input
+            commentInput.value = '';
+        }
+
+        // Listen for auth state changes
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                await loadUserProfile(session.user.id);
+                if (currentPage === 'authPage') {
+                    showPage('homePage');
+                }
+            } else if (event === 'SIGNED_OUT') {
+                currentUser = null;
+                userBalance = 0;
+                showPage('authPage');
+            }
+        });
     </script>
 </body>
 </html>
