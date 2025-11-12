@@ -44,29 +44,10 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            padding-bottom: 60px;
             overflow-x: hidden;
         }
 
-        a {
-            text-decoration: none;
-            color: var(--primary-color);
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: inherit;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0;
-        }
-
-        /* Enhanced Header */
+        /* Header */
         .header {
             position: fixed;
             top: 0;
@@ -80,7 +61,6 @@
             align-items: center;
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
             height: 60px;
         }
 
@@ -108,18 +88,18 @@
             gap: 12px;
         }
 
-        .theme-toggle, .search-toggle {
+        .header-btn {
             background: none;
             border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
             color: var(--text-color);
+            font-size: 1.2rem;
             padding: 8px;
             border-radius: 50%;
             transition: var(--transition);
+            cursor: pointer;
         }
 
-        .theme-toggle:hover, .search-toggle:hover {
+        .header-btn:hover {
             background-color: rgba(255,255,255,0.1);
         }
 
@@ -133,32 +113,11 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: var(--transition);
-        }
-
-        .yume-balance:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
         }
 
         /* Profile Dropdown */
         .profile-dropdown {
             position: relative;
-        }
-
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.3rem;
-            padding: 8px;
-            border-radius: 50%;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .dropdown-toggle:hover {
-            background-color: rgba(255,255,255,0.1);
         }
 
         .dropdown-menu {
@@ -174,7 +133,6 @@
             z-index: 1001;
             border: 1px solid var(--border-color);
             display: none;
-            animation: slideDown 0.2s ease;
         }
 
         .dropdown-menu.show {
@@ -208,84 +166,36 @@
             margin: 8px 0;
         }
 
-        /* TikTok-style Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
-            border-top: 1px solid var(--border-color);
-            box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.7rem;
-            color: var(--text-color);
-            position: relative;
-            transition: var(--transition);
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        .nav-item.active {
-            color: var(--primary-color);
-        }
-
-        .nav-icon {
-            font-size: 1.4rem;
-            margin-bottom: 4px;
-            transition: var(--transition);
-        }
-
-        .nav-item.active .nav-icon {
-            transform: scale(1.1);
-        }
-
-        .badge {
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: -5px;
-            right: -5px;
-        }
-
-        /* Main Content Area - Fixed to avoid header overlap */
+        /* Main Content */
         .main-content {
-            margin-top: 60px; /* Same as header height */
-            height: calc(100vh - 120px); /* Subtract header and footer */
-            overflow-y: auto;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            min-height: calc(100vh - 120px);
         }
 
-        /* TikTok Video Feed */
-        .video-feed {
-            position: relative;
+        /* Pages */
+        .page {
+            display: none;
+            width: 100%;
             height: 100%;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Video Feed */
+        .video-feed {
+            height: calc(100vh - 120px);
             overflow-y: auto;
             scroll-snap-type: y mandatory;
         }
 
         .video-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+            height: 100vh;
             scroll-snap-align: start;
-            overflow: hidden;
+            position: relative;
+            background: #000;
         }
 
         .video-player {
@@ -299,27 +209,23 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 15px;
+            padding: 20px;
             background: linear-gradient(transparent, rgba(0,0,0,0.7));
             color: white;
             z-index: 10;
         }
 
-        .video-info {
-            margin-bottom: 20px;
-        }
-
         .video-username {
             font-weight: bold;
             font-size: 1.1rem;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
         }
 
         .video-caption {
             font-size: 0.9rem;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             max-width: 80%;
         }
 
@@ -328,21 +234,20 @@
             align-items: center;
             font-size: 0.8rem;
             color: rgba(255,255,255,0.8);
-            margin-bottom: 15px;
-        }
-
-        .video-music i {
-            margin-right: 5px;
         }
 
         .video-actions {
             position: absolute;
             right: 15px;
-            bottom: 100px;
+            bottom: 120px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
+        }
+
+        .action-item {
+            text-align: center;
         }
 
         .action-circle {
@@ -357,6 +262,7 @@
             font-size: 1.2rem;
             transition: var(--transition);
             cursor: pointer;
+            border: none;
         }
 
         .action-circle:hover {
@@ -370,38 +276,93 @@
         .action-count {
             font-size: 0.7rem;
             margin-top: 5px;
+            color: white;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-color);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+
+        /* Profile Page */
+        .profile-header {
+            padding: 30px 20px 20px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 4px solid white;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: var(--card-bg);
+            margin: 20px;
+            border-radius: 16px;
+        }
+
+        .stat {
             text-align: center;
         }
 
-        /* Profile Avatar */
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.3rem;
+            display: block;
         }
 
-        /* Enhanced Forms */
-        .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 1rem;
-            transition: var(--transition);
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 0 20px 20px;
         }
 
         .btn {
-            padding: 14px 20px;
+            padding: 12px 20px;
             border-radius: 12px;
             font-weight: bold;
             cursor: pointer;
@@ -409,7 +370,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.95rem;
+            border: none;
         }
 
         .btn i {
@@ -423,226 +384,26 @@
 
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            color: black;
-        }
-
-        .btn-secondary:hover {
-            background-color: #1de0d9;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
-
-        .btn-outline:hover {
-            background-color: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease;
-            height: 100%;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Enhanced Auth Pages */
-        .auth-container {
-            max-width: 420px;
-            margin: 80px auto;
-            padding: 0 20px;
-        }
-
-        .auth-card {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-radius: 12px;
-            overflow: hidden;
-            background-color: var(--bg-color);
-            box-shadow: var(--shadow);
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-        }
-
-        .auth-tab.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .auth-form {
-            margin-top: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        /* Enhanced Profile Page */
-        .profile-header {
-            padding: 30px 20px 20px;
-            text-align: center;
-            position: relative;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 20px;
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 4px solid white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px 0;
-            margin-bottom: 15px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            margin: 0 20px 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .stat {
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            padding: 10px;
-            border-radius: 12px;
-        }
-
-        .stat:hover {
-            background-color: rgba(255,255,255,0.05);
-            transform: translateY(-2px);
-        }
-
-        .stat-value {
-            font-weight: bold;
-            font-size: 1.3rem;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            justify-content: center;
-            padding: 0 20px;
-        }
-
-        .profile-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            margin: 0 20px 20px;
-        }
-
-        .profile-tab {
-            flex: 1;
-            text-align: center;
-            padding: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            font-weight: 600;
-        }
-
-        .profile-tab.active {
-            color: var(--primary-color);
-        }
-
-        .profile-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 3px;
-            background-color: var(--primary-color);
-            border-radius: 3px;
-        }
-
-        /* Enhanced Video Grid */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            padding: 0 20px;
+            padding: 0 20px 20px;
         }
 
         .grid-video {
-            position: relative;
             aspect-ratio: 9/16;
-            overflow: hidden;
+            background: var(--border-color);
             border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
         }
 
-        .grid-video video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .grid-video-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 8px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.7));
-            color: white;
-            font-size: 0.7rem;
-        }
-
-        /* Enhanced Earning Page */
+        /* Earn Page */
         .earn-section {
             padding: 25px;
             text-align: center;
@@ -650,14 +411,12 @@
             color: black;
             border-radius: 20px;
             margin: 20px;
-            box-shadow: var(--shadow);
         }
 
         .earn-actions {
             display: flex;
             justify-content: space-around;
             margin-top: 20px;
-            flex-wrap: wrap;
             gap: 10px;
         }
 
@@ -668,15 +427,13 @@
             border-radius: 16px;
             font-weight: bold;
             transition: var(--transition);
-            flex: 1;
-            min-width: 120px;
+            border: none;
             cursor: pointer;
+            flex: 1;
         }
 
         .earn-btn:hover {
             background: rgba(255,255,255,1);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
         }
 
         .yume-store {
@@ -691,13 +448,7 @@
             border-radius: 16px;
             padding: 20px;
             text-align: center;
-            transition: var(--transition);
             border: 1px solid var(--border-color);
-        }
-
-        .store-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
         .store-price {
@@ -710,42 +461,88 @@
             display: inline-block;
         }
 
-        .stripe-section {
+        /* Auth Page */
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .auth-card {
             background: var(--card-bg);
             border-radius: 20px;
-            margin: 20px;
-            padding: 25px;
-            box-shadow: var(--shadow);
+            padding: 30px;
             border: 1px solid var(--border-color);
         }
 
-        .stripe-btn {
-            background: #635bff;
-            color: white;
-            padding: 16px 20px;
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 25px;
             border-radius: 12px;
-            font-weight: bold;
+            overflow: hidden;
+            background: var(--bg-color);
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-input {
             width: 100%;
-            margin-top: 15px;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text-color);
             font-size: 1rem;
         }
 
-        .stripe-btn:hover {
-            background: #5a54d9;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 91, 255, 0.3);
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
         }
 
-        .stripe-btn i {
-            margin-right: 10px;
+        /* Utilities */
+        .text-center {
+            text-align: center;
         }
 
-        /* Floating Action Button */
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+
+        /* Success/Error Messages */
+        .success-message {
+            background: var(--success-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            background: var(--error-color);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 20px;
+            text-align: center;
+        }
+
+        /* Floating Button */
         .floating-btn {
             position: fixed;
             bottom: 80px;
@@ -758,205 +555,45 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-            z-index: 99;
-            transition: var(--transition);
-            font-size: 1.3rem;
-            cursor: pointer;
-        }
-
-        .floating-btn:hover {
-            transform: translateY(-5px) rotate(90deg);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        /* Enhanced Modal */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
-            padding: 20px;
-        }
-
-        .modal {
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            padding: 25px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .close-btn {
-            background: none;
             border: none;
-            font-size: 1.5rem;
             cursor: pointer;
-            color: var(--text-color);
-            padding: 5px;
-            border-radius: 50%;
-            transition: var(--transition);
+            z-index: 99;
+            font-size: 1.3rem;
         }
 
-        .close-btn:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        /* Enhanced Utilities */
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-1 { margin-top: 10px; }
-        .mt-2 { margin-top: 20px; }
-        .mt-3 { margin-top: 30px; }
-        .mb-1 { margin-bottom: 10px; }
-        .mb-2 { margin-bottom: 20px; }
-        .mb-3 { margin-bottom: 30px; }
-
-        /* Loading spinner */
-        .spinner {
-            border: 3px solid var(--border-color);
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Animation keyframes */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-10px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Responsive */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            
-            .video-feed {
-                max-width: 600px;
-                margin: 0 auto;
-            }
-        }
-
-        /* Verification badge */
+        /* Verified Badge */
         .verified-badge {
-            display: inline-flex;
-            align-items: center;
             background: var(--primary-color);
             color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
             margin-left: 5px;
         }
 
-        /* Currency display */
-        .currency-display {
-            font-size: 0.9rem;
-            color: #888;
-            margin-top: 8px;
-            font-weight: 600;
-        }
-
-        /* Success/Error Messages */
-        .success-message {
-            background-color: var(--success-color);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-
-        .error-message {
-            background-color: var(--error-color);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background-color: var(--border-color);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient);
-            transition: width 0.3s ease;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
     </style>
 </head>
 <body data-theme="dark">
-    <!-- Enhanced Header -->
+    <!-- Header -->
     <header class="header">
         <div class="logo">YUME</div>
         <div class="header-actions">
-            <button class="search-toggle" id="searchToggle">
+            <button class="header-btn" id="searchToggle">
                 <i class="fas fa-search"></i>
             </button>
             <div class="yume-balance" id="yumeBalance">
                 <i class="fas fa-coins"></i>
-                <span id="balanceAmount">0</span> $YUME
+                <span id="balanceAmount">100</span> $YUME
             </div>
             <div class="profile-dropdown">
-                <button class="dropdown-toggle" id="dropdownToggle">
+                <button class="header-btn" id="dropdownToggle">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="dropdown-menu" id="dropdownMenu">
@@ -994,16 +631,92 @@
         </div>
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="main-content">
-        <!-- Home/Feed Page -->
+        <!-- Home Page -->
         <section id="homePage" class="page active">
             <div class="video-feed">
-                <!-- Videos will be loaded dynamically -->
+                <div class="video-container">
+                    <video class="video-player" autoplay muted loop playsinline>
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-overlay">
+                        <div class="video-username">
+                            @creative_user <span class="verified-badge"><i class="fas fa-check"></i></span>
+                        </div>
+                        <div class="video-caption">Check out this amazing dance move! #dance #viral</div>
+                        <div class="video-music">
+                            <i class="fas fa-music"></i> Original Sound - creative_user
+                        </div>
+                    </div>
+                    <div class="video-actions">
+                        <div class="action-item">
+                            <button class="action-circle like-btn">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <div class="action-count">12.5K</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                            <div class="action-count">1.2K</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <i class="fas fa-share"></i>
+                            </button>
+                            <div class="action-count">543</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <img src="https://i.pravatar.cc/100?img=5" class="avatar" alt="User">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-container">
+                    <video class="video-player" autoplay muted loop playsinline>
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="video-overlay">
+                        <div class="video-username">@nature_lover</div>
+                        <div class="video-caption">Beautiful spring flowers in the park 🌸 #nature #spring</div>
+                        <div class="video-music">
+                            <i class="fas fa-music"></i> Spring Vibes - Nature Sounds
+                        </div>
+                    </div>
+                    <div class="video-actions">
+                        <div class="action-item">
+                            <button class="action-circle like-btn">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <div class="action-count">8.7K</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                            <div class="action-count">987</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <i class="fas fa-share"></i>
+                            </button>
+                            <div class="action-count">321</div>
+                        </div>
+                        <div class="action-item">
+                            <button class="action-circle">
+                                <img src="https://i.pravatar.cc/100?img=12" class="avatar" alt="User">
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Earning Page -->
+        <!-- Earn Page -->
         <section id="earnPage" class="page">
             <div class="earn-section">
                 <h2>Earn $YUME Tokens</h2>
@@ -1021,7 +734,7 @@
                 </div>
             </div>
 
-            <h3 class="text-center" style="padding: 0 20px;">$YUME Store</h3>
+            <h3 class="text-center mt-2">$YUME Store</h3>
             <div class="yume-store">
                 <div class="store-item">
                     <i class="fas fa-gem" style="font-size: 2rem; color: var(--primary-color);"></i>
@@ -1037,70 +750,28 @@
                     <div class="store-price">200 $YUME</div>
                     <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
                 </div>
-                <div class="store-item">
-                    <i class="fas fa-rocket" style="font-size: 2rem; color: var(--secondary-color);"></i>
-                    <h4>Boost Post</h4>
-                    <p>Get more visibility for your posts</p>
-                    <div class="store-price">50 $YUME</div>
-                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
-                </div>
-                <div class="store-item">
-                    <i class="fas fa-crown" style="font-size: 2rem; color: #ffd700;"></i>
-                    <h4>VIP Status</h4>
-                    <p>Unlock exclusive features</p>
-                    <div class="store-price">500 $YUME</div>
-                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
-                </div>
-            </div>
-
-            <div class="stripe-section">
-                <h3>Buy $YUME Tokens</h3>
-                <p>Purchase $YUME tokens using Stripe</p>
-                <div class="form-group">
-                    <label for="yumeAmount" class="form-label">Amount of $YUME:</label>
-                    <input type="number" class="form-input" id="yumeAmount" min="100" value="1000" step="100">
-                    <div class="currency-display" id="currencyDisplay">≈ $5.00 USD</div>
-                </div>
-                <div class="form-group">
-                    <label for="paymentMethod" class="form-label">Payment Method:</label>
-                    <div id="payment-element">
-                        <!-- Stripe Payment Element will be inserted here -->
-                        <div style="background: var(--border-color); padding: 20px; border-radius: 8px; text-align: center;">
-                            <i class="fas fa-credit-card" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                            <p>Stripe payment integration would appear here</p>
-                        </div>
-                    </div>
-                </div>
-                <button class="stripe-btn" id="buyYumeBtn">
-                    <i class="fas fa-credit-card"></i> Purchase $YUME
-                </button>
-                <div id="payment-message" class="mt-2"></div>
             </div>
         </section>
 
         <!-- Profile Page -->
         <section id="profilePage" class="page">
             <div class="profile-header">
-                <img src="https://i.pravatar.cc/150?img=1" class="profile-avatar" id="profileAvatar" alt="Profile">
-                <h2 id="profileName">Guest User</h2>
-                <p id="profileBio">Welcome to YUME! Start sharing your content.</p>
+                <img src="https://i.pravatar.cc/150?img=1" class="profile-avatar" alt="Profile">
+                <h2>Demo User</h2>
+                <p>Welcome to YUME! Start sharing your content.</p>
             </div>
             <div class="profile-stats">
-                <div class="stat" id="postsStat">
-                    <div class="stat-value" id="postsCount">0</div>
+                <div class="stat">
+                    <span class="stat-value">12</span>
                     <div class="stat-label">Posts</div>
                 </div>
-                <div class="stat" id="followingStat">
-                    <div class="stat-value" id="followingCount">0</div>
+                <div class="stat">
+                    <span class="stat-value">245</span>
                     <div class="stat-label">Following</div>
                 </div>
-                <div class="stat" id="followersStat">
-                    <div class="stat-value" id="followersCount">0</div>
+                <div class="stat">
+                    <span class="stat-value">1.2K</span>
                     <div class="stat-label">Followers</div>
-                </div>
-                <div class="stat" id="profileViewsStat">
-                    <div class="stat-value" id="profileViewsCount">0</div>
-                    <div class="stat-label">Profile Views</div>
                 </div>
             </div>
             <div class="profile-actions">
@@ -1108,17 +779,20 @@
                     <i class="fas fa-edit"></i> Edit Profile
                 </button>
             </div>
-            <div class="profile-tabs">
-                <div class="profile-tab active">Videos</div>
-                <div class="profile-tab">Liked</div>
-                <div class="profile-tab">Saved</div>
-            </div>
-            <div class="video-grid" id="userPostsContainer">
-                <!-- User posts will be loaded here -->
+            <div class="video-grid">
+                <div class="grid-video">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="grid-video">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="grid-video">
+                    <i class="fas fa-video"></i>
+                </div>
             </div>
         </section>
 
-        <!-- Enhanced Auth Pages -->
+        <!-- Auth Page -->
         <section id="authPage" class="page">
             <div class="auth-container">
                 <div class="auth-card">
@@ -1127,54 +801,37 @@
                         <div class="auth-tab" data-tab="register">Register</div>
                     </div>
                     
-                    <form id="loginForm" class="auth-form">
-                        <div id="loginError" class="error-message" style="display: none;"></div>
+                    <form id="loginForm">
                         <div class="form-group">
-                            <label for="loginEmail" class="form-label">Email</label>
-                            <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email" required>
+                            <input type="email" class="form-input" placeholder="Email" required>
                         </div>
                         <div class="form-group">
-                            <label for="loginPassword" class="form-label">Password</label>
-                            <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password" required>
+                            <input type="password" class="form-input" placeholder="Password" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
                             <i class="fas fa-sign-in-alt"></i> Login
                         </button>
-                        <div class="text-center mt-3">
-                            <button type="button" class="btn btn-secondary" id="googleLogin">
-                                <i class="fab fa-google"></i> Continue with Google
-                            </button>
-                        </div>
                         <div class="text-center mt-2">
-                            <button type="button" id="continueAsGuest" class="btn btn-outline">
-                                Continue as Guest
+                            <button type="button" class="btn" style="width: 100%; background: var(--secondary-color); color: black;">
+                                <i class="fab fa-google"></i> Continue with Google
                             </button>
                         </div>
                     </form>
 
-                    <form id="registerForm" class="auth-form" style="display: none;">
-                        <div id="registerError" class="error-message" style="display: none;"></div>
+                    <form id="registerForm" style="display: none;">
                         <div class="form-group">
-                            <label for="registerName" class="form-label">Full Name</label>
-                            <input type="text" class="form-input" id="registerName" placeholder="Enter your full name" required>
+                            <input type="text" class="form-input" placeholder="Full Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="registerUsername" class="form-label">Username</label>
-                            <input type="text" class="form-input" id="registerUsername" placeholder="Choose a username" required>
+                            <input type="text" class="form-input" placeholder="Username" required>
                         </div>
                         <div class="form-group">
-                            <label for="registerEmail" class="form-label">Email</label>
-                            <input type="email" class="form-input" id="registerEmail" placeholder="Enter your email" required>
+                            <input type="email" class="form-input" placeholder="Email" required>
                         </div>
                         <div class="form-group">
-                            <label for="registerPassword" class="form-label">Password</label>
-                            <input type="password" class="form-input" id="registerPassword" placeholder="Create a password" required>
+                            <input type="password" class="form-input" placeholder="Password" required>
                         </div>
-                        <div class="form-group">
-                            <label for="registerConfirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm your password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
                             <i class="fas fa-user-plus"></i> Create Account
                         </button>
                     </form>
@@ -1183,12 +840,12 @@
         </section>
     </main>
 
-    <!-- Floating Action Button -->
+    <!-- Floating Button -->
     <button class="floating-btn" id="newPostFloatBtn">
         <i class="fas fa-plus"></i>
     </button>
 
-    <!-- Enhanced Bottom Navigation -->
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="nav-item active" data-page="homePage">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
@@ -1200,80 +857,36 @@
         </div>
     </nav>
 
-    <!-- Enhanced Edit Profile Modal -->
-    <div class="modal-backdrop" id="editProfileModal" style="display: none;">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Edit Profile</h3>
-                <button class="close-btn">&times;</button>
-            </div>
-            <form id="editProfileForm">
-                <div class="form-group">
-                    <label for="editDisplayName" class="form-label">Display Name</label>
-                    <input type="text" class="form-input" id="editDisplayName" placeholder="Enter your display name" required>
-                </div>
-                <div class="form-group">
-                    <label for="editUsername" class="form-label">Username</label>
-                    <input type="text" class="form-input" id="editUsername" placeholder="Choose a username" required>
-                </div>
-                <div class="form-group">
-                    <label for="editBio" class="form-label">Bio</label>
-                    <textarea class="form-input" id="editBio" placeholder="Tell us about yourself" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Profile Picture</label>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <img src="https://i.pravatar.cc/150?img=1" alt="Current Avatar" style="width: 60px; height: 60px; border-radius: 50%;">
-                        <button type="button" class="btn btn-outline">
-                            <i class="fas fa-camera"></i> Change Photo
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">
-                    <i class="fas fa-save"></i> Save Changes
-                </button>
-            </form>
-        </div>
-    </div>
-
     <script>
         // App State
-        let currentUser = null;
-        let userBalance = 100;
-        let currentPage = 'homePage';
-        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let currentUser = {
+            name: "Demo User",
+            balance: 100,
+            isLoggedIn: true
+        };
 
-        // Initialize the app
+        let currentPage = 'homePage';
+
+        // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
-            initApp();
+            initializeApp();
         });
 
-        function initApp() {
-            setTheme(currentTheme);
+        function initializeApp() {
             setupEventListeners();
-            checkAuthStatus();
-            loadVideos();
             updateUI();
         }
 
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-            }
-        }
-
         function setupEventListeners() {
-            // Theme toggle
-            document.getElementById('themeToggle').addEventListener('click', function() {
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                setTheme(newTheme);
-                currentTheme = newTheme;
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
             });
 
-            // Profile dropdown
+            // Profile Dropdown
             const dropdownToggle = document.getElementById('dropdownToggle');
             const dropdownMenu = document.getElementById('dropdownMenu');
             
@@ -1287,7 +900,7 @@
                 dropdownMenu.classList.remove('show');
             });
 
-            // Dropdown menu items
+            // Dropdown Actions
             document.querySelectorAll('.dropdown-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const action = this.getAttribute('data-action');
@@ -1296,88 +909,35 @@
                 });
             });
 
-            // Navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page');
-                    showPage(pageId);
-                });
-            });
-
-            // Floating action button
-            document.getElementById('newPostFloatBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                showSuccess('Post creation feature coming soon!');
-            });
-
-            // Auth tabs
+            // Auth Tabs
             document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabName = this.getAttribute('data-tab');
                     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    if (tabName === 'login') {
-                        document.getElementById('loginForm').style.display = 'block';
-                        document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('loginForm').style.display = tabName === 'login' ? 'block' : 'none';
+                    document.getElementById('registerForm').style.display = tabName === 'register' ? 'block' : 'none';
+                });
+            });
+
+            // Like Buttons
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('fa-heart')) {
+                        icon.className = 'fas fa-heart-broken';
+                        this.classList.remove('liked');
                     } else {
-                        document.getElementById('loginForm').style.display = 'none';
-                        document.getElementById('registerForm').style.display = 'block';
+                        icon.className = 'fas fa-heart';
+                        this.classList.add('liked');
+                        // Earn YUME for engagement
+                        earnYume(1, 'Liking content');
                     }
                 });
             });
 
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
-            });
-
-            // Register form
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('registerName').value;
-                const username = document.getElementById('registerUsername').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
-                
-                if (password !== confirmPassword) {
-                    showError('registerError', 'Passwords do not match');
-                    return;
-                }
-                
-                registerUser(name, username, email, password);
-            });
-
-            // Google login
-            document.getElementById('googleLogin').addEventListener('click', function() {
-                loginWithGoogle();
-            });
-
-            // Continue as guest
-            document.getElementById('continueAsGuest').addEventListener('click', function() {
-                continueAsGuest();
-            });
-
-            // YUME amount input for currency conversion
-            document.getElementById('yumeAmount').addEventListener('input', function(e) {
-                const yumeAmount = parseInt(e.target.value) || 0;
-                const usdAmount = (yumeAmount * 0.005).toFixed(2);
-                document.getElementById('currencyDisplay').textContent = `≈ $${usdAmount} USD`;
-            });
-
-            // Edit profile button
-            document.getElementById('editProfileBtn').addEventListener('click', function() {
-                showEditProfileModal();
-            });
-
-            // Earning buttons
+            // Earning Buttons
             document.getElementById('watchAdBtn').addEventListener('click', function() {
                 simulateAdWatch();
             });
@@ -1390,149 +950,64 @@
                 claimDailyReward();
             });
 
-            // Stripe payment
-            document.getElementById('buyYumeBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                handlePayment();
+            // Floating Action Button
+            document.getElementById('newPostFloatBtn').addEventListener('click', function() {
+                showMessage('Post creation feature coming soon!');
             });
 
-            // Close modal buttons
-            document.querySelectorAll('.close-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.getElementById('editProfileModal').style.display = 'none';
-                });
+            // Edit Profile
+            document.getElementById('editProfileBtn').addEventListener('click', function() {
+                showMessage('Profile editing feature coming soon!');
             });
 
-            // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            // Forms
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const displayName = document.getElementById('editDisplayName').value;
-                const username = document.getElementById('editUsername').value;
-                const bio = document.getElementById('editBio').value;
-                updateProfile(displayName, username, bio);
+                showMessage('Login successful!');
+                currentUser.isLoggedIn = true;
+                showPage('homePage');
+            });
+
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                showMessage('Registration successful!');
+                // Switch to login
+                document.querySelector('.auth-tab[data-tab="login"]').click();
             });
         }
 
         function handleDropdownAction(action) {
             switch(action) {
                 case 'message':
-                    showSuccess('Messages feature coming soon!');
+                    showMessage('Messages feature coming soon!');
                     break;
                 case 'earn':
                     showPage('earnPage');
                     break;
                 case 'about':
-                    showSuccess('YUME - TikTok-style social media with earning features');
+                    showMessage('YUME - TikTok-style social media with earning features');
                     break;
                 case 'privacy':
-                    showSuccess('Privacy policy page would open here');
+                    showMessage('Privacy policy page would open here');
                     break;
                 case 'terms':
-                    showSuccess('Terms of service page would open here');
+                    showMessage('Terms of service page would open here');
                     break;
                 case 'support':
-                    showSuccess('Support page would open here');
+                    showMessage('Support page would open here');
                     break;
                 case 'settings':
-                    showSuccess('Settings page would open here');
+                    showMessage('Settings page would open here');
                     break;
                 case 'theme':
-                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                    setTheme(newTheme);
-                    currentTheme = newTheme;
-                    showSuccess(`Theme changed to ${newTheme} mode`);
+                    toggleTheme();
                     break;
                 case 'logout':
-                    logoutUser();
+                    currentUser.isLoggedIn = false;
+                    showPage('authPage');
+                    showMessage('Logged out successfully');
                     break;
             }
-        }
-
-        function handlePayment() {
-            const yumeAmount = parseInt(document.getElementById('yumeAmount').value) || 1000;
-            
-            // Show loading state
-            document.getElementById('buyYumeBtn').disabled = true;
-            document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-            // Simulate payment processing
-            setTimeout(() => {
-                earnYume(yumeAmount, 'Purchased tokens');
-                document.getElementById('payment-message').innerHTML = 
-                    '<div class="success-message">Payment successful! $YUME tokens added to your balance.</div>';
-                
-                // Reset button
-                document.getElementById('buyYumeBtn').disabled = false;
-                document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-credit-card"></i> Purchase $YUME';
-            }, 2000);
-        }
-
-        function checkAuthStatus() {
-            // For demo purposes, we'll simulate a guest user
-            // In a real app, this would check Supabase auth
-            currentUser = {
-                id: 'guest123',
-                username: 'guest_user',
-                display_name: 'Guest User',
-                email: 'guest@example.com',
-                avatar_url: 'https://i.pravatar.cc/150?img=1',
-                yume_balance: 100,
-                follower_count: 0,
-                following_count: 0,
-                post_count: 0,
-                profile_views: 0,
-                is_verified: false
-            };
-            
-            updateUI();
-        }
-
-        function loginUser(email, password) {
-            // Simulate login - in real app, this would use Supabase
-            showSuccess('Login successful!');
-            currentUser = {
-                id: 'user123',
-                username: 'demo_user',
-                display_name: 'Demo User',
-                email: email,
-                avatar_url: 'https://i.pravatar.cc/150?img=5',
-                yume_balance: 150,
-                follower_count: 24,
-                following_count: 56,
-                post_count: 12,
-                profile_views: 124,
-                is_verified: false
-            };
-            showPage('homePage');
-            loadVideos();
-            updateUI();
-        }
-
-        function registerUser(name, username, email, password) {
-            // Simulate registration - in real app, this would use Supabase
-            showSuccess('Registration successful!');
-            // Switch to login form
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('registerForm').style.display = 'none';
-        }
-
-        function loginWithGoogle() {
-            showSuccess('Google authentication would open here');
-        }
-
-        function continueAsGuest() {
-            showPage('homePage');
-            showSuccess('Continuing as guest. Some features may be limited.');
-            loadVideos();
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            userBalance = 0;
-            showPage('authPage');
-            showSuccess('Logged out successfully');
         }
 
         function showPage(pageId) {
@@ -1552,313 +1027,31 @@
                     item.classList.add('active');
                 }
             });
-
-            // Load page-specific content
-            if (pageId === 'homePage') loadVideos();
-            if (pageId === 'profilePage') loadProfilePage();
-            if (pageId === 'earnPage') updateBalanceDisplay();
         }
 
-        function loadVideos() {
-            const videoFeed = document.querySelector('.video-feed');
-            
-            if (!currentUser) {
-                videoFeed.innerHTML = `
-                    <div class="video-container">
-                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 20px;">
-                            <i class="fas fa-video" style="font-size: 3rem; color: #666; margin-bottom: 20px;"></i>
-                            <h3>Welcome to YUME</h3>
-                            <p style="margin-bottom: 20px;">Sign in to watch videos and earn $YUME tokens</p>
-                            <button class="btn btn-primary" onclick="showPage('authPage')">Sign In</button>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Load videos
-            videoFeed.innerHTML = `
-                <div class="video-container">
-                    <video class="video-player" autoplay muted loop>
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="video-overlay">
-                        <div class="video-info">
-                            <div class="video-username">
-                                @creative_user
-                                <span class="verified-badge"><i class="fas fa-check"></i></span>
-                            </div>
-                            <p class="video-caption">Check out this amazing dance move! #dance #viral</p>
-                            <div class="video-music">
-                                <i class="fas fa-music"></i>
-                                Original Sound - creative_user
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <div class="action-count">12.5K</div>
-                        </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                            <div class="action-count">1.2K</div>
-                        </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-share"></i>
-                            </button>
-                            <div class="action-count">543</div>
-                        </div>
-                        <div class="action-item">
-                            <div class="action-circle">
-                                <img src="https://i.pravatar.cc/100?img=5" class="avatar" alt="User">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="video-container">
-                    <video class="video-player" autoplay muted loop>
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="video-overlay">
-                        <div class="video-info">
-                            <div class="video-username">
-                                @nature_lover
-                            </div>
-                            <p class="video-caption">Beautiful spring flowers in the park 🌸 #nature #spring</p>
-                            <div class="video-music">
-                                <i class="fas fa-music"></i>
-                                Spring Vibes - Nature Sounds
-                            </div>
-                        </div>
-                    </div>
-                    <div class="video-actions">
-                        <div class="action-item">
-                            <button class="action-circle liked">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <div class="action-count">8.7K</div>
-                        </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                            <div class="action-count">987</div>
-                        </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-share"></i>
-                            </button>
-                            <div class="action-count">321</div>
-                        </div>
-                        <div class="action-item">
-                            <div class="action-circle">
-                                <img src="https://i.pravatar.cc/100?img=12" class="avatar" alt="User">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Add video interaction listeners
-            document.querySelectorAll('.action-circle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('fa-heart')) {
-                        icon.className = 'fas fa-heart-broken';
-                        this.classList.remove('liked');
-                    } else {
-                        icon.className = 'fas fa-heart';
-                        this.classList.add('liked');
-                        // Earn YUME for engagement
-                        if (currentUser) earnYume(1, 'Liking content');
-                    }
-                });
-            });
-
-            // Video auto-play on scroll
-            const videoContainers = document.querySelectorAll('.video-container');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const video = entry.target.querySelector('video');
-                        if (video) video.play();
-                    } else {
-                        const video = entry.target.querySelector('video');
-                        if (video) video.pause();
-                    }
-                });
-            }, { threshold: 0.7 });
-            
-            videoContainers.forEach(container => {
-                observer.observe(container);
-            });
-        }
-
-        function loadProfilePage() {
-            if (!currentUser) {
-                document.getElementById('profileName').textContent = 'Guest User';
-                document.getElementById('profileBio').textContent = 'Welcome to YUME! Start sharing your content.';
-                document.getElementById('profileAvatar').src = 'https://i.pravatar.cc/150?img=1';
-                
-                document.getElementById('postsCount').textContent = '0';
-                document.getElementById('followingCount').textContent = '0';
-                document.getElementById('followersCount').textContent = '0';
-                document.getElementById('profileViewsCount').textContent = '0';
-                
-                document.getElementById('userPostsContainer').innerHTML = '<p class="text-center">Please login to view your profile</p>';
-                return;
-            }
-            
-            // Update profile info
-            document.getElementById('profileName').textContent = currentUser.display_name;
-            document.getElementById('profileBio').textContent = currentUser.bio || 'Welcome to YUME! Start sharing your content.';
-            document.getElementById('profileAvatar').src = currentUser.avatar_url;
-            
-            document.getElementById('postsCount').textContent = currentUser.post_count || '0';
-            document.getElementById('followingCount').textContent = currentUser.following_count || '0';
-            document.getElementById('followersCount').textContent = currentUser.follower_count || '0';
-            document.getElementById('profileViewsCount').textContent = currentUser.profile_views || '0';
-            
-            // Load user posts
-            document.getElementById('userPostsContainer').innerHTML = `
-                <div class="grid-video">
-                    <video muted loop>
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="grid-video-overlay">
-                        <i class="fas fa-play"></i> 12.5K
-                    </div>
-                </div>
-                <div class="grid-video">
-                    <video muted loop>
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="grid-video-overlay">
-                        <i class="fas fa-play"></i> 8.7K
-                    </div>
-                </div>
-            `;
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            showMessage(`Theme changed to ${newTheme} mode`);
         }
 
         function earnYume(amount, reason) {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            userBalance += amount;
-            currentUser.yume_balance = userBalance;
+            currentUser.balance += amount;
             updateUI();
-            
-            showSuccess(`You earned ${amount} $YUME for ${reason}!`);
+            showMessage(`You earned ${amount} $YUME for ${reason}!`);
         }
 
         function updateUI() {
-            // Update balance display
-            document.getElementById('balanceAmount').textContent = userBalance;
-            
-            // Refresh current page
-            if (currentPage === 'homePage') loadVideos();
-            if (currentPage === 'profilePage') loadProfilePage();
+            document.getElementById('balanceAmount').textContent = currentUser.balance;
         }
 
-        function updateBalanceDisplay() {
-            document.getElementById('balanceAmount').textContent = userBalance;
-        }
-
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            if (errorElement) {
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-                
-                setTimeout(() => {
-                    errorElement.style.display = 'none';
-                }, 5000);
-            } else {
-                // Create a temporary error message
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.textContent = message;
-                errorDiv.style.position = 'fixed';
-                errorDiv.style.top = '70px';
-                errorDiv.style.left = '50%';
-                errorDiv.style.transform = 'translateX(-50%)';
-                errorDiv.style.zIndex = '1000';
-                errorDiv.style.maxWidth = '90%';
-                
-                document.body.appendChild(errorDiv);
-                
-                setTimeout(() => {
-                    errorDiv.remove();
-                }, 5000);
-            }
-        }
-
-        function showSuccess(message) {
-            // Create a temporary success message
-            const successElement = document.createElement('div');
-            successElement.className = 'success-message';
-            successElement.textContent = message;
-            successElement.style.position = 'fixed';
-            successElement.style.top = '70px';
-            successElement.style.left = '50%';
-            successElement.style.transform = 'translateX(-50%)';
-            successElement.style.zIndex = '1000';
-            successElement.style.maxWidth = '90%';
-            
-            document.body.appendChild(successElement);
-            
-            setTimeout(() => {
-                successElement.remove();
-            }, 3000);
-        }
-
-        function showEditProfileModal() {
-            if (!currentUser) return;
-            
-            document.getElementById('editDisplayName').value = currentUser.display_name || '';
-            document.getElementById('editUsername').value = currentUser.username || '';
-            document.getElementById('editBio').value = currentUser.bio || '';
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
-
-        function updateProfile(displayName, username, bio) {
-            // Update current user object
-            currentUser.display_name = displayName;
-            currentUser.username = username;
-            currentUser.bio = bio;
-            
-            // Update UI
-            loadProfilePage();
-            
-            // Close modal
-            document.getElementById('editProfileModal').style.display = 'none';
-            
-            // Show success message
-            showSuccess('Profile updated successfully!');
-        }
-
-        // Simulated earning functions
         function simulateAdWatch() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            // Show loading state
             const btn = document.getElementById('watchAdBtn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Watching...';
             btn.disabled = true;
             
-            // Simulate ad watching
             setTimeout(() => {
                 earnYume(5, 'Watching an ad');
                 btn.innerHTML = originalText;
@@ -1867,35 +1060,61 @@
         }
 
         function simulateFriendInvite() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            // In a real app, this would open a share dialog
-            showSuccess('Share your referral link: yume-app.com/invite/' + (currentUser.username || currentUser.id));
+            showMessage('Share your referral link: yume-app.com/invite/demo');
             earnYume(20, 'Inviting a friend');
         }
 
         function claimDailyReward() {
-            if (!currentUser) {
-                showPage('authPage');
-                return;
-            }
-            
-            // Check if daily reward was already claimed today
             const lastClaim = localStorage.getItem('dailyRewardClaimed');
             const today = new Date().toDateString();
             
             if (lastClaim === today) {
-                showError('You have already claimed your daily reward today. Come back tomorrow!');
+                showMessage('You have already claimed your daily reward today. Come back tomorrow!', 'error');
                 return;
             }
             
-            // Claim reward
             localStorage.setItem('dailyRewardClaimed', today);
             earnYume(10, 'Daily reward');
         }
+
+        function showMessage(message, type = 'success') {
+            // Remove existing messages
+            document.querySelectorAll('.success-message, .error-message').forEach(msg => msg.remove());
+            
+            const messageEl = document.createElement('div');
+            messageEl.className = type === 'success' ? 'success-message' : 'error-message';
+            messageEl.textContent = message;
+            messageEl.style.position = 'fixed';
+            messageEl.style.top = '70px';
+            messageEl.style.left = '50%';
+            messageEl.style.transform = 'translateX(-50%)';
+            messageEl.style.zIndex = '2000';
+            messageEl.style.maxWidth = '90%';
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
+        }
+
+        // Video auto-play
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target.querySelector('video');
+                if (video) {
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                }
+            });
+        }, { threshold: 0.7 });
+
+        document.querySelectorAll('.video-container').forEach(container => {
+            videoObserver.observe(container);
+        });
     </script>
 </body>
 </html>
