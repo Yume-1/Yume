@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YUME - Social Media with Earning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary-color: #fe2c55;
@@ -191,6 +189,7 @@
             border-radius: 8px;
             transition: var(--transition);
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .dropdown-item:hover {
@@ -234,6 +233,7 @@
             position: relative;
             transition: var(--transition);
             padding: 5px;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -356,6 +356,7 @@
             color: white;
             font-size: 1.2rem;
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .action-circle:hover {
@@ -454,6 +455,7 @@
         .page {
             display: none;
             animation: fadeIn 0.3s ease;
+            height: 100%;
         }
 
         .page.active {
@@ -668,6 +670,7 @@
             transition: var(--transition);
             flex: 1;
             min-width: 120px;
+            cursor: pointer;
         }
 
         .earn-btn:hover {
@@ -759,6 +762,7 @@
             z-index: 99;
             transition: var(--transition);
             font-size: 1.3rem;
+            cursor: pointer;
         }
 
         .floating-btn:hover {
@@ -1061,6 +1065,10 @@
                     <label for="paymentMethod" class="form-label">Payment Method:</label>
                     <div id="payment-element">
                         <!-- Stripe Payment Element will be inserted here -->
+                        <div style="background: var(--border-color); padding: 20px; border-radius: 8px; text-align: center;">
+                            <i class="fas fa-credit-card" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p>Stripe payment integration would appear here</p>
+                        </div>
                     </div>
                 </div>
                 <button class="stripe-btn" id="buyYumeBtn">
@@ -1229,21 +1237,9 @@
     </div>
 
     <script>
-        // Configuration - REPLACE WITH YOUR ACTUAL VALUES
-        const SUPABASE_URL = 'https://your-project.supabase.co';
-        const SUPABASE_ANON_KEY = 'your-anon-key';
-        const STRIPE_PUBLISHABLE_KEY = 'pk_test_your_stripe_publishable_key';
-        
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Initialize Stripe
-        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
-        let elements;
-        
         // App State
         let currentUser = null;
-        let userBalance = 0;
+        let userBalance = 100;
         let currentPage = 'homePage';
         let currentTheme = localStorage.getItem('theme') || 'dark';
 
@@ -1252,11 +1248,12 @@
             initApp();
         });
 
-        async function initApp() {
+        function initApp() {
             setTheme(currentTheme);
             setupEventListeners();
-            await checkAuthStatus();
-            await initializeStripe();
+            checkAuthStatus();
+            loadVideos();
+            updateUI();
         }
 
         function setTheme(theme) {
@@ -1313,7 +1310,6 @@
                     showPage('authPage');
                     return;
                 }
-                // In a real app, this would open the post creation interface
                 showSuccess('Post creation feature coming soon!');
             });
 
@@ -1335,15 +1331,15 @@
             });
 
             // Login form
-            document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const email = document.getElementById('loginEmail').value;
                 const password = document.getElementById('loginPassword').value;
-                await loginUser(email, password);
+                loginUser(email, password);
             });
 
             // Register form
-            document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('registerName').value;
                 const username = document.getElementById('registerUsername').value;
@@ -1356,12 +1352,12 @@
                     return;
                 }
                 
-                await registerUser(name, username, email, password);
+                registerUser(name, username, email, password);
             });
 
             // Google login
-            document.getElementById('googleLogin').addEventListener('click', async function() {
-                await loginWithGoogle();
+            document.getElementById('googleLogin').addEventListener('click', function() {
+                loginWithGoogle();
             });
 
             // Continue as guest
@@ -1408,12 +1404,12 @@
             });
 
             // Edit profile form
-            document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+            document.getElementById('editProfileForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const displayName = document.getElementById('editDisplayName').value;
                 const username = document.getElementById('editUsername').value;
                 const bio = document.getElementById('editBio').value;
-                await updateProfile(displayName, username, bio);
+                updateProfile(displayName, username, bio);
             });
         }
 
@@ -1452,237 +1448,78 @@
             }
         }
 
-        async function initializeStripe() {
-            // In a real implementation, you would create a PaymentIntent on your server
-            // and then initialize Stripe Elements with the client secret
-            try {
-                // This is a mock implementation - replace with actual server call
-                const clientSecret = 'pi_mock_client_secret_123456';
-                
-                const appearance = {
-                    theme: 'night',
-                    variables: {
-                        colorPrimary: '#fe2c55',
-                        colorBackground: '#121212',
-                        colorText: '#ffffff',
-                        colorDanger: '#fe2c55',
-                        fontFamily: 'Inter, system-ui, sans-serif',
-                        spacingUnit: '4px',
-                        borderRadius: '12px'
-                    }
-                };
-
-                elements = stripe.elements({ appearance, clientSecret });
-                const paymentElement = elements.create('payment');
-                paymentElement.mount('#payment-element');
-            } catch (error) {
-                console.error('Error initializing Stripe:', error);
-            }
-        }
-
-        async function handlePayment() {
+        function handlePayment() {
             const yumeAmount = parseInt(document.getElementById('yumeAmount').value) || 1000;
             
-            try {
-                // Show loading state
-                document.getElementById('buyYumeBtn').disabled = true;
-                document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            // Show loading state
+            document.getElementById('buyYumeBtn').disabled = true;
+            document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-                // In a real implementation, you would confirm the payment with your server
-                // const { error } = await stripe.confirmPayment({
-                //     elements,
-                //     confirmParams: {
-                //         return_url: `${window.location.origin}/success`,
-                //     },
-                // });
-
-                // For demo purposes, we'll simulate a successful payment
-                setTimeout(async () => {
-                    await earnYume(yumeAmount, 'Purchased tokens');
-                    document.getElementById('payment-message').innerHTML = 
-                        '<div class="success-message">Payment successful! $YUME tokens added to your balance.</div>';
-                    
-                    // Reset button
-                    document.getElementById('buyYumeBtn').disabled = false;
-                    document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-credit-card"></i> Purchase $YUME';
-                }, 2000);
-
-            } catch (error) {
-                console.error('Payment error:', error);
+            // Simulate payment processing
+            setTimeout(() => {
+                earnYume(yumeAmount, 'Purchased tokens');
                 document.getElementById('payment-message').innerHTML = 
-                    '<div class="error-message">Payment failed. Please try again.</div>';
+                    '<div class="success-message">Payment successful! $YUME tokens added to your balance.</div>';
                 
+                // Reset button
                 document.getElementById('buyYumeBtn').disabled = false;
                 document.getElementById('buyYumeBtn').innerHTML = '<i class="fas fa-credit-card"></i> Purchase $YUME';
-            }
+            }, 2000);
         }
 
-        async function checkAuthStatus() {
-            try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                
-                if (error) {
-                    console.error('Error getting session:', error);
-                    showPage('authPage');
-                    return;
-                }
-
-                if (session) {
-                    await loadUserProfile(session.user.id);
-                    showPage('homePage');
-                    loadVideos();
-                } else {
-                    showPage('authPage');
-                }
-            } catch (error) {
-                console.error('Error checking auth status:', error);
-                showPage('authPage');
-            }
+        function checkAuthStatus() {
+            // For demo purposes, we'll simulate a guest user
+            // In a real app, this would check Supabase auth
+            currentUser = {
+                id: 'guest123',
+                username: 'guest_user',
+                display_name: 'Guest User',
+                email: 'guest@example.com',
+                avatar_url: 'https://i.pravatar.cc/150?img=1',
+                yume_balance: 100,
+                follower_count: 0,
+                following_count: 0,
+                post_count: 0,
+                profile_views: 0,
+                is_verified: false
+            };
+            
+            updateUI();
         }
 
-        async function loadUserProfile(userId) {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-
-                if (error) {
-                    console.error('Error loading profile:', error);
-                    // Create profile if it doesn't exist
-                    await createUserProfile(userId);
-                    return;
-                }
-
-                if (data) {
-                    currentUser = data;
-                    userBalance = data.yume_balance || 0;
-                    updateUI();
-                }
-            } catch (error) {
-                console.error('Error in loadUserProfile:', error);
-            }
+        function loginUser(email, password) {
+            // Simulate login - in real app, this would use Supabase
+            showSuccess('Login successful!');
+            currentUser = {
+                id: 'user123',
+                username: 'demo_user',
+                display_name: 'Demo User',
+                email: email,
+                avatar_url: 'https://i.pravatar.cc/150?img=5',
+                yume_balance: 150,
+                follower_count: 24,
+                following_count: 56,
+                post_count: 12,
+                profile_views: 124,
+                is_verified: false
+            };
+            showPage('homePage');
+            loadVideos();
+            updateUI();
         }
 
-        async function createUserProfile(userId) {
-            try {
-                const { data: authUser, error: authError } = await supabase.auth.getUser();
-                
-                if (authError) throw authError;
-                
-                const { error } = await supabase
-                    .from('profiles')
-                    .insert([
-                        {
-                            id: userId,
-                            username: authUser.user.user_metadata.username || `user${userId.substring(0, 8)}`,
-                            display_name: authUser.user.user_metadata.display_name || 'New User',
-                            email: authUser.user.email,
-                            avatar_url: 'https://i.pravatar.cc/150?img=1',
-                            yume_balance: 100,
-                            follower_count: 0,
-                            following_count: 0,
-                            post_count: 0,
-                            profile_views: 0,
-                            is_verified: false
-                        }
-                    ]);
-
-                if (error) throw error;
-                
-                await loadUserProfile(userId);
-            } catch (error) {
-                console.error('Error creating user profile:', error);
-            }
+        function registerUser(name, username, email, password) {
+            // Simulate registration - in real app, this would use Supabase
+            showSuccess('Registration successful!');
+            // Switch to login form
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
         }
 
-        async function loginUser(email, password) {
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
-                if (error) {
-                    showError('loginError', error.message);
-                    return;
-                }
-
-                if (data.user) {
-                    await loadUserProfile(data.user.id);
-                    showPage('homePage');
-                    showSuccess('Login successful!');
-                    loadVideos();
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError('loginError', 'An error occurred during login');
-            }
-        }
-
-        async function registerUser(name, username, email, password) {
-            try {
-                // First check if username is available
-                const { data: existingUser, error: checkError } = await supabase
-                    .from('profiles')
-                    .select('id')
-                    .eq('username', username)
-                    .single();
-
-                if (existingUser) {
-                    showError('registerError', 'Username already taken');
-                    return;
-                }
-
-                // Create auth user
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            display_name: name,
-                            username: username
-                        }
-                    }
-                });
-
-                if (error) {
-                    showError('registerError', error.message);
-                    return;
-                }
-
-                if (data.user) {
-                    showSuccess('Registration successful! Please check your email to verify your account.');
-                    // Switch to login form
-                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
-                    document.getElementById('loginForm').style.display = 'block';
-                    document.getElementById('registerForm').style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Registration error:', error);
-                showError('registerError', 'An error occurred during registration');
-            }
-        }
-
-        async function loginWithGoogle() {
-            try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: window.location.origin
-                    }
-                });
-                
-                if (error) {
-                    console.error('Google login error:', error);
-                    showError('loginError', 'Error with Google login');
-                }
-            } catch (error) {
-                console.error('Google login error:', error);
-                showError('loginError', 'Error with Google login');
-            }
+        function loginWithGoogle() {
+            showSuccess('Google authentication would open here');
         }
 
         function continueAsGuest() {
@@ -1691,20 +1528,11 @@
             loadVideos();
         }
 
-        async function logoutUser() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) {
-                    console.error('Logout error:', error);
-                }
-                
-                currentUser = null;
-                userBalance = 0;
-                showPage('authPage');
-                showSuccess('Logged out successfully');
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
+        function logoutUser() {
+            currentUser = null;
+            userBalance = 0;
+            showPage('authPage');
+            showSuccess('Logged out successfully');
         }
 
         function showPage(pageId) {
@@ -1748,7 +1576,7 @@
                 return;
             }
             
-            // Load real videos - in a real app, these would come from your database
+            // Load videos
             videoFeed.innerHTML = `
                 <div class="video-container">
                     <video class="video-player" autoplay muted loop>
@@ -1918,31 +1746,17 @@
             `;
         }
 
-        async function earnYume(amount, reason) {
+        function earnYume(amount, reason) {
             if (!currentUser) {
                 showPage('authPage');
                 return;
             }
             
-            try {
-                const newBalance = userBalance + amount;
-                
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({ yume_balance: newBalance })
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-                
-                userBalance = newBalance;
-                currentUser.yume_balance = newBalance;
-                updateUI();
-                
-                showSuccess(`You earned ${amount} $YUME for ${reason}!`);
-            } catch (error) {
-                console.error('Error earning YUME:', error);
-                showError('Error earning YUME');
-            }
+            userBalance += amount;
+            currentUser.yume_balance = userBalance;
+            updateUI();
+            
+            showSuccess(`You earned ${amount} $YUME for ${reason}!`);
         }
 
         function updateUI() {
@@ -2015,52 +1829,20 @@
             document.getElementById('editProfileModal').style.display = 'flex';
         }
 
-        async function updateProfile(displayName, username, bio) {
-            try {
-                // Check if username is available (if changed)
-                if (username !== currentUser.username) {
-                    const { data: existingUser, error: checkError } = await supabase
-                        .from('profiles')
-                        .select('id')
-                        .eq('username', username)
-                        .neq('id', currentUser.id)
-                        .single();
-                    
-                    if (existingUser) {
-                        alert('Username already taken');
-                        return;
-                    }
-                }
-                
-                // Update profile in database
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        display_name: displayName,
-                        username: username,
-                        bio: bio
-                    })
-                    .eq('id', currentUser.id);
-                
-                if (error) throw error;
-                
-                // Update current user object
-                currentUser.display_name = displayName;
-                currentUser.username = username;
-                currentUser.bio = bio;
-                
-                // Update UI
-                loadProfilePage();
-                
-                // Close modal
-                document.getElementById('editProfileModal').style.display = 'none';
-                
-                // Show success message
-                showSuccess('Profile updated successfully!');
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                alert('Error updating profile. Please try again.');
-            }
+        function updateProfile(displayName, username, bio) {
+            // Update current user object
+            currentUser.display_name = displayName;
+            currentUser.username = username;
+            currentUser.bio = bio;
+            
+            // Update UI
+            loadProfilePage();
+            
+            // Close modal
+            document.getElementById('editProfileModal').style.display = 'none';
+            
+            // Show success message
+            showSuccess('Profile updated successfully!');
         }
 
         // Simulated earning functions
@@ -2077,8 +1859,8 @@
             btn.disabled = true;
             
             // Simulate ad watching
-            setTimeout(async () => {
-                await earnYume(5, 'Watching an ad');
+            setTimeout(() => {
+                earnYume(5, 'Watching an ad');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }, 3000);
@@ -2114,20 +1896,6 @@
             localStorage.setItem('dailyRewardClaimed', today);
             earnYume(10, 'Daily reward');
         }
-
-        // Listen for auth state changes
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                await loadUserProfile(session.user.id);
-                if (currentPage === 'authPage') {
-                    showPage('homePage');
-                }
-            } else if (event === 'SIGNED_OUT') {
-                currentUser = null;
-                userBalance = 0;
-                showPage('authPage');
-            }
-        });
     </script>
 </body>
 </html>
