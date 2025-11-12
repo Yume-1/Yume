@@ -148,6 +148,10 @@
             transition: var(--transition);
             font-size: 0.9rem;
             cursor: pointer;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
         }
 
         .dropdown-item:hover {
@@ -302,6 +306,8 @@
             color: var(--text-color);
             transition: var(--transition);
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
         }
 
         .nav-item.active {
@@ -341,6 +347,7 @@
 
         .stat {
             text-align: center;
+            cursor: pointer;
         }
 
         .stat-value {
@@ -371,6 +378,7 @@
             align-items: center;
             justify-content: center;
             border: none;
+            font-size: 0.9rem;
         }
 
         .btn i {
@@ -384,6 +392,17 @@
 
         .btn-primary:hover {
             background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: black;
+        }
+
+        .btn-secondary:hover {
+            background-color: #1de0d9;
+            transform: translateY(-2px);
         }
 
         .video-grid {
@@ -401,6 +420,28 @@
             align-items: center;
             justify-content: center;
             color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-video img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .grid-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* Earn Page */
@@ -418,6 +459,7 @@
             justify-content: space-around;
             margin-top: 20px;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .earn-btn {
@@ -430,10 +472,22 @@
             border: none;
             cursor: pointer;
             flex: 1;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .earn-btn:hover {
             background: rgba(255,255,255,1);
+            transform: translateY(-2px);
+        }
+
+        .earn-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .yume-store {
@@ -449,6 +503,11 @@
             padding: 20px;
             text-align: center;
             border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .store-item:hover {
+            transform: translateY(-5px);
         }
 
         .store-price {
@@ -489,6 +548,9 @@
             padding: 16px;
             cursor: pointer;
             transition: var(--transition);
+            border: none;
+            background: none;
+            color: var(--text-color);
         }
 
         .auth-tab.active {
@@ -508,11 +570,13 @@
             background: var(--card-bg);
             color: var(--text-color);
             font-size: 1rem;
+            transition: var(--transition);
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(254, 44, 85, 0.1);
         }
 
         /* Utilities */
@@ -522,24 +586,43 @@
 
         .mt-1 { margin-top: 10px; }
         .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
 
         /* Success/Error Messages */
+        .message {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 2000;
+            max-width: 90%;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+        }
+
         .success-message {
             background: var(--success-color);
             color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: 10px 20px;
-            text-align: center;
         }
 
         .error-message {
             background: var(--error-color);
             color: white;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: 10px 20px;
-            text-align: center;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Floating Button */
@@ -559,6 +642,13 @@
             cursor: pointer;
             z-index: 99;
             font-size: 1.3rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-3px) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
 
         /* Verified Badge */
@@ -569,6 +659,9 @@
             border-radius: 10px;
             font-size: 0.6rem;
             margin-left: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
         }
 
         .avatar {
@@ -577,6 +670,32 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--primary-color);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: var(--border-color);
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
@@ -597,35 +716,35 @@
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-item" data-action="message">
+                    <button class="dropdown-item" data-action="message">
                         <i class="fas fa-envelope"></i> Messages
-                    </div>
-                    <div class="dropdown-item" data-action="earn">
+                    </button>
+                    <button class="dropdown-item" data-action="earn">
                         <i class="fas fa-coins"></i> Earn $YUME
-                    </div>
+                    </button>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" data-action="about">
+                    <button class="dropdown-item" data-action="about">
                         <i class="fas fa-info-circle"></i> About
-                    </div>
-                    <div class="dropdown-item" data-action="privacy">
+                    </button>
+                    <button class="dropdown-item" data-action="privacy">
                         <i class="fas fa-shield-alt"></i> Privacy
-                    </div>
-                    <div class="dropdown-item" data-action="terms">
+                    </button>
+                    <button class="dropdown-item" data-action="terms">
                         <i class="fas fa-file-contract"></i> Terms
-                    </div>
-                    <div class="dropdown-item" data-action="support">
+                    </button>
+                    <button class="dropdown-item" data-action="support">
                         <i class="fas fa-headset"></i> Support
-                    </div>
+                    </button>
                     <div class="dropdown-divider"></div>
-                    <div class="dropdown-item" data-action="settings">
+                    <button class="dropdown-item" data-action="settings">
                         <i class="fas fa-cog"></i> Settings
-                    </div>
-                    <div class="dropdown-item" data-action="theme">
+                    </button>
+                    <button class="dropdown-item" data-action="theme">
                         <i class="fas fa-palette"></i> Theme
-                    </div>
-                    <div class="dropdown-item" data-action="logout">
+                    </button>
+                    <button class="dropdown-item" data-action="logout">
                         <i class="fas fa-sign-out-alt"></i> Logout
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
@@ -636,6 +755,7 @@
         <!-- Home Page -->
         <section id="homePage" class="page active">
             <div class="video-feed">
+                <!-- Video 1 -->
                 <div class="video-container">
                     <video class="video-player" autoplay muted loop playsinline>
                         <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4" type="video/mp4">
@@ -676,6 +796,7 @@
                     </div>
                 </div>
 
+                <!-- Video 2 -->
                 <div class="video-container">
                     <video class="video-player" autoplay muted loop playsinline>
                         <source src="https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4" type="video/mp4">
@@ -750,6 +871,20 @@
                     <div class="store-price">200 $YUME</div>
                     <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
                 </div>
+                <div class="store-item">
+                    <i class="fas fa-rocket" style="font-size: 2rem; color: var(--secondary-color);"></i>
+                    <h4>Boost Post</h4>
+                    <p>Get more visibility for your posts</p>
+                    <div class="store-price">50 $YUME</div>
+                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
+                </div>
+                <div class="store-item">
+                    <i class="fas fa-crown" style="font-size: 2rem; color: #ffd700;"></i>
+                    <h4>VIP Status</h4>
+                    <p>Unlock exclusive features</p>
+                    <div class="store-price">500 $YUME</div>
+                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
+                </div>
             </div>
         </section>
 
@@ -757,8 +892,8 @@
         <section id="profilePage" class="page">
             <div class="profile-header">
                 <img src="https://i.pravatar.cc/150?img=1" class="profile-avatar" alt="Profile">
-                <h2>Demo User</h2>
-                <p>Welcome to YUME! Start sharing your content.</p>
+                <h2 id="profileName">Demo User</h2>
+                <p id="profileBio">Welcome to YUME! Start sharing your content.</p>
             </div>
             <div class="profile-stats">
                 <div class="stat">
@@ -778,16 +913,28 @@
                 <button class="btn btn-primary" id="editProfileBtn">
                     <i class="fas fa-edit"></i> Edit Profile
                 </button>
+                <button class="btn btn-secondary" id="shareProfileBtn">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
             </div>
             <div class="video-grid">
                 <div class="grid-video">
-                    <i class="fas fa-video"></i>
+                    <img src="https://picsum.photos/300/500?random=1" alt="Post 1">
+                    <div class="grid-overlay">
+                        <i class="fas fa-play"></i> 12.5K
+                    </div>
                 </div>
                 <div class="grid-video">
-                    <i class="fas fa-video"></i>
+                    <img src="https://picsum.photos/300/500?random=2" alt="Post 2">
+                    <div class="grid-overlay">
+                        <i class="fas fa-play"></i> 8.7K
+                    </div>
                 </div>
                 <div class="grid-video">
-                    <i class="fas fa-video"></i>
+                    <img src="https://picsum.photos/300/500?random=3" alt="Post 3">
+                    <div class="grid-overlay">
+                        <i class="fas fa-play"></i> 15.2K
+                    </div>
                 </div>
             </div>
         </section>
@@ -797,8 +944,8 @@
             <div class="auth-container">
                 <div class="auth-card">
                     <div class="auth-tabs">
-                        <div class="auth-tab active" data-tab="login">Login</div>
-                        <div class="auth-tab" data-tab="register">Register</div>
+                        <button class="auth-tab active" data-tab="login">Login</button>
+                        <button class="auth-tab" data-tab="register">Register</button>
                     </div>
                     
                     <form id="loginForm">
@@ -816,6 +963,11 @@
                                 <i class="fab fa-google"></i> Continue with Google
                             </button>
                         </div>
+                        <div class="text-center mt-2">
+                            <button type="button" id="continueAsGuest" class="btn" style="width: 100%; background: transparent; border: 1px solid var(--border-color);">
+                                Continue as Guest
+                            </button>
+                        </div>
                     </form>
 
                     <form id="registerForm" style="display: none;">
@@ -830,6 +982,9 @@
                         </div>
                         <div class="form-group">
                             <input type="password" class="form-input" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-input" placeholder="Confirm Password" required>
                         </div>
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
                             <i class="fas fa-user-plus"></i> Create Account
@@ -851,6 +1006,10 @@
             <div class="nav-icon"><i class="fas fa-home"></i></div>
             <span>Home</span>
         </div>
+        <div class="nav-item" data-page="earnPage">
+            <div class="nav-icon"><i class="fas fa-coins"></i></div>
+            <span>Earn</span>
+        </div>
         <div class="nav-item" data-page="profilePage">
             <div class="nav-icon"><i class="fas fa-user"></i></div>
             <span>Profile</span>
@@ -862,7 +1021,8 @@
         let currentUser = {
             name: "Demo User",
             balance: 100,
-            isLoggedIn: true
+            isLoggedIn: true,
+            dailyRewardClaimed: false
         };
 
         let currentPage = 'homePage';
@@ -874,6 +1034,8 @@
 
         function initializeApp() {
             setupEventListeners();
+            setupVideoObserver();
+            checkDailyReward();
             updateUI();
         }
 
@@ -952,20 +1114,30 @@
 
             // Floating Action Button
             document.getElementById('newPostFloatBtn').addEventListener('click', function() {
+                if (!currentUser.isLoggedIn) {
+                    showPage('authPage');
+                    showMessage('Please login to create posts', 'error');
+                    return;
+                }
                 showMessage('Post creation feature coming soon!');
             });
 
-            // Edit Profile
+            // Profile Actions
             document.getElementById('editProfileBtn').addEventListener('click', function() {
                 showMessage('Profile editing feature coming soon!');
+            });
+
+            document.getElementById('shareProfileBtn').addEventListener('click', function() {
+                showMessage('Profile shared to clipboard!');
             });
 
             // Forms
             document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                showMessage('Login successful!');
                 currentUser.isLoggedIn = true;
+                showMessage('Login successful!');
                 showPage('homePage');
+                updateUI();
             });
 
             document.getElementById('registerForm').addEventListener('submit', function(e) {
@@ -973,6 +1145,19 @@
                 showMessage('Registration successful!');
                 // Switch to login
                 document.querySelector('.auth-tab[data-tab="login"]').click();
+            });
+
+            // Continue as Guest
+            document.getElementById('continueAsGuest').addEventListener('click', function() {
+                currentUser.isLoggedIn = true;
+                showPage('homePage');
+                showMessage('Continuing as guest. Some features may be limited.');
+                updateUI();
+            });
+
+            // Search Toggle
+            document.getElementById('searchToggle').addEventListener('click', function() {
+                showMessage('Search feature coming soon!');
             });
         }
 
@@ -985,19 +1170,19 @@
                     showPage('earnPage');
                     break;
                 case 'about':
-                    showMessage('YUME - TikTok-style social media with earning features');
+                    showMessage('YUME - TikTok-style social media with earning features. Connect, create, and earn!');
                     break;
                 case 'privacy':
-                    showMessage('Privacy policy page would open here');
+                    showMessage('Privacy policy: We value your privacy and protect your data.');
                     break;
                 case 'terms':
-                    showMessage('Terms of service page would open here');
+                    showMessage('Terms of service: By using YUME, you agree to our terms.');
                     break;
                 case 'support':
-                    showMessage('Support page would open here');
+                    showMessage('Support: Contact us at support@yume.com');
                     break;
                 case 'settings':
-                    showMessage('Settings page would open here');
+                    showMessage('Settings page coming soon!');
                     break;
                 case 'theme':
                     toggleTheme();
@@ -1006,6 +1191,7 @@
                     currentUser.isLoggedIn = false;
                     showPage('authPage');
                     showMessage('Logged out successfully');
+                    updateUI();
                     break;
             }
         }
@@ -1039,57 +1225,70 @@
         function earnYume(amount, reason) {
             currentUser.balance += amount;
             updateUI();
-            showMessage(`You earned ${amount} $YUME for ${reason}!`);
+            showMessage(`+${amount} $YUME! ${reason}`);
         }
 
         function updateUI() {
             document.getElementById('balanceAmount').textContent = currentUser.balance;
+            
+            // Update profile name if user is logged in
+            if (currentUser.isLoggedIn) {
+                document.getElementById('profileName').textContent = currentUser.name;
+            }
         }
 
         function simulateAdWatch() {
             const btn = document.getElementById('watchAdBtn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Watching...';
+            btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Watching...';
             btn.disabled = true;
             
-            setTimeout(() => {
-                earnYume(5, 'Watching an ad');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }, 3000);
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    earnYume(5, 'Watched an ad');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    showMessage('Ad completed! +5 $YUME');
+                }
+            }, 300);
         }
 
         function simulateFriendInvite() {
-            showMessage('Share your referral link: yume-app.com/invite/demo');
-            earnYume(20, 'Inviting a friend');
+            showMessage('Share your referral link: yume-app.com/invite/demo-user-123');
+            earnYume(20, 'Invited a friend');
         }
 
-        function claimDailyReward() {
-            const lastClaim = localStorage.getItem('dailyRewardClaimed');
+        function checkDailyReward() {
+            const lastClaim = localStorage.getItem('dailyRewardLastClaim');
             const today = new Date().toDateString();
             
             if (lastClaim === today) {
-                showMessage('You have already claimed your daily reward today. Come back tomorrow!', 'error');
-                return;
+                currentUser.dailyRewardClaimed = true;
+                document.getElementById('dailyRewardBtn').disabled = true;
+                document.getElementById('dailyRewardBtn').innerHTML = '<i class="fas fa-check"></i> Claimed Today';
             }
-            
-            localStorage.setItem('dailyRewardClaimed', today);
+        }
+
+        function claimDailyReward() {
+            const today = new Date().toDateString();
+            localStorage.setItem('dailyRewardLastClaim', today);
+            currentUser.dailyRewardClaimed = true;
+            document.getElementById('dailyRewardBtn').disabled = true;
+            document.getElementById('dailyRewardBtn').innerHTML = '<i class="fas fa-check"></i> Claimed Today';
             earnYume(10, 'Daily reward');
         }
 
         function showMessage(message, type = 'success') {
             // Remove existing messages
-            document.querySelectorAll('.success-message, .error-message').forEach(msg => msg.remove());
+            document.querySelectorAll('.message').forEach(msg => msg.remove());
             
             const messageEl = document.createElement('div');
-            messageEl.className = type === 'success' ? 'success-message' : 'error-message';
+            messageEl.className = `message ${type}-message`;
             messageEl.textContent = message;
-            messageEl.style.position = 'fixed';
-            messageEl.style.top = '70px';
-            messageEl.style.left = '50%';
-            messageEl.style.transform = 'translateX(-50%)';
-            messageEl.style.zIndex = '2000';
-            messageEl.style.maxWidth = '90%';
             
             document.body.appendChild(messageEl);
             
@@ -1098,22 +1297,37 @@
             }, 3000);
         }
 
-        // Video auto-play
-        const videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const video = entry.target.querySelector('video');
-                if (video) {
-                    if (entry.isIntersecting) {
-                        video.play();
-                    } else {
-                        video.pause();
+        function setupVideoObserver() {
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target.querySelector('video');
+                    if (video) {
+                        if (entry.isIntersecting) {
+                            video.play().catch(e => console.log('Video play failed:', e));
+                        } else {
+                            video.pause();
+                        }
                     }
+                });
+            }, { threshold: 0.7 });
+
+            document.querySelectorAll('.video-container').forEach(container => {
+                videoObserver.observe(container);
+            });
+        }
+
+        // Store item purchases
+        document.querySelectorAll('.store-item .btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const price = parseInt(this.parentElement.querySelector('.store-price').textContent);
+                if (currentUser.balance >= price) {
+                    currentUser.balance -= price;
+                    updateUI();
+                    showMessage('Purchase successful!');
+                } else {
+                    showMessage('Not enough $YUME tokens!', 'error');
                 }
             });
-        }, { threshold: 0.7 });
-
-        document.querySelectorAll('.video-container').forEach(container => {
-            videoObserver.observe(container);
         });
     </script>
 </body>
