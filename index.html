@@ -83,6 +83,7 @@
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
             box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            height: 60px;
         }
 
         .logo {
@@ -142,22 +143,70 @@
             transform: translateY(-2px);
         }
 
-        .earn-btn-header {
-            background: var(--earn-gradient);
-            color: black;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: var(--transition);
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
         }
 
-        .earn-btn-header:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .dropdown-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 220px;
+            padding: 8px;
+            margin-top: 8px;
+            z-index: 1001;
+            border: 1px solid var(--border-color);
+            display: none;
+            animation: slideDown 0.2s ease;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--text-color);
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .dropdown-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 8px 0;
         }
 
         /* TikTok-style Navigation */
@@ -216,10 +265,17 @@
             right: -5px;
         }
 
+        /* Main Content Area - Fixed to avoid header overlap */
+        .main-content {
+            margin-top: 60px; /* Same as header height */
+            height: calc(100vh - 120px); /* Subtract header and footer */
+            overflow-y: auto;
+        }
+
         /* TikTok Video Feed */
         .video-feed {
             position: relative;
-            height: calc(100vh - 60px);
+            height: 100%;
             overflow-y: auto;
             scroll-snap-type: y mandatory;
         }
@@ -227,7 +283,7 @@
         .video-container {
             position: relative;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             scroll-snap-align: start;
             overflow: hidden;
         }
@@ -802,6 +858,11 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
+        @keyframes slideDown {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         @keyframes slideIn {
             from { transform: translateX(-10px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
@@ -886,21 +947,51 @@
             <button class="search-toggle" id="searchToggle">
                 <i class="fas fa-search"></i>
             </button>
-            <button class="earn-btn-header" id="earnBtnHeader">
-                <i class="fas fa-coins"></i> Earn
-            </button>
             <div class="yume-balance" id="yumeBalance">
                 <i class="fas fa-coins"></i>
                 <span id="balanceAmount">0</span> $YUME
             </div>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="profile-dropdown">
+                <button class="dropdown-toggle" id="dropdownToggle">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <div class="dropdown-item" data-action="message">
+                        <i class="fas fa-envelope"></i> Messages
+                    </div>
+                    <div class="dropdown-item" data-action="earn">
+                        <i class="fas fa-coins"></i> Earn $YUME
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" data-action="about">
+                        <i class="fas fa-info-circle"></i> About
+                    </div>
+                    <div class="dropdown-item" data-action="privacy">
+                        <i class="fas fa-shield-alt"></i> Privacy
+                    </div>
+                    <div class="dropdown-item" data-action="terms">
+                        <i class="fas fa-file-contract"></i> Terms
+                    </div>
+                    <div class="dropdown-item" data-action="support">
+                        <i class="fas fa-headset"></i> Support
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" data-action="settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </div>
+                    <div class="dropdown-item" data-action="theme">
+                        <i class="fas fa-palette"></i> Theme
+                    </div>
+                    <div class="dropdown-item" data-action="logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="container">
+    <!-- Main Content Area -->
+    <main class="main-content">
         <!-- Home/Feed Page -->
         <section id="homePage" class="page active">
             <div class="video-feed">
@@ -1008,9 +1099,6 @@
                 <button class="btn btn-primary" id="editProfileBtn">
                     <i class="fas fa-edit"></i> Edit Profile
                 </button>
-                <button class="btn btn-secondary" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
             </div>
             <div class="profile-tabs">
                 <div class="profile-tab active">Videos</div>
@@ -1097,10 +1185,6 @@
         <div class="nav-item active" data-page="homePage">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
             <span>Home</span>
-        </div>
-        <div class="nav-item" data-page="earnPage">
-            <div class="nav-icon"><i class="fas fa-coins"></i></div>
-            <span>Earn</span>
         </div>
         <div class="nav-item" data-page="profilePage">
             <div class="nav-icon"><i class="fas fa-user"></i></div>
@@ -1192,9 +1276,27 @@
                 currentTheme = newTheme;
             });
 
-            // Earn button in header
-            document.getElementById('earnBtnHeader').addEventListener('click', function() {
-                showPage('earnPage');
+            // Profile dropdown
+            const dropdownToggle = document.getElementById('dropdownToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            dropdownToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                dropdownMenu.classList.remove('show');
+            });
+
+            // Dropdown menu items
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const action = this.getAttribute('data-action');
+                    handleDropdownAction(action);
+                    dropdownMenu.classList.remove('show');
+                });
             });
 
             // Navigation
@@ -1279,11 +1381,6 @@
                 showEditProfileModal();
             });
 
-            // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                logoutUser();
-            });
-
             // Earning buttons
             document.getElementById('watchAdBtn').addEventListener('click', function() {
                 simulateAdWatch();
@@ -1318,6 +1415,41 @@
                 const bio = document.getElementById('editBio').value;
                 await updateProfile(displayName, username, bio);
             });
+        }
+
+        function handleDropdownAction(action) {
+            switch(action) {
+                case 'message':
+                    showSuccess('Messages feature coming soon!');
+                    break;
+                case 'earn':
+                    showPage('earnPage');
+                    break;
+                case 'about':
+                    showSuccess('YUME - TikTok-style social media with earning features');
+                    break;
+                case 'privacy':
+                    showSuccess('Privacy policy page would open here');
+                    break;
+                case 'terms':
+                    showSuccess('Terms of service page would open here');
+                    break;
+                case 'support':
+                    showSuccess('Support page would open here');
+                    break;
+                case 'settings':
+                    showSuccess('Settings page would open here');
+                    break;
+                case 'theme':
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    setTheme(newTheme);
+                    currentTheme = newTheme;
+                    showSuccess(`Theme changed to ${newTheme} mode`);
+                    break;
+                case 'logout':
+                    logoutUser();
+                    break;
+            }
         }
 
         async function initializeStripe() {
