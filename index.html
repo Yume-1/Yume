@@ -3,202 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUME - Social Media with Earning</title>
+    <title>TikTok Clone</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #fe2c55;
-            --primary-light: #ff5777;
-            --primary-dark: #d91a4c;
-            --secondary-color: #25f4ee;
-            --accent-color: #ffd600;
-            --text-color: #ffffff;
-            --bg-color: #000000;
-            --card-bg: #121212;
-            --border-color: #2a2a2a;
-            --success-color: #4caf50;
-            --error-color: #fe2c55;
-            --shadow: 0 2px 10px rgba(0,0,0,0.5);
-            --transition: all 0.3s ease;
-            --gradient: linear-gradient(135deg, #fe2c55 0%, #25f4ee 100%);
-            --earn-gradient: linear-gradient(135deg, #ffd700, #ff9500);
-        }
-
-        [data-theme="light"] {
-            --text-color: #000000;
-            --bg-color: #ffffff;
-            --card-bg: #f8f8f8;
-            --border-color: #e0e0e0;
-            --shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            background-color: #000;
+            color: #fff;
             overflow-x: hidden;
         }
 
-        /* Header */
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            position: relative;
+            background-color: #000;
+        }
+
+        /* Header Styles */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-            height: 60px;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-size: 1.8rem;
             font-weight: bold;
-            color: var(--text-color);
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #ff0050;
+        }
+
+        .header-icons {
             display: flex;
-            align-items: center;
+            gap: 20px;
         }
 
-        .logo::before {
-            content: "";
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            background: var(--gradient);
-            border-radius: 6px;
-            margin-right: 8px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.2rem;
-            padding: 8px;
-            border-radius: 50%;
-            transition: var(--transition);
+        .header-icons i {
+            font-size: 20px;
             cursor: pointer;
         }
 
-        .header-btn:hover {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .yume-balance {
-            background: var(--primary-color);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Profile Dropdown */
-        .profile-dropdown {
-            position: relative;
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 220px;
-            padding: 8px;
-            margin-top: 8px;
-            z-index: 1001;
-            border: 1px solid var(--border-color);
-            display: none;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: var(--text-color);
-            border-radius: 8px;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-        }
-
-        .dropdown-item:hover {
-            background-color: rgba(255,255,255,0.05);
-        }
-
-        .dropdown-item i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 8px 0;
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 60px;
-            margin-bottom: 60px;
-            min-height: calc(100vh - 120px);
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            width: 100%;
-            height: 100%;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Video Feed */
-        .video-feed {
-            height: calc(100vh - 120px);
-            overflow-y: auto;
+        /* Feed Styles */
+        .feed {
+            height: 100vh;
+            overflow-y: scroll;
             scroll-snap-type: y mandatory;
+            padding-top: 60px;
+            padding-bottom: 80px;
         }
 
         .video-container {
+            position: relative;
             height: 100vh;
             scroll-snap-align: start;
-            position: relative;
-            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .video-player {
@@ -209,40 +88,42 @@
 
         .video-overlay {
             position: absolute;
-            bottom: 0;
+            bottom: 80px;
             left: 0;
             right: 0;
-            padding: 20px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.7));
-            color: white;
-            z-index: 10;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
         }
 
-        .video-username {
+        .video-info {
+            margin-bottom: 15px;
+        }
+
+        .username {
             font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
+            margin-bottom: 5px;
         }
 
         .video-caption {
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            max-width: 80%;
+            font-size: 14px;
+            margin-bottom: 5px;
         }
 
-        .video-music {
+        .song-info {
             display: flex;
             align-items: center;
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .song-info i {
+            margin-right: 5px;
         }
 
         .video-actions {
             position: absolute;
             right: 15px;
-            bottom: 120px;
+            bottom: 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -250,950 +131,757 @@
         }
 
         .action-item {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .action-circle {
+        .action-icon {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background-color: rgba(255,255,255,0.1);
             display: flex;
-            align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
+            align-items: center;
+            margin-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .action-circle:hover {
-            background-color: rgba(255,255,255,0.2);
-        }
-
-        .action-circle.liked {
-            color: var(--primary-color);
+        .action-icon i {
+            font-size: 24px;
         }
 
         .action-count {
-            font-size: 0.7rem;
-            margin-top: 5px;
-            color: white;
+            font-size: 12px;
         }
 
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 500px;
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
-            border-top: 1px solid var(--border-color);
+            padding: 15px;
+            background-color: #000;
+            border-top: 1px solid #333;
+            z-index: 100;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.7rem;
-            color: var(--text-color);
-            transition: var(--transition);
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
         }
 
         .nav-item.active {
-            color: var(--primary-color);
+            color: #ff0050;
         }
 
-        .nav-icon {
-            font-size: 1.4rem;
-            margin-bottom: 4px;
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
         }
 
-        /* Profile Page */
-        .profile-header {
-            padding: 30px 20px 20px;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
+        .nav-text {
+            font-size: 10px;
         }
 
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            border: 4px solid white;
-        }
-
-        .profile-stats {
+        /* Auth Modal */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
             display: flex;
-            justify-content: space-around;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             padding: 20px;
-            background: var(--card-bg);
-            margin: 20px;
-            border-radius: 16px;
         }
 
-        .stat {
-            text-align: center;
-            cursor: pointer;
+        .auth-modal h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
         }
 
-        .stat-value {
-            font-weight: bold;
-            font-size: 1.3rem;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            padding: 0 20px 20px;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            font-size: 0.9rem;
-        }
-
-        .btn i {
-            margin-right: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            color: black;
-        }
-
-        .btn-secondary:hover {
-            background-color: #1de0d9;
-            transform: translateY(-2px);
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            padding: 0 20px 20px;
-        }
-
-        .grid-video {
-            aspect-ratio: 9/16;
-            background: var(--border-color);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-        }
-
-        /* Earn Page */
-        .earn-section {
-            padding: 25px;
-            text-align: center;
-            background: var(--earn-gradient);
-            color: black;
-            border-radius: 20px;
-            margin: 20px;
-        }
-
-        .earn-actions {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .earn-btn {
-            background: rgba(255,255,255,0.9);
-            color: black;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-weight: bold;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            flex: 1;
-            min-width: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .earn-btn:hover {
-            background: rgba(255,255,255,1);
-            transform: translateY(-2px);
-        }
-
-        .earn-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .yume-store {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px;
-        }
-
-        .store-item {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .store-price {
-            background: var(--earn-gradient);
-            color: black;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-top: 12px;
-            display: inline-block;
-        }
-
-        /* Auth Page */
-        .auth-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .auth-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid var(--border-color);
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--bg-color);
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            background: none;
-            color: var(--text-color);
-        }
-
-        .auth-tab.active {
-            background: var(--primary-color);
-            color: white;
+        .auth-form {
+            width: 100%;
+            max-width: 350px;
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-input {
+        .form-group input {
             width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--card-bg);
-            color: var(--text-color);
-            font-size: 1rem;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff0050;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
         }
 
-        /* Floating Button */
-        .floating-btn {
+        .auth-switch {
+            text-align: center;
+            color: #ff0050;
+            cursor: pointer;
+        }
+
+        /* Upload Modal */
+        .upload-modal {
             position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--gradient);
-            color: white;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .close-upload {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .upload-area {
+            flex-grow: 1;
+            border: 2px dashed #555;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .upload-area i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .upload-text {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .caption-input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .post-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ff0050;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Profile Page */
+        .profile-page {
+            display: none;
+            padding: 20px;
+            padding-top: 70px;
+            padding-bottom: 80px;
+        }
+
+        .profile-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            z-index: 99;
-            font-size: 1.3rem;
+            margin-bottom: 30px;
         }
 
-        .avatar {
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #333;
+            margin-right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-count {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .profile-bio {
+            margin-bottom: 20px;
+        }
+
+        .edit-profile-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ff0050;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #ff0050;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+
+        .profile-videos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .video-thumbnail {
+            aspect-ratio: 9/16;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .spinner {
             width: 40px;
             height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ff0050;
             border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
+            animation: spin 1s linear infinite;
         }
 
-        .verified-badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 0.6rem;
-            margin-left: 5px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body data-theme="dark">
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">YUME</div>
-        <div class="header-actions">
-            <button class="header-btn" id="searchToggle">
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">Tik<span>Tok</span></div>
+            <div class="header-icons">
                 <i class="fas fa-search"></i>
-            </button>
-            <div class="yume-balance" id="yumeBalance">
-                <i class="fas fa-coins"></i>
-                <span id="balanceAmount">0</span> $YUME
-            </div>
-            <div class="profile-dropdown">
-                <button class="header-btn" id="dropdownToggle">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <button class="dropdown-item" data-action="message">
-                        <i class="fas fa-envelope"></i> Messages
-                    </button>
-                    <button class="dropdown-item" data-action="earn">
-                        <i class="fas fa-coins"></i> Earn $YUME
-                    </button>
-                    <div class="dropdown-divider"></div>
-                    <button class="dropdown-item" data-action="about">
-                        <i class="fas fa-info-circle"></i> About
-                    </button>
-                    <button class="dropdown-item" data-action="privacy">
-                        <i class="fas fa-shield-alt"></i> Privacy
-                    </button>
-                    <button class="dropdown-item" data-action="terms">
-                        <i class="fas fa-file-contract"></i> Terms
-                    </button>
-                    <button class="dropdown-item" data-action="support">
-                        <i class="fas fa-headset"></i> Support
-                    </button>
-                    <div class="dropdown-divider"></div>
-                    <button class="dropdown-item" data-action="settings">
-                        <i class="fas fa-cog"></i> Settings
-                    </button>
-                    <button class="dropdown-item" data-action="theme">
-                        <i class="fas fa-palette"></i> Theme
-                    </button>
-                    <button class="dropdown-item" data-action="logout">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
-                </div>
+                <i class="fas fa-inbox"></i>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Home Page -->
-        <section id="homePage" class="page active">
-            <div class="video-feed">
-                <!-- Videos will be loaded after login -->
+        <!-- Feed -->
+        <div class="feed" id="feed">
+            <!-- Videos will be loaded here -->
+            <div class="loading">
+                <div class="spinner"></div>
             </div>
-        </section>
+        </div>
 
-        <!-- Earn Page -->
-        <section id="earnPage" class="page">
-            <div class="earn-section">
-                <h2>Earn $YUME Tokens</h2>
-                <p>Complete tasks and engage with content to earn $YUME tokens</p>
-                <div class="earn-actions">
-                    <button class="earn-btn" id="watchAdBtn">
-                        <i class="fas fa-play-circle"></i> Watch Ad
-                    </button>
-                    <button class="earn-btn" id="inviteFriendBtn">
-                        <i class="fas fa-user-plus"></i> Invite Friend
-                    </button>
-                    <button class="earn-btn" id="dailyRewardBtn">
-                        <i class="fas fa-gift"></i> Daily Reward
-                    </button>
-                </div>
-            </div>
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span class="nav-text">Home</span>
+            </a>
+            <a href="#" class="nav-item" data-page="discover">
+                <i class="fas fa-search"></i>
+                <span class="nav-text">Discover</span>
+            </a>
+            <a href="#" class="nav-item" id="upload-btn">
+                <i class="fas fa-plus-square"></i>
+                <span class="nav-text">Upload</span>
+            </a>
+            <a href="#" class="nav-item" data-page="inbox">
+                <i class="fas fa-inbox"></i>
+                <span class="nav-text">Inbox</span>
+            </a>
+            <a href="#" class="nav-item" data-page="profile">
+                <i class="fas fa-user"></i>
+                <span class="nav-text">Profile</span>
+            </a>
+        </div>
 
-            <h3 class="text-center mt-2">$YUME Store</h3>
-            <div class="yume-store">
-                <div class="store-item">
-                    <i class="fas fa-gem" style="font-size: 2rem; color: var(--primary-color);"></i>
-                    <h4>Premium Badge</h4>
-                    <p>Show off with a premium badge</p>
-                    <div class="store-price">100 $YUME</div>
-                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
+        <!-- Auth Modal -->
+        <div class="auth-modal" id="auth-modal">
+            <h2>Log in to TikTok</h2>
+            <div class="auth-form">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email or username">
                 </div>
-                <div class="store-item">
-                    <i class="fas fa-palette" style="font-size: 2rem; color: var(--accent-color);"></i>
-                    <h4>Custom Theme</h4>
-                    <p>Unlock custom profile themes</p>
-                    <div class="store-price">200 $YUME</div>
-                    <button class="btn btn-primary mt-1" style="width: 100%;">Buy</button>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password">
                 </div>
+                <button class="auth-btn" id="login-btn">Log in</button>
+                <div class="auth-switch" id="switch-to-signup">Don't have an account? Sign up</div>
             </div>
-        </section>
+        </div>
+
+        <!-- Upload Modal -->
+        <div class="upload-modal" id="upload-modal">
+            <div class="upload-header">
+                <div class="upload-title">Upload Video</div>
+                <div class="close-upload" id="close-upload"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="upload-area" id="upload-area">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <div class="upload-text">Select video to upload</div>
+            </div>
+            <input type="text" class="caption-input" id="caption-input" placeholder="Write a caption...">
+            <button class="post-btn" id="post-btn">Post</button>
+        </div>
 
         <!-- Profile Page -->
-        <section id="profilePage" class="page">
+        <div class="profile-page" id="profile-page">
             <div class="profile-header">
-                <div class="profile-avatar"></div>
-                <h2 id="profileName">Please Login</h2>
-                <p id="profileBio">Login to view your profile</p>
-            </div>
-            <div class="profile-stats">
-                <div class="stat">
-                    <span class="stat-value">0</span>
-                    <div class="stat-label">Posts</div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
                 </div>
-                <div class="stat">
-                    <span class="stat-value">0</span>
-                    <div class="stat-label">Following</div>
-                </div>
-                <div class="stat">
-                    <span class="stat-value">0</span>
-                    <div class="stat-label">Followers</div>
-                </div>
-            </div>
-            <div class="profile-actions">
-                <button class="btn btn-primary" id="editProfileBtn">
-                    <i class="fas fa-edit"></i> Edit Profile
-                </button>
-            </div>
-            <div class="video-grid">
-                <div class="grid-video">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <div class="grid-video">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <div class="grid-video">
-                    <i class="fas fa-lock"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- Auth Page -->
-        <section id="authPage" class="page">
-            <div class="auth-container">
-                <div class="auth-card">
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" data-tab="login">Login</button>
-                        <button class="auth-tab" data-tab="register">Register</button>
+                <div>
+                    <h2>@username</h2>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-count">120</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-count">5.2K</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-count">34</div>
+                            <div class="stat-label">Likes</div>
+                        </div>
                     </div>
-                    
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <input type="email" class="form-input" placeholder="Email" required id="loginEmail">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-input" placeholder="Password" required id="loginPassword">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </form>
-
-                    <form id="registerForm" style="display: none;">
-                        <div class="form-group">
-                            <input type="text" class="form-input" placeholder="Full Name" required id="registerName">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-input" placeholder="Username" required id="registerUsername">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-input" placeholder="Email" required id="registerEmail">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-input" placeholder="Password" required id="registerPassword">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-input" placeholder="Confirm Password" required id="registerConfirmPassword">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            <i class="fas fa-user-plus"></i> Create Account
-                        </button>
-                    </form>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <!-- Floating Button -->
-    <button class="floating-btn" id="newPostFloatBtn">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" data-page="homePage">
-            <div class="nav-icon"><i class="fas fa-home"></i></div>
-            <span>Home</span>
+            <div class="profile-bio">
+                <p>This is my bio. I love creating TikTok videos!</p>
+            </div>
+            <button class="edit-profile-btn">Edit profile</button>
+            <div class="profile-tabs">
+                <div class="tab active">Videos</div>
+                <div class="tab">Liked</div>
+            </div>
+            <div class="profile-videos">
+                <!-- User videos will be displayed here -->
+                <div class="video-thumbnail">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="video-thumbnail">
+                    <i class="fas fa-play"></i>
+                </div>
+                <div class="video-thumbnail">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
         </div>
-        <div class="nav-item" data-page="profilePage">
-            <div class="nav-icon"><i class="fas fa-user"></i></div>
-            <span>Profile</span>
-        </div>
-    </nav>
+    </div>
 
     <script>
-        // App State - No demo data
+        // Supabase configuration
+        const SUPABASE_URL = 'https://qsiwjjqxpegfmgkmtjje.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzaXdqanF4cGVnZm1na210amplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NDU2MTYsImV4cCI6MjA3ODEyMTYxNn0.iZ5YLVdeZP0VOm_Qu8XBOfBa9hmyEqHl520q5hZd1z8';
+
+        // Initialize Supabase client
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // DOM Elements
+        const feed = document.getElementById('feed');
+        const authModal = document.getElementById('auth-modal');
+        const uploadModal = document.getElementById('upload-modal');
+        const profilePage = document.getElementById('profile-page');
+        const uploadBtn = document.getElementById('upload-btn');
+        const closeUpload = document.getElementById('close-upload');
+        const loginBtn = document.getElementById('login-btn');
+        const switchToSignup = document.getElementById('switch-to-signup');
+        const postBtn = document.getElementById('post-btn');
+        const uploadArea = document.getElementById('upload-area');
+        const navItems = document.querySelectorAll('.nav-item[data-page]');
+
+        // Sample video data (in a real app, this would come from Supabase)
+        const sampleVideos = [
+            {
+                id: 1,
+                username: '@dancer123',
+                caption: 'Check out my new dance moves! #dance #trending',
+                song: 'Popular Song - Artist',
+                likes: 2450,
+                comments: 120,
+                shares: 45,
+                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4'
+            },
+            {
+                id: 2,
+                username: '@comedyqueen',
+                caption: 'When you try to be serious but fail miserably 😂',
+                song: 'Funny Sound - Comedian',
+                likes: 5120,
+                comments: 342,
+                shares: 120,
+                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4'
+            },
+            {
+                id: 3,
+                username: '@cookingwizard',
+                caption: '5-minute chocolate cake recipe! 🍫',
+                song: 'Cooking Time - Chef',
+                likes: 8920,
+                comments: 567,
+                shares: 320,
+                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-white-sand-beach-and-palm-trees-1564-large.mp4'
+            }
+        ];
+
+        // Check if user is logged in
         let currentUser = null;
-        let userBalance = 0;
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-        });
-
-        function initializeApp() {
+        // Initialize the app
+        function initApp() {
+            // For demo purposes, we'll show the auth modal
+            // In a real app, you would check for an existing session
+            showAuthModal();
+            
+            // Load sample videos
+            loadVideos();
+            
+            // Set up event listeners
             setupEventListeners();
-            checkAuthStatus();
         }
 
+        // Set up event listeners
         function setupEventListeners() {
             // Navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page');
-                    showPage(pageId);
-                });
-            });
-
-            // Profile Dropdown
-            const dropdownToggle = document.getElementById('dropdownToggle');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            
-            dropdownToggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function() {
-                dropdownMenu.classList.remove('show');
-            });
-
-            // Dropdown Actions
-            document.querySelectorAll('.dropdown-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const action = this.getAttribute('data-action');
-                    handleDropdownAction(action);
-                    dropdownMenu.classList.remove('show');
-                });
-            });
-
-            // Auth Tabs
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = item.getAttribute('data-page');
                     
-                    document.getElementById('loginForm').style.display = tabName === 'login' ? 'block' : 'none';
-                    document.getElementById('registerForm').style.display = tabName === 'register' ? 'block' : 'none';
+                    // Update active nav item
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Show the selected page
+                    if (page === 'home') {
+                        showFeed();
+                    } else if (page === 'profile') {
+                        showProfile();
+                    }
+                    // Add other pages as needed
                 });
             });
-
-            // Login Form
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
+            
+            // Upload button
+            uploadBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                loginUser(email, password);
+                showUploadModal();
             });
-
-            // Register Form
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('registerName').value;
-                const username = document.getElementById('registerUsername').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
-                
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match');
-                    return;
-                }
-                
-                registerUser(name, username, email, password);
-            });
-
-            // Earning Buttons
-            document.getElementById('watchAdBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                watchAd();
-            });
-
-            document.getElementById('inviteFriendBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                inviteFriend();
-            });
-
-            document.getElementById('dailyRewardBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                claimDailyReward();
-            });
-
-            // Floating Action Button
-            document.getElementById('newPostFloatBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                // Create post functionality would go here
-                alert('Create post feature');
-            });
-
-            // Edit Profile
-            document.getElementById('editProfileBtn').addEventListener('click', function() {
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                // Edit profile functionality would go here
-                alert('Edit profile feature');
-            });
-
-            // Search Toggle
-            document.getElementById('searchToggle').addEventListener('click', function() {
-                alert('Search feature');
+            
+            // Close upload modal
+            closeUpload.addEventListener('click', hideUploadModal);
+            
+            // Login button
+            loginBtn.addEventListener('click', handleLogin);
+            
+            // Switch to signup
+            switchToSignup.addEventListener('click', switchToSignupForm);
+            
+            // Post button
+            postBtn.addEventListener('click', handlePost);
+            
+            // Upload area click
+            uploadArea.addEventListener('click', () => {
+                // In a real app, this would trigger a file input
+                alert('In a real app, this would open a file picker to select a video');
             });
         }
 
-        function handleDropdownAction(action) {
-            switch(action) {
-                case 'message':
-                    if (!currentUser) {
-                        showPage('authPage');
-                        return;
-                    }
-                    alert('Messages feature');
-                    break;
-                case 'earn':
-                    showPage('earnPage');
-                    break;
-                case 'about':
-                    alert('About YUME');
-                    break;
-                case 'privacy':
-                    alert('Privacy Policy');
-                    break;
-                case 'terms':
-                    alert('Terms of Service');
-                    break;
-                case 'support':
-                    alert('Contact Support');
-                    break;
-                case 'settings':
-                    if (!currentUser) {
-                        showPage('authPage');
-                        return;
-                    }
-                    alert('Settings');
-                    break;
-                case 'theme':
-                    toggleTheme();
-                    break;
-                case 'logout':
-                    logoutUser();
-                    break;
-            }
+        // Show auth modal
+        function showAuthModal() {
+            authModal.style.display = 'flex';
         }
 
-        function checkAuthStatus() {
-            // Check if user is logged in (in real app, this would check session/token)
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                userBalance = currentUser.balance || 0;
-                updateUI();
-                showPage('homePage');
-                loadVideos();
+        // Hide auth modal
+        function hideAuthModal() {
+            authModal.style.display = 'none';
+        }
+
+        // Show upload modal
+        function showUploadModal() {
+            uploadModal.style.display = 'flex';
+        }
+
+        // Hide upload modal
+        function hideUploadModal() {
+            uploadModal.style.display = 'none';
+        }
+
+        // Show feed
+        function showFeed() {
+            feed.style.display = 'block';
+            profilePage.style.display = 'none';
+        }
+
+        // Show profile
+        function showProfile() {
+            feed.style.display = 'none';
+            profilePage.style.display = 'block';
+        }
+
+        // Handle login
+        function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // In a real app, this would authenticate with Supabase
+            if (email && password) {
+                // Simulate successful login
+                currentUser = {
+                    id: 1,
+                    username: '@tiktokuser',
+                    email: email
+                };
+                
+                hideAuthModal();
+                alert('Login successful!');
             } else {
-                showPage('authPage');
+                alert('Please enter email and password');
             }
         }
 
-        function loginUser(email, password) {
-            // In real app, this would make API call
-            currentUser = {
-                id: Date.now().toString(),
-                email: email,
-                name: email.split('@')[0],
-                username: email.split('@')[0],
-                balance: 0,
-                joined: new Date().toISOString()
-            };
+        // Switch to signup form
+        function switchToSignupForm() {
+            document.querySelector('.auth-modal h2').textContent = 'Sign up for TikTok';
+            document.getElementById('login-btn').textContent = 'Sign up';
+            switchToSignup.textContent = 'Already have an account? Log in';
             
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            updateUI();
-            showPage('homePage');
-            loadVideos();
+            // Update event listener
+            loginBtn.removeEventListener('click', handleLogin);
+            loginBtn.addEventListener('click', handleSignup);
+            
+            switchToSignup.removeEventListener('click', switchToSignupForm);
+            switchToSignup.addEventListener('click', switchToLoginForm);
         }
 
-        function registerUser(name, username, email, password) {
-            // In real app, this would make API call
-            currentUser = {
-                id: Date.now().toString(),
-                name: name,
-                username: username,
-                email: email,
-                balance: 100, // Starting bonus
-                joined: new Date().toISOString()
-            };
+        // Switch to login form
+        function switchToLoginForm() {
+            document.querySelector('.auth-modal h2').textContent = 'Log in to TikTok';
+            document.getElementById('login-btn').textContent = 'Log in';
+            switchToSignup.textContent = 'Don\'t have an account? Sign up';
             
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            userBalance = 100;
-            updateUI();
-            showPage('homePage');
-            loadVideos();
+            // Update event listener
+            loginBtn.removeEventListener('click', handleSignup);
+            loginBtn.addEventListener('click', handleLogin);
             
-            // Switch to login tab for future logins
-            document.querySelector('.auth-tab[data-tab="login"]').click();
+            switchToSignup.removeEventListener('click', switchToLoginForm);
+            switchToSignup.addEventListener('click', switchToSignupForm);
         }
 
-        function logoutUser() {
-            currentUser = null;
-            userBalance = 0;
-            localStorage.removeItem('currentUser');
-            updateUI();
-            showPage('authPage');
-        }
-
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
+        // Handle signup
+        function handleSignup() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
             
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
-            
-            // Update navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('data-page') === pageId) {
-                    item.classList.add('active');
-                }
-            });
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-        }
-
-        function updateUI() {
-            // Update balance
-            document.getElementById('balanceAmount').textContent = userBalance;
-            
-            // Update profile if user is logged in
-            if (currentUser) {
-                document.getElementById('profileName').textContent = currentUser.name;
-                document.getElementById('profileBio').textContent = `@${currentUser.username}`;
+            // In a real app, this would create a new user with Supabase
+            if (email && password) {
+                // Simulate successful signup
+                currentUser = {
+                    id: 1,
+                    username: '@tiktokuser',
+                    email: email
+                };
                 
-                // Update profile avatar with first letter
-                const avatar = document.querySelector('.profile-avatar');
-                avatar.style.background = var(--gradient);
-                avatar.style.display = 'flex';
-                avatar.style.alignItems = 'center';
-                avatar.style.justifyContent = 'center';
-                avatar.style.color = 'white';
-                avatar.style.fontWeight = 'bold';
-                avatar.style.fontSize = '2rem';
-                avatar.textContent = currentUser.name.charAt(0).toUpperCase();
-                
-                // Update stats (in real app, these would come from API)
-                document.querySelectorAll('.stat-value')[0].textContent = '0';
-                document.querySelectorAll('.stat-value')[1].textContent = '0';
-                document.querySelectorAll('.stat-value')[2].textContent = '0';
+                hideAuthModal();
+                alert('Account created successfully!');
             } else {
-                document.getElementById('profileName').textContent = 'Please Login';
-                document.getElementById('profileBio').textContent = 'Login to view your profile';
-                document.querySelector('.profile-avatar').style.background = '#666';
-                document.querySelector('.profile-avatar').textContent = '?';
+                alert('Please enter email and password');
             }
         }
 
+        // Handle post
+        function handlePost() {
+            const caption = document.getElementById('caption-input').value;
+            
+            if (caption) {
+                // In a real app, this would upload the video to Supabase Storage
+                // and create a record in the videos table
+                alert('Video posted successfully!');
+                hideUploadModal();
+                document.getElementById('caption-input').value = '';
+            } else {
+                alert('Please add a caption');
+            }
+        }
+
+        // Load videos
         function loadVideos() {
-            const videoFeed = document.querySelector('.video-feed');
+            // Clear loading spinner
+            feed.innerHTML = '';
             
-            if (!currentUser) {
-                videoFeed.innerHTML = `
-                    <div class="video-container">
-                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 20px; color: white;">
-                            <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                            <h3>Please Login</h3>
-                            <p style="margin-bottom: 20px;">Sign in to watch videos</p>
-                            <button class="btn btn-primary" onclick="showPage('authPage')">Sign In</button>
+            // Add videos to feed
+            sampleVideos.forEach(video => {
+                const videoElement = createVideoElement(video);
+                feed.appendChild(videoElement);
+            });
+        }
+
+        // Create video element
+        function createVideoElement(video) {
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'video-container';
+            
+            videoContainer.innerHTML = `
+                <video class="video-player" loop muted>
+                    <source src="${video.videoUrl}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-overlay">
+                    <div class="video-info">
+                        <div class="username">${video.username}</div>
+                        <div class="video-caption">${video.caption}</div>
+                        <div class="song-info">
+                            <i class="fas fa-music"></i>
+                            ${video.song}
                         </div>
                     </div>
-                `;
-                return;
-            }
-            
-            // Load actual video content for logged in users
-            videoFeed.innerHTML = `
-                <div class="video-container">
-                    <video class="video-player" autoplay muted loop playsinline>
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="video-overlay">
-                        <div class="video-username">
-                            @user1 <span class="verified-badge"><i class="fas fa-check"></i></span>
+                </div>
+                <div class="video-actions">
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-heart"></i>
                         </div>
-                        <div class="video-caption">Amazing dance moves! #dance</div>
-                        <div class="video-music">
-                            <i class="fas fa-music"></i> Original Sound
-                        </div>
+                        <div class="action-count">${formatCount(video.likes)}</div>
                     </div>
-                    <div class="video-actions">
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                            <div class="action-count">1.2K</div>
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-comment"></i>
                         </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                            <div class="action-count">256</div>
+                        <div class="action-count">${formatCount(video.comments)}</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">
+                            <i class="fas fa-share"></i>
                         </div>
-                        <div class="action-item">
-                            <button class="action-circle">
-                                <i class="fas fa-share"></i>
-                            </button>
-                            <div class="action-count">89</div>
-                        </div>
+                        <div class="action-count">${formatCount(video.shares)}</div>
                     </div>
                 </div>
             `;
-        }
-
-        function watchAd() {
-            const btn = document.getElementById('watchAdBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Watching...';
             
-            setTimeout(() => {
-                userBalance += 5;
-                currentUser.balance = userBalance;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                updateUI();
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad';
-                alert('+5 $YUME earned!');
-            }, 3000);
-        }
-
-        function inviteFriend() {
-            userBalance += 20;
-            currentUser.balance = userBalance;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            updateUI();
-            alert('+20 $YUME! Share your referral link with friends.');
-        }
-
-        function claimDailyReward() {
-            const lastClaim = localStorage.getItem('lastDailyClaim');
-            const today = new Date().toDateString();
-            
-            if (lastClaim === today) {
-                alert('You have already claimed your daily reward today.');
-                return;
-            }
-            
-            userBalance += 10;
-            currentUser.balance = userBalance;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            localStorage.setItem('lastDailyClaim', today);
-            updateUI();
-            alert('+10 $YUME daily reward!');
-        }
-
-        // Store purchases
-        document.querySelectorAll('.store-item .btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (!currentUser) {
-                    showPage('authPage');
-                    return;
-                }
-                
-                const price = parseInt(this.parentElement.querySelector('.store-price').textContent);
-                if (userBalance >= price) {
-                    userBalance -= price;
-                    currentUser.balance = userBalance;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                    updateUI();
-                    alert('Purchase successful!');
+            // Add click event to play/pause video
+            const videoPlayer = videoContainer.querySelector('.video-player');
+            videoContainer.addEventListener('click', () => {
+                if (videoPlayer.paused) {
+                    videoPlayer.play();
                 } else {
-                    alert('Not enough $YUME tokens!');
+                    videoPlayer.pause();
                 }
             });
-        });
+            
+            return videoContainer;
+        }
+
+        // Format large numbers (e.g., 1000 -> 1K)
+        function formatCount(count) {
+            if (count >= 1000000) {
+                return (count / 1000000).toFixed(1) + 'M';
+            } else if (count >= 1000) {
+                return (count / 1000).toFixed(1) + 'K';
+            }
+            return count;
+        }
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
+    
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </body>
 </html>
