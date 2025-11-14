@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Clone</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -13,9 +14,17 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        :root {
+            --primary-color: #ff0050;
+            --text-color: #ffffff;
+            --bg-color: #000000;
+            --secondary-bg: #161616;
+            --border-color: #2f2f2f;
+        }
+
         body {
-            background-color: #000;
-            color: #fff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             overflow-x: hidden;
         }
 
@@ -24,7 +33,8 @@
             margin: 0 auto;
             height: 100vh;
             position: relative;
-            background-color: #000;
+            background-color: var(--bg-color);
+            overflow: hidden;
         }
 
         /* Header Styles */
@@ -37,7 +47,7 @@
             top: 0;
             width: 100%;
             max-width: 500px;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.9);
             z-index: 100;
             backdrop-filter: blur(10px);
         }
@@ -45,11 +55,11 @@
         .logo {
             font-weight: bold;
             font-size: 20px;
-            color: #fff;
+            color: var(--text-color);
         }
 
         .logo span {
-            color: #ff0050;
+            color: var(--primary-color);
         }
 
         .header-icons {
@@ -102,6 +112,19 @@
         .username {
             font-weight: bold;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .follow-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 12px;
+            cursor: pointer;
         }
 
         .video-caption {
@@ -145,6 +168,12 @@
             align-items: center;
             margin-bottom: 5px;
             background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .action-icon i {
@@ -164,8 +193,8 @@
             display: flex;
             justify-content: space-around;
             padding: 15px;
-            background-color: #000;
-            border-top: 1px solid #333;
+            background-color: var(--bg-color);
+            border-top: 1px solid var(--border-color);
             z-index: 100;
         }
 
@@ -173,12 +202,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #fff;
+            color: var(--text-color);
             text-decoration: none;
+            cursor: pointer;
         }
 
         .nav-item.active {
-            color: #ff0050;
+            color: var(--primary-color);
         }
 
         .nav-item i {
@@ -197,7 +227,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -226,7 +256,7 @@
             border: none;
             border-radius: 5px;
             background-color: #333;
-            color: #fff;
+            color: var(--text-color);
             font-size: 16px;
         }
 
@@ -235,8 +265,8 @@
             padding: 15px;
             border: none;
             border-radius: 5px;
-            background-color: #ff0050;
-            color: #fff;
+            background-color: var(--primary-color);
+            color: var(--text-color);
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -245,7 +275,7 @@
 
         .auth-switch {
             text-align: center;
-            color: #ff0050;
+            color: var(--primary-color);
             cursor: pointer;
         }
 
@@ -256,7 +286,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
+            background-color: var(--bg-color);
             z-index: 1000;
             display: none;
             flex-direction: column;
@@ -309,7 +339,7 @@
             border: none;
             border-radius: 5px;
             background-color: #333;
-            color: #fff;
+            color: var(--text-color);
             font-size: 16px;
             margin-bottom: 20px;
         }
@@ -319,8 +349,8 @@
             padding: 15px;
             border: none;
             border-radius: 5px;
-            background-color: #ff0050;
-            color: #fff;
+            background-color: var(--primary-color);
+            color: var(--text-color);
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -380,10 +410,10 @@
         .edit-profile-btn {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ff0050;
+            border: 1px solid var(--primary-color);
             border-radius: 5px;
             background-color: transparent;
-            color: #ff0050;
+            color: var(--primary-color);
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -402,11 +432,12 @@
             padding: 15px;
             font-weight: bold;
             color: #aaa;
+            cursor: pointer;
         }
 
         .tab.active {
-            color: #fff;
-            border-bottom: 2px solid #fff;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--text-color);
         }
 
         .profile-videos {
@@ -421,6 +452,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
         }
 
         /* Loading Spinner */
@@ -435,7 +467,7 @@
             width: 40px;
             height: 40px;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #ff0050;
+            border-left: 4px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -443,6 +475,122 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+
+        /* Comment Section */
+        .comments-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comments-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .close-comments {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .comments-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .comment-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #333;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .comment-content {
+            flex-grow: 1;
+        }
+
+        .comment-username {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            margin-bottom: 5px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .comment-input-container {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #333;
+            color: var(--text-color);
+        }
+
+        .send-comment {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -452,15 +600,15 @@
         <div class="header">
             <div class="logo">Tik<span>Tok</span></div>
             <div class="header-icons">
-                <i class="fas fa-search"></i>
-                <i class="fas fa-inbox"></i>
+                <i class="fas fa-search" id="search-btn"></i>
+                <i class="fas fa-inbox" id="inbox-btn"></i>
             </div>
         </div>
 
         <!-- Feed -->
         <div class="feed" id="feed">
             <!-- Videos will be loaded here -->
-            <div class="loading">
+            <div class="loading" id="loading">
                 <div class="spinner"></div>
             </div>
         </div>
@@ -494,7 +642,7 @@
             <h2>Log in to TikTok</h2>
             <div class="auth-form">
                 <div class="form-group">
-                    <input type="email" id="email" placeholder="Email or username">
+                    <input type="email" id="email" placeholder="Email">
                 </div>
                 <div class="form-group">
                     <input type="password" id="password" placeholder="Password">
@@ -513,6 +661,7 @@
             <div class="upload-area" id="upload-area">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <div class="upload-text">Select video to upload</div>
+                <input type="file" id="video-file" accept="video/*" style="display: none;">
             </div>
             <input type="text" class="caption-input" id="caption-input" placeholder="Write a caption...">
             <button class="post-btn" id="post-btn">Post</button>
@@ -525,44 +674,53 @@
                     <i class="fas fa-user"></i>
                 </div>
                 <div>
-                    <h2>@username</h2>
+                    <h2 id="profile-username">@username</h2>
                     <div class="profile-stats">
                         <div class="stat-item">
-                            <div class="stat-count">120</div>
+                            <div class="stat-count" id="following-count">120</div>
                             <div class="stat-label">Following</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-count">5.2K</div>
+                            <div class="stat-count" id="followers-count">5.2K</div>
                             <div class="stat-label">Followers</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-count">34</div>
+                            <div class="stat-count" id="likes-count">34</div>
                             <div class="stat-label">Likes</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="profile-bio">
+            <div class="profile-bio" id="profile-bio">
                 <p>This is my bio. I love creating TikTok videos!</p>
             </div>
-            <button class="edit-profile-btn">Edit profile</button>
+            <button class="edit-profile-btn" id="edit-profile-btn">Edit profile</button>
             <div class="profile-tabs">
-                <div class="tab active">Videos</div>
-                <div class="tab">Liked</div>
+                <div class="tab active" data-tab="videos">Videos</div>
+                <div class="tab" data-tab="liked">Liked</div>
             </div>
-            <div class="profile-videos">
+            <div class="profile-videos" id="profile-videos">
                 <!-- User videos will be displayed here -->
-                <div class="video-thumbnail">
-                    <i class="fas fa-play"></i>
-                </div>
-                <div class="video-thumbnail">
-                    <i class="fas fa-play"></i>
-                </div>
-                <div class="video-thumbnail">
-                    <i class="fas fa-play"></i>
-                </div>
             </div>
         </div>
+
+        <!-- Comments Modal -->
+        <div class="comments-modal" id="comments-modal">
+            <div class="comments-header">
+                <div class="comments-title">Comments</div>
+                <div class="close-comments" id="close-comments"><i class="fas fa-times"></i></div>
+            </div>
+            <div class="comments-list" id="comments-list">
+                <!-- Comments will be loaded here -->
+            </div>
+            <div class="comment-input-container">
+                <input type="text" class="comment-input" id="comment-input" placeholder="Add a comment...">
+                <button class="send-comment" id="send-comment"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification"></div>
     </div>
 
     <script>
@@ -571,68 +729,49 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzaXdqanF4cGVnZm1na210amplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1NDU2MTYsImV4cCI6MjA3ODEyMTYxNn0.iZ5YLVdeZP0VOm_Qu8XBOfBa9hmyEqHl520q5hZd1z8';
 
         // Initialize Supabase client
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // DOM Elements
         const feed = document.getElementById('feed');
         const authModal = document.getElementById('auth-modal');
         const uploadModal = document.getElementById('upload-modal');
         const profilePage = document.getElementById('profile-page');
+        const commentsModal = document.getElementById('comments-modal');
+        const notification = document.getElementById('notification');
         const uploadBtn = document.getElementById('upload-btn');
         const closeUpload = document.getElementById('close-upload');
         const loginBtn = document.getElementById('login-btn');
         const switchToSignup = document.getElementById('switch-to-signup');
         const postBtn = document.getElementById('post-btn');
         const uploadArea = document.getElementById('upload-area');
+        const videoFileInput = document.getElementById('video-file');
         const navItems = document.querySelectorAll('.nav-item[data-page]');
+        const closeComments = document.getElementById('close-comments');
+        const sendComment = document.getElementById('send-comment');
+        const commentInput = document.getElementById('comment-input');
+        const loading = document.getElementById('loading');
 
-        // Sample video data (in a real app, this would come from Supabase)
-        const sampleVideos = [
-            {
-                id: 1,
-                username: '@dancer123',
-                caption: 'Check out my new dance moves! #dance #trending',
-                song: 'Popular Song - Artist',
-                likes: 2450,
-                comments: 120,
-                shares: 45,
-                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4'
-            },
-            {
-                id: 2,
-                username: '@comedyqueen',
-                caption: 'When you try to be serious but fail miserably 😂',
-                song: 'Funny Sound - Comedian',
-                likes: 5120,
-                comments: 342,
-                shares: 120,
-                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4'
-            },
-            {
-                id: 3,
-                username: '@cookingwizard',
-                caption: '5-minute chocolate cake recipe! 🍫',
-                song: 'Cooking Time - Chef',
-                likes: 8920,
-                comments: 567,
-                shares: 320,
-                videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-white-sand-beach-and-palm-trees-1564-large.mp4'
-            }
-        ];
-
-        // Check if user is logged in
+        // App State
         let currentUser = null;
+        let currentVideoId = null;
+        let videos = [];
 
         // Initialize the app
-        function initApp() {
-            // For demo purposes, we'll show the auth modal
-            // In a real app, you would check for an existing session
-            showAuthModal();
+        async function initApp() {
+            // Check for existing session
+            const { data: { session } } = await supabase.auth.getSession();
             
-            // Load sample videos
-            loadVideos();
+            if (session) {
+                currentUser = session.user;
+                await fetchUserProfile();
+                hideAuthModal();
+                await loadVideos();
+            } else {
+                showAuthModal();
+                // Load sample videos for demo
+                loadSampleVideos();
+            }
             
-            // Set up event listeners
             setupEventListeners();
         }
 
@@ -654,14 +793,17 @@
                     } else if (page === 'profile') {
                         showProfile();
                     }
-                    // Add other pages as needed
                 });
             });
             
             // Upload button
             uploadBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                showUploadModal();
+                if (currentUser) {
+                    showUploadModal();
+                } else {
+                    showNotification('Please log in to upload videos');
+                }
             });
             
             // Close upload modal
@@ -678,8 +820,23 @@
             
             // Upload area click
             uploadArea.addEventListener('click', () => {
-                // In a real app, this would trigger a file input
-                alert('In a real app, this would open a file picker to select a video');
+                videoFileInput.click();
+            });
+            
+            // Video file selection
+            videoFileInput.addEventListener('change', handleVideoSelect);
+            
+            // Close comments
+            closeComments.addEventListener('click', hideComments);
+            
+            // Send comment
+            sendComment.addEventListener('click', handleComment);
+            
+            // Press enter to send comment
+            commentInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleComment();
+                }
             });
         }
 
@@ -701,38 +858,114 @@
         // Hide upload modal
         function hideUploadModal() {
             uploadModal.style.display = 'none';
+            videoFileInput.value = '';
+            document.getElementById('caption-input').value = '';
         }
 
         // Show feed
         function showFeed() {
             feed.style.display = 'block';
             profilePage.style.display = 'none';
+            commentsModal.style.display = 'none';
         }
 
         // Show profile
         function showProfile() {
-            feed.style.display = 'none';
-            profilePage.style.display = 'block';
+            if (currentUser) {
+                feed.style.display = 'none';
+                profilePage.style.display = 'block';
+                commentsModal.style.display = 'none';
+                loadUserVideos();
+            } else {
+                showNotification('Please log in to view profile');
+            }
+        }
+
+        // Show comments
+        function showComments(videoId) {
+            currentVideoId = videoId;
+            commentsModal.style.display = 'flex';
+            loadComments(videoId);
+        }
+
+        // Hide comments
+        function hideComments() {
+            commentsModal.style.display = 'none';
+            currentVideoId = null;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
         }
 
         // Handle login
-        function handleLogin() {
+        async function handleLogin() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            // In a real app, this would authenticate with Supabase
             if (email && password) {
-                // Simulate successful login
-                currentUser = {
-                    id: 1,
-                    username: '@tiktokuser',
-                    email: email
-                };
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
                 
-                hideAuthModal();
-                alert('Login successful!');
+                if (error) {
+                    showNotification('Login failed: ' + error.message);
+                } else {
+                    currentUser = data.user;
+                    await fetchUserProfile();
+                    hideAuthModal();
+                    showNotification('Login successful!');
+                    await loadVideos();
+                }
             } else {
-                alert('Please enter email and password');
+                showNotification('Please enter email and password');
+            }
+        }
+
+        // Handle signup
+        async function handleSignup() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    showNotification('Signup failed: ' + error.message);
+                } else {
+                    // Create user profile
+                    const { error: profileError } = await supabase
+                        .from('profiles')
+                        .insert([
+                            { 
+                                id: data.user.id, 
+                                username: email.split('@')[0],
+                                full_name: email.split('@')[0],
+                                avatar_url: null,
+                                bio: 'New TikTok user'
+                            }
+                        ]);
+                    
+                    if (profileError) {
+                        console.error('Error creating profile:', profileError);
+                    }
+                    
+                    currentUser = data.user;
+                    hideAuthModal();
+                    showNotification('Account created successfully! Please check your email for verification.');
+                    await loadVideos();
+                }
+            } else {
+                showNotification('Please enter email and password');
             }
         }
 
@@ -764,58 +997,151 @@
             switchToSignup.addEventListener('click', switchToSignupForm);
         }
 
-        // Handle signup
-        function handleSignup() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // In a real app, this would create a new user with Supabase
-            if (email && password) {
-                // Simulate successful signup
-                currentUser = {
-                    id: 1,
-                    username: '@tiktokuser',
-                    email: email
-                };
-                
-                hideAuthModal();
-                alert('Account created successfully!');
-            } else {
-                alert('Please enter email and password');
+        // Handle video selection
+        function handleVideoSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // In a real app, you would upload this to Supabase Storage
+                // For this demo, we'll just show a success message
+                uploadArea.innerHTML = `
+                    <i class="fas fa-check" style="color: #ff0050;"></i>
+                    <div class="upload-text">Video selected: ${file.name}</div>
+                `;
             }
         }
 
         // Handle post
-        function handlePost() {
+        async function handlePost() {
             const caption = document.getElementById('caption-input').value;
             
+            if (!videoFileInput.files[0]) {
+                showNotification('Please select a video file');
+                return;
+            }
+            
             if (caption) {
-                // In a real app, this would upload the video to Supabase Storage
-                // and create a record in the videos table
-                alert('Video posted successfully!');
-                hideUploadModal();
-                document.getElementById('caption-input').value = '';
+                // In a real app, you would:
+                // 1. Upload the video to Supabase Storage
+                // 2. Get the public URL
+                // 3. Insert a record in the videos table
+                
+                // For this demo, we'll simulate the process
+                showNotification('Uploading video...');
+                
+                setTimeout(() => {
+                    // Add the new video to the feed
+                    const newVideo = {
+                        id: Date.now(),
+                        username: currentUser.email.split('@')[0],
+                        caption: caption,
+                        song: 'Original Sound - ' + currentUser.email.split('@')[0],
+                        likes: 0,
+                        comments: 0,
+                        shares: 0,
+                        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-white-sand-beach-and-palm-trees-1564-large.mp4'
+                    };
+                    
+                    videos.unshift(newVideo);
+                    addVideoToFeed(newVideo, true);
+                    
+                    hideUploadModal();
+                    showNotification('Video posted successfully!');
+                }, 2000);
             } else {
-                alert('Please add a caption');
+                showNotification('Please add a caption');
             }
         }
 
-        // Load videos
-        function loadVideos() {
-            // Clear loading spinner
+        // Fetch user profile
+        async function fetchUserProfile() {
+            if (!currentUser) return;
+            
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+            
+            if (error) {
+                console.error('Error fetching profile:', error);
+            } else if (data) {
+                document.getElementById('profile-username').textContent = '@' + data.username;
+                document.getElementById('profile-bio').textContent = data.bio || 'No bio yet';
+            }
+        }
+
+        // Load videos from Supabase
+        async function loadVideos() {
+            loading.style.display = 'flex';
+            
+            // In a real app, you would fetch from Supabase
+            // For this demo, we'll use sample data
+            setTimeout(() => {
+                loadSampleVideos();
+                loading.style.display = 'none';
+            }, 1000);
+        }
+
+        // Load sample videos (for demo)
+        function loadSampleVideos() {
+            videos = [
+                {
+                    id: 1,
+                    username: '@dancer123',
+                    caption: 'Check out my new dance moves! #dance #trending',
+                    song: 'Popular Song - Artist',
+                    likes: 2450,
+                    comments: 120,
+                    shares: 45,
+                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4'
+                },
+                {
+                    id: 2,
+                    username: '@comedyqueen',
+                    caption: 'When you try to be serious but fail miserably 😂',
+                    song: 'Funny Sound - Comedian',
+                    likes: 5120,
+                    comments: 342,
+                    shares: 120,
+                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-tree-with-yellow-flowers-1173-large.mp4'
+                },
+                {
+                    id: 3,
+                    username: '@cookingwizard',
+                    caption: '5-minute chocolate cake recipe! 🍫',
+                    song: 'Cooking Time - Chef',
+                    likes: 8920,
+                    comments: 567,
+                    shares: 320,
+                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-white-sand-beach-and-palm-trees-1564-large.mp4'
+                }
+            ];
+            
+            // Clear feed
             feed.innerHTML = '';
             
             // Add videos to feed
-            sampleVideos.forEach(video => {
-                const videoElement = createVideoElement(video);
-                feed.appendChild(videoElement);
+            videos.forEach(video => {
+                addVideoToFeed(video);
             });
+        }
+
+        // Add video to feed
+        function addVideoToFeed(video, prepend = false) {
+            const videoElement = createVideoElement(video);
+            
+            if (prepend) {
+                feed.insertBefore(videoElement, feed.firstChild);
+            } else {
+                feed.appendChild(videoElement);
+            }
         }
 
         // Create video element
         function createVideoElement(video) {
             const videoContainer = document.createElement('div');
             videoContainer.className = 'video-container';
+            videoContainer.setAttribute('data-video-id', video.id);
             
             videoContainer.innerHTML = `
                 <video class="video-player" loop muted>
@@ -824,7 +1150,10 @@
                 </video>
                 <div class="video-overlay">
                     <div class="video-info">
-                        <div class="username">${video.username}</div>
+                        <div class="username">
+                            ${video.username}
+                            <button class="follow-btn">Follow</button>
+                        </div>
                         <div class="video-caption">${video.caption}</div>
                         <div class="song-info">
                             <i class="fas fa-music"></i>
@@ -834,19 +1163,19 @@
                 </div>
                 <div class="video-actions">
                     <div class="action-item">
-                        <div class="action-icon">
+                        <div class="action-icon" data-action="like">
                             <i class="fas fa-heart"></i>
                         </div>
                         <div class="action-count">${formatCount(video.likes)}</div>
                     </div>
                     <div class="action-item">
-                        <div class="action-icon">
+                        <div class="action-icon" data-action="comment">
                             <i class="fas fa-comment"></i>
                         </div>
                         <div class="action-count">${formatCount(video.comments)}</div>
                     </div>
                     <div class="action-item">
-                        <div class="action-icon">
+                        <div class="action-icon" data-action="share">
                             <i class="fas fa-share"></i>
                         </div>
                         <div class="action-count">${formatCount(video.shares)}</div>
@@ -856,7 +1185,11 @@
             
             // Add click event to play/pause video
             const videoPlayer = videoContainer.querySelector('.video-player');
-            videoContainer.addEventListener('click', () => {
+            videoContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.video-actions')) {
+                    return; // Don't play/pause if clicking on actions
+                }
+                
                 if (videoPlayer.paused) {
                     videoPlayer.play();
                 } else {
@@ -864,7 +1197,143 @@
                 }
             });
             
+            // Add event listeners to action buttons
+            const likeBtn = videoContainer.querySelector('[data-action="like"]');
+            const commentBtn = videoContainer.querySelector('[data-action="comment"]');
+            const shareBtn = videoContainer.querySelector('[data-action="share"]');
+            
+            likeBtn.addEventListener('click', () => handleLike(video.id));
+            commentBtn.addEventListener('click', () => showComments(video.id));
+            shareBtn.addEventListener('click', () => handleShare(video.id));
+            
+            // Auto-play video when it's in view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        videoPlayer.play();
+                    } else {
+                        videoPlayer.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observer.observe(videoContainer);
+            
             return videoContainer;
+        }
+
+        // Handle like action
+        function handleLike(videoId) {
+            if (!currentUser) {
+                showNotification('Please log in to like videos');
+                return;
+            }
+            
+            // In a real app, you would update the likes in Supabase
+            const video = videos.find(v => v.id === videoId);
+            if (video) {
+                video.likes += 1;
+                updateVideoLikes(videoId, video.likes);
+                showNotification('Liked video!');
+            }
+        }
+
+        // Update video likes in UI
+        function updateVideoLikes(videoId, likes) {
+            const videoContainer = document.querySelector(`[data-video-id="${videoId}"]`);
+            if (videoContainer) {
+                const likeCount = videoContainer.querySelector('[data-action="like"] + .action-count');
+                likeCount.textContent = formatCount(likes);
+            }
+        }
+
+        // Handle share action
+        function handleShare(videoId) {
+            // In a real app, you would implement sharing functionality
+            showNotification('Share link copied to clipboard!');
+        }
+
+        // Load comments
+        function loadComments(videoId) {
+            // In a real app, you would fetch comments from Supabase
+            // For this demo, we'll use sample comments
+            const commentsList = document.getElementById('comments-list');
+            commentsList.innerHTML = '';
+            
+            const sampleComments = [
+                { username: '@user1', text: 'This is amazing!', likes: 12 },
+                { username: '@user2', text: 'So talented!', likes: 8 },
+                { username: '@user3', text: 'I love this trend!', likes: 5 }
+            ];
+            
+            sampleComments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment-item';
+                commentElement.innerHTML = `
+                    <div class="comment-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-username">${comment.username}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-actions">
+                            <span>${comment.likes} likes</span>
+                            <span>Reply</span>
+                        </div>
+                    </div>
+                `;
+                commentsList.appendChild(commentElement);
+            });
+        }
+
+        // Handle comment submission
+        function handleComment() {
+            if (!currentUser) {
+                showNotification('Please log in to comment');
+                return;
+            }
+            
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                // In a real app, you would insert the comment into Supabase
+                const commentsList = document.getElementById('comments-list');
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment-item';
+                commentElement.innerHTML = `
+                    <div class="comment-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-username">@${currentUser.email.split('@')[0]}</div>
+                        <div class="comment-text">${commentText}</div>
+                        <div class="comment-actions">
+                            <span>0 likes</span>
+                            <span>Reply</span>
+                        </div>
+                    </div>
+                `;
+                commentsList.appendChild(commentElement);
+                
+                commentInput.value = '';
+                
+                // Scroll to bottom
+                commentsList.scrollTop = commentsList.scrollHeight;
+            }
+        }
+
+        // Load user videos
+        function loadUserVideos() {
+            // In a real app, you would fetch user videos from Supabase
+            const profileVideos = document.getElementById('profile-videos');
+            profileVideos.innerHTML = '';
+            
+            // Show user's videos (for demo, we'll show the first 3 sample videos)
+            for (let i = 0; i < 3; i++) {
+                const videoThumbnail = document.createElement('div');
+                videoThumbnail.className = 'video-thumbnail';
+                videoThumbnail.innerHTML = '<i class="fas fa-play"></i>';
+                profileVideos.appendChild(videoThumbnail);
+            }
         }
 
         // Format large numbers (e.g., 1000 -> 1K)
@@ -880,8 +1349,5 @@
         // Initialize the app when the page loads
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
-    
-    <!-- Supabase JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </body>
 </html>
