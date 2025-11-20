@@ -3,571 +3,476 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yume - Discover Amazing Content</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Yume - Social Media App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        :root {
+            --primary-color: #e91e63;
+            --primary-light: #f8bbd0;
+            --primary-dark: #ad1457;
+            --secondary-color: #03a9f4;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --text-color: #f5f5f5;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary-color: #ff0050;
-            --secondary-color: #00f2ea;
-            --dark-color: #121212;
-            --light-color: #ffffff;
-            --gray-color: #a8a8a8;
-            --card-bg: #252525;
-            --header-height: 60px;
-            --nav-height: 70px;
         }
 
         body {
-            background-color: var(--dark-color);
-            color: var(--light-color);
-            overflow-x: hidden;
-            height: 100vh;
-            padding-bottom: var(--nav-height);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            padding-bottom: 60px; /* Space for bottom nav */
         }
 
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .container {
             width: 100%;
-            height: var(--header-height);
-            background-color: rgba(18, 18, 18, 0.95);
-            backdrop-filter: blur(10px);
+            max-width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
+            z-index: 100;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 20px;
-        }
-
-        .header-actions button {
-            background: none;
-            border: none;
-            color: var(--light-color);
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.3s;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .header-actions button:hover {
+            font-size: 1.5rem;
+            font-weight: bold;
             color: var(--primary-color);
         }
 
-        .search-container {
-            position: relative;
-            width: 40%;
-            max-width: 400px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            border-radius: 20px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--light-color);
-            font-size: 14px;
-            outline: none;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-color);
-        }
-
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            display: none;
-        }
-
-        .auth-container {
-            background-color: var(--dark-color);
-            width: 90%;
-            max-width: 400px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .auth-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .auth-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .auth-tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .auth-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .auth-body {
-            padding: 20px;
-        }
-
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-label {
-            font-size: 14px;
-            color: var(--gray-color);
-        }
-
-        .form-input {
-            padding: 12px 15px;
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--light-color);
-            font-size: 16px;
-            outline: none;
-        }
-
-        .auth-button {
-            padding: 12px;
-            border-radius: 5px;
-            border: none;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .main-container {
-            display: flex;
-            height: calc(100vh - var(--header-height) - var(--nav-height));
-            margin-top: var(--header-height);
-            overflow: hidden;
-        }
-
-        .video-feed {
-            flex: 1;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-        }
-
-        .video-container {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            scroll-snap-align: start;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-        }
-
-        .video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .video-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-            color: white;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .video-info {
-            flex: 1;
-        }
-
-        .video-username {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .video-caption {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .video-music {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            color: var(--gray-color);
-        }
-
-        .video-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .action-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .theme-toggle {
             background: none;
             border: none;
-            color: white;
             cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
         }
 
-        .action-button i {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        .action-count {
-            font-size: 12px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .follow-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
+        /* Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background-color: var(--dark-color);
+            right: 0;
+            background-color: var(--card-bg);
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 1000;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--gray-color);
-            text-decoration: none;
-            font-size: 12px;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            position: relative;
         }
 
         .nav-item.active {
             color: var(--primary-color);
         }
 
-        .nav-item i {
-            font-size: 22px;
-            margin-bottom: 5px;
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
         }
 
-        .nav-item.upload {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: -20px;
+        .badge {
+            background-color: var(--primary-color);
             color: white;
-        }
-
-        .upload-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 2000;
-            display: none;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
         }
 
-        .upload-container {
-            background-color: var(--dark-color);
-            width: 90%;
-            max-width: 500px;
-            border-radius: 10px;
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
             overflow: hidden;
         }
 
-        .upload-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .post-card {
+            padding: 15px;
+        }
+
+        .user-info {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
         }
 
-        .upload-title {
-            font-weight: 600;
-            font-size: 18px;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
         }
 
-        .upload-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
+        .username {
+            font-weight: bold;
         }
 
-        .upload-body {
-            padding: 20px;
+        .timestamp {
+            font-size: 0.8rem;
+            color: #888;
         }
 
-        .upload-area {
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-
-        .upload-text {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .upload-subtext {
-            font-size: 12px;
-            color: var(--gray-color);
-        }
-
-        .caption-input {
-            width: 100%;
-            padding: 15px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 5px;
-            color: white;
+        .post-content {
             margin-bottom: 15px;
-            resize: none;
         }
 
-        .upload-button {
+        .post-image {
             width: 100%;
-            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn.liked {
+            color: var(--primary-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 15px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth pages */
+        .auth-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
         }
 
-        .profile-container {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            display: none;
+        .auth-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
         }
 
-        .profile-header {
+        /* Messages */
+        .message-thread {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent {
+            background-color: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
+        }
+
+        .notification-item.unread {
+            background-color: var(--primary-light);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
         }
 
         .profile-avatar {
             width: 100px;
             height: 100px;
             border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
             border: 3px solid var(--primary-color);
-            margin-right: 20px;
-        }
-
-        .profile-info {
-            flex: 1;
         }
 
         .profile-stats {
             display: flex;
-            gap: 20px;
-            margin: 10px 0;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
         }
 
         .stat {
             text-align: center;
+            cursor: pointer;
         }
 
         .stat-value {
-            font-weight: 700;
-            font-size: 18px;
+            font-weight: bold;
+            font-size: 1.2rem;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: var(--gray-color);
+            font-size: 0.8rem;
+            color: #888;
         }
 
-        .profile-buttons {
-            display: flex;
-            gap: 10px;
+        /* Search */
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .user-list {
             margin-top: 15px;
         }
 
-        .profile-button {
-            padding: 8px 20px;
-            border-radius: 5px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .profile-button.primary {
-            background-color: var(--primary-color);
-            color: white;
-            flex: 1;
-        }
-
-        .profile-button.secondary {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        .profile-tabs {
+        .user-item {
             display: flex;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .profile-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        .profile-tab.active {
-            color: var(--primary-color);
-        }
-
-        .profile-videos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-        }
-
-        .profile-video {
-            aspect-ratio: 9/16;
-            background-color: var(--card-bg);
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .profile-video img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .loading {
-            display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100%;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
         }
 
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .desktop-nav {
+                display: flex;
+            }
+
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Loading spinner */
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid var(--primary-color);
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
             border-radius: 50%;
+            width: 30px;
+            height: 30px;
             animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
 
         @keyframes spin {
@@ -575,622 +480,1756 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            background-color: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            color: #ff6b6b;
-            padding: 10px 15px;
-            border-radius: 5px;
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
-            font-size: 14px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Comment section */
+        .comments-container {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            transform: translateX(150%);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error-color);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning-color);
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
-        <div class="logo">
-            <div class="logo-text">YUME</div>
-        </div>
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search" id="search-input">
-        </div>
-        <div class="header-actions">
-            <button id="inbox-btn"><i class="far fa-envelope"></i></button>
-            <button id="notifications-btn"><i class="far fa-bell"></i></button>
-            <button id="auth-btn"><i class="far fa-user"></i></button>
-        </div>
+        <div class="logo">Yume</div>
+        <button class="theme-toggle" id="themeToggle">🌙</button>
     </header>
 
-    <div class="auth-modal" id="auth-modal">
-        <div class="auth-container">
-            <div class="auth-header">
-                <div class="auth-title">YUME</div>
-                <p>Join the community</p>
-            </div>
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="login-tab">Login</div>
-                <div class="auth-tab" id="signup-tab">Sign Up</div>
-            </div>
-            <div class="auth-body">
-                <div id="auth-message"></div>
-                <form class="auth-form" id="login-form">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="login-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="login-password" required>
-                    </div>
-                    <button type="submit" class="auth-button">Login</button>
-                </form>
-                <form class="auth-form" id="signup-form" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label">Username</label>
-                        <input type="text" class="form-input" id="signup-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input" id="signup-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-input" id="signup-password" required>
-                    </div>
-                    <button type="submit" class="auth-button">Sign Up</button>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- Toast notifications -->
+    <div id="toastContainer"></div>
 
-    <div class="main-container">
-        <main class="video-feed" id="video-feed">
-            <div class="loading">
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Home/Feed Page -->
+        <section id="homePage" class="page active">
+            <h2 class="text-center">Your Feed</h2>
+            <div id="feedContainer">
                 <div class="spinner"></div>
             </div>
-        </main>
-    </div>
+        </section>
 
-    <div class="profile-container" id="profile-container">
-        <div class="profile-header">
-            <img src="" alt="Profile Avatar" class="profile-avatar" id="profile-avatar">
-            <div class="profile-info">
-                <h2 id="profile-username">Username</h2>
-                <div class="profile-stats">
-                    <div class="stat">
-                        <div class="stat-value" id="profile-followers">0</div>
-                        <div class="stat-label">Followers</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="profile-following">0</div>
-                        <div class="stat-label">Following</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="profile-likes">0</div>
-                        <div class="stat-label">Likes</div>
-                    </div>
+        <!-- Messages Page -->
+        <section id="messagesPage" class="page">
+            <h2 class="text-center">Messages</h2>
+            <div id="conversationsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Chat Page -->
+        <section id="chatPage" class="page">
+            <div class="chat-header">
+                <button id="backToMessages" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                <h3 id="chatUserName">User Name</h3>
+            </div>
+            <div class="message-thread" id="messageThread">
+                <div class="spinner"></div>
+            </div>
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button id="sendMessageBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </section>
+
+        <!-- New Post Page -->
+        <section id="newPostPage" class="page">
+            <h2 class="text-center">Create Post</h2>
+            <form id="newPostForm">
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="postContent" placeholder="What's on your mind? (280 characters max)" maxlength="280" required></textarea>
                 </div>
-                <div class="profile-buttons">
-                    <button class="profile-button primary" id="edit-profile-btn">Edit Profile</button>
-                    <button class="profile-button secondary"><i class="fas fa-cog"></i></button>
+                <div class="form-group">
+                    <input type="file" id="postImage" accept="image/*" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Post</button>
+            </form>
+        </section>
+
+        <!-- Notifications Page -->
+        <section id="notificationsPage" class="page">
+            <h2 class="text-center">Notifications</h2>
+            <div id="notificationsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="profilePage" class="page">
+            <div class="profile-header">
+                <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
+                <h2 id="profileName">User Name</h2>
+                <p id="profileBio">Bio goes here</p>
+                <button class="btn btn-primary mt-1" id="editProfileBtn">Edit Profile</button>
+                <button class="btn btn-secondary mt-1" id="logoutBtn">Logout</button>
+            </div>
+            <div class="profile-stats">
+                <div class="stat" id="postsStat">
+                    <div class="stat-value" id="postsCount">0</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat" id="followingStat">
+                    <div class="stat-value" id="followingCount">0</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat" id="followersStat">
+                    <div class="stat-value" id="followersCount">0</div>
+                    <div class="stat-label">Followers</div>
                 </div>
             </div>
-        </div>
-        <div class="profile-tabs">
-            <div class="profile-tab active">Videos</div>
-            <div class="profile-tab">Liked</div>
-        </div>
-        <div class="profile-videos" id="profile-videos"></div>
-    </div>
+            <div id="userPostsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
 
+        <!-- Search Page -->
+        <section id="searchPage" class="page">
+            <h2 class="text-center">Search</h2>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
+            </div>
+            <div id="searchResults">
+                <p class="text-center">Start typing to search for users</p>
+            </div>
+        </section>
+
+        <!-- Auth Pages -->
+        <section id="authPage" class="page">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-tab="login">Login</div>
+                    <div class="auth-tab" data-tab="register">Register</div>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="loginEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <div class="text-center mt-2">
+                        <button type="button" class="btn btn-secondary" id="googleLogin">Login with Google</button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <button type="button" id="continueAsGuest">Continue as Guest</button>
+                    </div>
+                </form>
+
+                <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="registerName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="registerEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerPassword" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" id="home-nav">
-            <i class="fas fa-home"></i>
+        <div class="nav-item active" data-page="homePage">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
             <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" id="discover-nav">
-            <i class="fas fa-search"></i>
-            <span>Discover</span>
-        </a>
-        <a href="#" class="nav-item upload" id="upload-btn">
-            <i class="fas fa-plus"></i>
-        </a>
-        <a href="#" class="nav-item" id="inbox-nav">
-            <i class="fas fa-comment-dots"></i>
-            <span>Inbox</span>
-        </a>
-        <a href="#" class="nav-item" id="profile-nav">
-            <i class="fas fa-user"></i>
+        </div>
+        <div class="nav-item" data-page="messagesPage">
+            <div class="nav-icon"><i class="fas fa-comments"></i></div>
+            <span>Messages</span>
+        </div>
+        <div class="nav-item" data-page="newPostPage">
+            <div class="nav-icon"><i class="fas fa-plus-square"></i></div>
+            <span>New Post</span>
+        </div>
+        <div class="nav-item" data-page="notificationsPage">
+            <div class="nav-icon"><i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadge" style="display: none;">0</span>
+            </div>
+            <span>Notifications</span>
+        </div>
+        <div class="nav-item" data-page="profilePage">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
             <span>Profile</span>
-        </a>
+        </div>
     </nav>
 
-    <div class="upload-modal" id="upload-modal">
-        <div class="upload-container">
-            <div class="upload-header">
-                <div class="upload-title">Upload Video</div>
-                <button class="upload-close" id="upload-close">
-                    <i class="fas fa-times"></i>
-                </button>
+    <!-- Edit Profile Modal -->
+    <div class="modal-backdrop" id="editProfileModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn">&times;</button>
             </div>
-            <div class="upload-body">
-                <div class="upload-area" id="upload-area">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <div class="upload-text">Select video to upload</div>
-                    <div class="upload-subtext">Or drag and drop a file</div>
-                    <input type="file" id="video-file" accept="video/*" style="display: none;">
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="editDisplayName" placeholder="Display Name" required>
                 </div>
-                <textarea class="caption-input" id="caption-input" placeholder="Write a caption..."></textarea>
-                <button class="upload-button" id="upload-submit">Upload</button>
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="editBio" placeholder="Bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="file" id="editAvatar" accept="image/*" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-backdrop" id="commentModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Comments</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="commentsContainer">
+                <div class="spinner"></div>
+            </div>
+            <div class="comment-input">
+                <input type="text" id="commentInput" placeholder="Write a comment...">
+                <button id="postCommentBtn" class="btn btn-primary">Post</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://xmjtlyfxdtklftuxajch.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtanRseWZ4ZHRrbGZ0dXhhamNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2ODg1NTQsImV4cCI6MjA3ODI2NDU1NH0.g6R8HumZRbDCQ1YWtdOEf5qLmAwUXueWPZDt44PtbB4';
+        // Supabase configuration
+        const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
+        const SUPABASE_ANON_KEY = 'your-anon-key'; // Replace with your Supabase anon key
         
+        // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // DOM Elements
-        const videoFeed = document.getElementById('video-feed');
-        const uploadBtn = document.getElementById('upload-btn');
-        const uploadModal = document.getElementById('upload-modal');
-        const uploadClose = document.getElementById('upload-close');
-        const uploadArea = document.getElementById('upload-area');
-        const videoFileInput = document.getElementById('video-file');
-        const captionInput = document.getElementById('caption-input');
-        const uploadSubmit = document.getElementById('upload-submit');
-        const authModal = document.getElementById('auth-modal');
-        const authBtn = document.getElementById('auth-btn');
-        const loginTab = document.getElementById('login-tab');
-        const signupTab = document.getElementById('signup-tab');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const profileContainer = document.getElementById('profile-container');
-        const profileNav = document.getElementById('profile-nav');
-        const homeNav = document.getElementById('home-nav');
-        const profileUsername = document.getElementById('profile-username');
-        const profileAvatar = document.getElementById('profile-avatar');
-        const profileFollowers = document.getElementById('profile-followers');
-        const profileFollowing = document.getElementById('profile-following');
-        const profileLikes = document.getElementById('profile-likes');
-        const profileVideos = document.getElementById('profile-videos');
-        const authMessage = document.getElementById('auth-message');
-
-        // App State
+        // State Management
         let currentUser = null;
-        let videos = [];
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentPage = 'homePage';
+        let currentPostId = null;
+        let currentChatUser = null;
+
+        // DOM Elements
+        const pages = document.querySelectorAll('.page');
+        const navItems = document.querySelectorAll('.nav-item');
+        const themeToggle = document.getElementById('themeToggle');
 
         // Initialize the app
         async function initApp() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                await loadUserProfile();
-                authModal.style.display = 'none';
-            } else {
-                authModal.style.display = 'flex';
-            }
+            // Set the theme
+            setTheme(currentTheme);
 
-            await loadVideos();
+            // Check if user is logged in
+            await checkAuthStatus();
+
+            // Set up event listeners
             setupEventListeners();
+
+            // Load initial data
+            loadInitialData();
         }
 
-        // Load videos from Supabase
-        async function loadVideos() {
+        // Set theme function
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                const { data: userProfile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                if (userProfile) {
+                    currentUser = {
+                        id: session.user.id,
+                        email: session.user.email,
+                        ...userProfile
+                    };
+                    showPage('homePage');
+                    loadFeed();
+                    updateUnreadCount();
+                } else {
+                    // Create a profile if it doesn't exist
+                    const { data: newProfile, error } = await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: session.user.id,
+                                name: session.user.email.split('@')[0],
+                                bio: '',
+                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                            }
+                        ])
+                        .select()
+                        .single();
+                    
+                    if (!error) {
+                        currentUser = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            ...newProfile
+                        };
+                        showPage('homePage');
+                        loadFeed();
+                        updateUnreadCount();
+                    }
+                }
+            } else {
+                showPage('authPage');
+            }
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+
+            // Update navigation
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load content for the page if needed
+            if (pageId === 'homePage') loadFeed();
+            if (pageId === 'profilePage') loadProfile();
+            if (pageId === 'notificationsPage') loadNotifications();
+            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'searchPage') initSearch();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const pageId = item.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                currentTheme = newTheme;
+            });
+
+            // Auth tabs
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    if (tabName === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                loginUser(email, password);
+            });
+
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    showToast('Passwords do not match', 'error');
+                    return;
+                }
+
+                registerUser(name, email, password);
+            });
+
+            // Google login
+            document.getElementById('googleLogin').addEventListener('click', () => {
+                signInWithGoogle();
+            });
+
+            // Continue as guest
+            document.getElementById('continueAsGuest').addEventListener('click', () => {
+                currentUser = null;
+                showPage('homePage');
+                loadFeed();
+            });
+
+            // New post form
+            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = document.getElementById('postContent').value;
+                const imageFile = document.getElementById('postImage').files[0];
+                createPost(content, imageFile);
+            });
+
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                showEditProfileModal();
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logoutUser();
+            });
+
+            // Close modal buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('editProfileModal').style.display = 'none';
+                    document.getElementById('commentModal').style.display = 'none';
+                });
+            });
+
+            // Edit profile form
+            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const displayName = document.getElementById('editDisplayName').value;
+                const bio = document.getElementById('editBio').value;
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                updateProfile(displayName, bio, avatarFile);
+            });
+
+            // Back to messages button
+            document.getElementById('backToMessages').addEventListener('click', () => {
+                showPage('messagesPage');
+            });
+
+            // Send message button
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Post comment button
+            document.getElementById('postCommentBtn').addEventListener('click', postComment);
+
+            // Comment input enter key
+            document.getElementById('commentInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    postComment();
+                }
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+
+            // Profile stats clicks
+            document.getElementById('postsStat').addEventListener('click', () => {
+                document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            document.getElementById('followingStat').addEventListener('click', () => {
+                alert('Following list would be shown here');
+            });
+
+            document.getElementById('followersStat').addEventListener('click', () => {
+                alert('Followers list would be shown here');
+            });
+        }
+
+        // Load initial data
+        function loadInitialData() {
+            // Set up real-time subscriptions
+            setupRealtimeSubscriptions();
+        }
+
+        // Set up real-time subscriptions
+        function setupRealtimeSubscriptions() {
+            if (!currentUser) return;
+
+            // Subscribe to new posts
+            supabase
+                .channel('posts')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'posts' },
+                    (payload) => {
+                        if (currentPage === 'homePage') {
+                            loadFeed();
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new messages
+            supabase
+                .channel('messages')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    (payload) => {
+                        if (currentPage === 'messagesPage' || 
+                            (currentPage === 'chatPage' && currentChatUser && 
+                            (payload.new.sender_id === currentChatUser.id || payload.new.receiver_id === currentChatUser.id))) {
+                            if (currentPage === 'chatPage') {
+                                loadChat(currentChatUser);
+                            } else {
+                                loadConversations();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new notifications
+            supabase
+                .channel('notifications')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'notifications' },
+                    (payload) => {
+                        if (payload.new.user_id === currentUser.id) {
+                            updateUnreadCount();
+                            if (currentPage === 'notificationsPage') {
+                                loadNotifications();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+        // Login user with Supabase
+        async function loginUser(email, password) {
             try {
-                const { data, error } = await supabase
-                    .from('videos')
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                const { data: userProfile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                currentUser = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    ...userProfile
+                };
+
+                showPage('homePage');
+                loadFeed();
+                updateUnreadCount();
+                setupRealtimeSubscriptions();
+                showToast('Login successful!', 'success');
+            } catch (error) {
+                showToast('Login failed. Please try again.', 'error');
+            }
+        }
+
+        // Register user with Supabase
+        async function registerUser(name, email, password) {
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                // Create user profile
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: data.user.id,
+                            name: name,
+                            bio: '',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        }
+                    ]);
+
+                if (profileError) {
+                    showToast('Error creating profile: ' + profileError.message, 'error');
+                    return;
+                }
+
+                showToast('Registration successful! Please check your email for verification.', 'success');
+                
+                // Switch to login tab
+                document.querySelector('.auth-tab[data-tab="login"]').click();
+                document.getElementById('loginEmail').value = email;
+            } catch (error) {
+                showToast('Registration failed. Please try again.', 'error');
+            }
+        }
+
+        // Sign in with Google
+        async function signInWithGoogle() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                }
+            } catch (error) {
+                showToast('Google sign-in failed. Please try again.', 'error');
+            }
+        }
+
+        // Logout user
+        async function logoutUser() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                currentUser = null;
+                showPage('authPage');
+                showToast('Logged out successfully', 'success');
+            } catch (error) {
+                showToast('Logout failed. Please try again.', 'error');
+            }
+        }
+
+        // Load feed posts from Supabase
+        async function loadFeed() {
+            const feedContainer = document.getElementById('feedContainer');
+
+            if (!currentUser) {
+                feedContainer.innerHTML = `
+                    <div class="card login-prompt">
+                        <i class="fas fa-rss"></i>
+                        <h3>Login to see your feed</h3>
+                        <p>Sign in to view posts from users you follow</p>
+                        <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
+                    </div>
+                `;
+                return;
+            }
+
+            feedContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                // Get posts from followed users
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+
+                if (followsError) throw followsError;
+
+                const followedUserIds = follows.map(f => f.following_id);
+                followedUserIds.push(currentUser.id); // Include current user's posts
+
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
                     .select(`
                         *,
                         profiles:user_id (
-                            username,
-                            avatar_url
-                        ),
-                        likes(count),
-                        comments(count)
+                            name,
+                            avatar
+                        )
                     `)
+                    .in('user_id', followedUserIds)
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
+                if (postsError) throw postsError;
 
-                videos = data || [];
-                renderVideos();
+                feedContainer.innerHTML = '';
+
+                if (posts.length === 0) {
+                    feedContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Your feed is empty</h3>
+                                <p>Follow some users to see their posts here</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    feedContainer.appendChild(createPostElement(post));
+                });
             } catch (error) {
-                console.error('Error loading videos:', error);
-                videoFeed.innerHTML = '<div class="error-message">Failed to load videos</div>';
+                console.error('Error loading feed:', error);
+                feedContainer.innerHTML = '<p class="text-center">Error loading feed. Please try again.</p>';
             }
         }
 
-        // Render videos to the feed
-        function renderVideos() {
-            videoFeed.innerHTML = '';
-            
-            if (videos.length === 0) {
-                videoFeed.innerHTML = '<div class="loading">No videos found</div>';
-                return;
-            }
-            
-            videos.forEach(video => {
-                const videoElement = document.createElement('div');
-                videoElement.className = 'video-container';
-                videoElement.innerHTML = `
-                    <video class="video-player" loop muted playsinline>
-                        <source src="${video.video_url}" type="video/mp4">
-                    </video>
-                    <div class="video-overlay">
-                        <div class="video-info">
-                            <div class="video-username">
-                                @${video.profiles?.username || 'unknown'}
-                            </div>
-                            <div class="video-caption">${video.caption || ''}</div>
-                            <div class="video-music">
-                                <i class="fas fa-music"></i>
-                                ${video.music || 'Original Sound'}
-                            </div>
-                        </div>
-                        <div class="video-actions">
-                            <img src="${video.profiles?.avatar_url || 'https://via.placeholder.com/40'}" class="user-avatar">
-                            <button class="action-button like-button" data-id="${video.id}">
-                                <i class="far fa-heart"></i>
-                                <span class="action-count">${video.likes?.[0]?.count || 0}</span>
-                            </button>
-                            <button class="action-button comment-button" data-id="${video.id}">
-                                <i class="far fa-comment"></i>
-                                <span class="action-count">${video.comments?.[0]?.count || 0}</span>
-                            </button>
-                            <button class="action-button share-button">
-                                <i class="far fa-share-square"></i>
-                                <span class="action-count">${video.shares || 0}</span>
-                            </button>
-                            <button class="follow-button" data-user="${video.user_id}">Follow</button>
-                        </div>
+        // Create post element
+        function createPostElement(post) {
+            const isLiked = post.liked_by && post.liked_by.includes(currentUser.id);
+
+            const postEl = document.createElement('div');
+            postEl.className = 'card post-card';
+            postEl.innerHTML = `
+                <div class="user-info">
+                    <img src="${post.profiles.avatar}" alt="${post.profiles.name}" class="avatar">
+                    <div>
+                        <div class="username">${post.profiles.name}</div>
+                        <div class="timestamp">${formatDate(post.created_at)}</div>
                     </div>
-                `;
-                videoFeed.appendChild(videoElement);
+                </div>
+                <div class="post-content">
+                    <p>${post.content}</p>
+                    ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
+                </div>
+                <div class="post-actions">
+                    <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                        <i class="fas fa-heart"></i> <span>${post.like_count || 0}</span>
+                    </button>
+                    <button class="action-btn" data-post-id="${post.id}">
+                        <i class="fas fa-comment"></i> <span>${post.comment_count || 0}</span>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i>
+                    </button>
+                </div>
+            `;
+
+            // Add like functionality
+            const likeBtn = postEl.querySelector('.action-btn:first-child');
+            likeBtn.addEventListener('click', () => {
+                toggleLike(post.id);
             });
-            
-            setupVideoInteractions();
+
+            // Add comment functionality
+            const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+            commentBtn.addEventListener('click', () => {
+                showComments(post.id);
+            });
+
+            return postEl;
         }
 
-        // Load user profile
-        async function loadUserProfile() {
-            if (!currentUser) return;
-
+        // Toggle like on a post
+        async function toggleLike(postId) {
             try {
-                const { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', currentUser.id)
+                // Check if user already liked the post
+                const { data: post, error: postError } = await supabase
+                    .from('posts')
+                    .select('liked_by, like_count, user_id')
+                    .eq('id', postId)
                     .single();
 
-                if (error) throw error;
+                if (postError) throw postError;
 
-                profileUsername.textContent = profile.username || 'User';
-                profileAvatar.src = profile.avatar_url || 'https://via.placeholder.com/100';
-                
-                // Load user stats
-                const { count: videoCount } = await supabase
-                    .from('videos')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id);
+                const isLiked = post.liked_by && post.liked_by.includes(currentUser.id);
+                let newLikedBy = post.liked_by || [];
+                let newLikeCount = post.like_count || 0;
 
-                const { count: likeCount } = await supabase
-                    .from('likes')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id);
+                if (isLiked) {
+                    // Unlike
+                    newLikedBy = newLikedBy.filter(id => id !== currentUser.id);
+                    newLikeCount--;
+                } else {
+                    // Like
+                    newLikedBy.push(currentUser.id);
+                    newLikeCount++;
 
-                profileFollowers.textContent = profile.followers_count || 0;
-                profileFollowing.textContent = profile.following_count || 0;
-                profileLikes.textContent = likeCount || 0;
+                    // Create notification if not the post owner
+                    if (post.user_id !== currentUser.id) {
+                        const { error: notifError } = await supabase
+                            .from('notifications')
+                            .insert([
+                                {
+                                    user_id: post.user_id,
+                                    type: 'like',
+                                    source_user_id: currentUser.id,
+                                    content: 'liked your post',
+                                    read: false
+                                }
+                            ]);
 
-                await loadUserVideos();
+                        if (notifError) console.error('Error creating notification:', notifError);
+                    }
+                }
+
+                // Update post
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({
+                        liked_by: newLikedBy,
+                        like_count: newLikeCount
+                    })
+                    .eq('id', postId);
+
+                if (updateError) throw updateError;
+
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
             } catch (error) {
-                console.error('Error loading user profile:', error);
+                console.error('Error toggling like:', error);
+                showToast('Error updating like. Please try again.', 'error');
             }
         }
 
-        // Load user videos for profile page
-        async function loadUserVideos() {
-            if (!currentUser) return;
+        // Show comments for a post
+        function showComments(postId) {
+            if (!currentUser) {
+                showToast('Please login to view comments', 'warning');
+                showPage('authPage');
+                return;
+            }
+
+            currentPostId = postId;
+            document.getElementById('commentModal').style.display = 'flex';
+            loadComments();
+        }
+
+        // Load comments for a post from Supabase
+        async function loadComments() {
+            const commentsContainer = document.getElementById('commentsContainer');
+            commentsContainer.innerHTML = '<div class="spinner"></div>';
 
             try {
-                const { data: userVideos, error } = await supabase
-                    .from('videos')
-                    .select('*')
+                const { data: comments, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            name,
+                            avatar
+                        )
+                    `)
+                    .eq('post_id', currentPostId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                commentsContainer.innerHTML = '';
+
+                if (comments.length === 0) {
+                    commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
+                } else {
+                    comments.forEach(comment => {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = 'comment';
+                        commentEl.innerHTML = `
+                            <img src="${comment.profiles.avatar}" alt="${comment.profiles.name}" class="comment-avatar">
+                            <div class="comment-content">
+                                <div class="username">${comment.profiles.name}</div>
+                                <p>${comment.content}</p>
+                                <div class="timestamp">${formatDate(comment.created_at)}</div>
+                            </div>
+                        `;
+                        commentsContainer.appendChild(commentEl);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
+            }
+        }
+
+        // Post a comment
+        async function postComment() {
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+
+            if (!content) return;
+
+            try {
+                // Create comment
+                const { data: newComment, error: commentError } = await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: currentPostId,
+                            user_id: currentUser.id,
+                            content: content
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (commentError) throw commentError;
+
+                // Update post comment count
+                const { data: post, error: postError } = await supabase
+                    .from('posts')
+                    .select('comment_count, user_id')
+                    .eq('id', currentPostId)
+                    .single();
+
+                if (postError) throw postError;
+
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({
+                        comment_count: (post.comment_count || 0) + 1
+                    })
+                    .eq('id', currentPostId);
+
+                if (updateError) throw updateError;
+
+                // Create notification if not the post owner
+                if (post.user_id !== currentUser.id) {
+                    const { error: notifError } = await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: post.user_id,
+                                type: 'comment',
+                                source_user_id: currentUser.id,
+                                content: 'commented on your post',
+                                read: false
+                            }
+                        ]);
+
+                    if (notifError) console.error('Error creating notification:', notifError);
+                }
+
+                // Clear input and reload comments
+                commentInput.value = '';
+                loadComments();
+
+                // Update post in feed
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showToast('Error posting comment. Please try again.', 'error');
+            }
+        }
+
+        // Create a new post with Supabase
+        async function createPost(content, imageFile) {
+            if (!currentUser) {
+                showToast('Please login to create a post', 'warning');
+                showPage('authPage');
+                return;
+            }
+
+            try {
+                let imageUrl = '';
+
+                // If there's an image file, upload it to Supabase Storage
+                if (imageFile) {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const filePath = `posts/${currentUser.id}/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('post-images')
+                        .upload(filePath, imageFile);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('post-images')
+                        .getPublicUrl(filePath);
+
+                    imageUrl = publicUrl;
+                }
+
+                // Create post in database
+                const { error } = await supabase
+                    .from('posts')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            content: content,
+                            image: imageUrl,
+                            like_count: 0,
+                            comment_count: 0,
+                            liked_by: []
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                // Reset form and go back to feed
+                document.getElementById('newPostForm').reset();
+                showPage('homePage');
+                loadFeed();
+
+                showToast('Post created successfully!', 'success');
+            } catch (error) {
+                console.error('Error creating post:', error);
+                showToast('Error creating post. Please try again.', 'error');
+            }
+        }
+
+        // Load user profile from Supabase
+        async function loadProfile() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            // Update profile info
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileBio').textContent = currentUser.bio || '';
+            document.getElementById('profileAvatar').src = currentUser.avatar;
+
+            try {
+                // Get user stats
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
+                    .select('id')
+                    .eq('user_id', currentUser.id);
+
+                if (postsError) throw postsError;
+
+                const { data: following, error: followingError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id);
+
+                if (followingError) throw followingError;
+
+                const { data: followers, error: followersError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('following_id', currentUser.id);
+
+                if (followersError) throw followersError;
+
+                // Update stats
+                document.getElementById('postsCount').textContent = posts.length;
+                document.getElementById('followingCount').textContent = following.length;
+                document.getElementById('followersCount').textContent = followers.length;
+
+                // Load user's posts
+                const postsContainer = document.getElementById('userPostsContainer');
+                postsContainer.innerHTML = '<div class="spinner"></div>';
+
+                const { data: userPosts, error: userPostsError } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            name,
+                            avatar
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (userPostsError) throw userPostsError;
+
+                postsContainer.innerHTML = '';
+
+                if (userPosts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No posts yet</h3>
+                                <p>Share your first post with the world</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                userPosts.forEach(post => {
+                    postsContainer.appendChild(createPostElement(post));
+                });
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showToast('Error loading profile. Please try again.', 'error');
+            }
+        }
+
+        // Show edit profile modal
+        function showEditProfileModal() {
+            document.getElementById('editDisplayName').value = currentUser.name;
+            document.getElementById('editBio').value = currentUser.bio || '';
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        // Update user profile with Supabase
+        async function updateProfile(displayName, bio, avatarFile) {
+            try {
+                let avatarUrl = currentUser.avatar;
+
+                // If there's an avatar file, upload it to Supabase Storage
+                if (avatarFile) {
+                    const fileExt = avatarFile.name.split('.').pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const filePath = `avatars/${currentUser.id}/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('avatars')
+                        .upload(filePath, avatarFile);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(filePath);
+
+                    avatarUrl = publicUrl;
+                }
+
+                // Update profile in database
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        name: displayName,
+                        bio: bio,
+                        avatar: avatarUrl
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                // Update current user
+                currentUser.name = displayName;
+                currentUser.bio = bio;
+                currentUser.avatar = avatarUrl;
+
+                // Update UI
+                document.getElementById('profileName').textContent = displayName;
+                document.getElementById('profileBio').textContent = bio;
+                document.getElementById('profileAvatar').src = avatarUrl;
+
+                // Close modal
+                document.getElementById('editProfileModal').style.display = 'none';
+
+                showToast('Profile updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showToast('Error updating profile. Please try again.', 'error');
+            }
+        }
+
+        // Load notifications from Supabase
+        async function loadNotifications() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            notificationsContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select(`
+                        *,
+                        profiles:source_user_id (
+                            name
+                        )
+                    `)
                     .eq('user_id', currentUser.id)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                profileVideos.innerHTML = '';
-                userVideos.forEach(video => {
-                    const videoElement = document.createElement('div');
-                    videoElement.className = 'profile-video';
-                    videoElement.innerHTML = `
-                        <img src="${video.thumbnail_url || 'https://via.placeholder.com/300x500'}" alt="Video thumbnail">
-                        <div class="video-stats">
-                            <i class="fas fa-heart"></i> ${video.likes_count || 0}
+                notificationsContainer.innerHTML = '';
+
+                if (notifications.length === 0) {
+                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    return;
+                }
+
+                notifications.forEach(notif => {
+                    const notifEl = document.createElement('div');
+                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                    notifEl.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-${notif.type === 'like' ? 'heart' : notif.type === 'comment' ? 'comment' : 'user-plus'}"></i>
+                        </div>
+                        <div>
+                            <p><strong>${notif.profiles.name}</strong> ${notif.content}</p>
+                            <div class="timestamp">${formatDate(notif.created_at)}</div>
                         </div>
                     `;
-                    profileVideos.appendChild(videoElement);
+                    notificationsContainer.appendChild(notifEl);
+
+                    // Mark as read when clicked
+                    if (!notif.read) {
+                        notifEl.addEventListener('click', async () => {
+                            try {
+                                const { error: updateError } = await supabase
+                                    .from('notifications')
+                                    .update({ read: true })
+                                    .eq('id', notif.id);
+
+                                if (updateError) throw updateError;
+
+                                updateUnreadCount();
+                                loadNotifications();
+                            } catch (error) {
+                                console.error('Error marking notification as read:', error);
+                            }
+                        });
+                    }
                 });
             } catch (error) {
-                console.error('Error loading user videos:', error);
+                console.error('Error loading notifications:', error);
+                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
             }
         }
 
-        // Setup video interactions
-        function setupVideoInteractions() {
-            const videoPlayers = document.querySelectorAll('.video-player');
-            
-            videoPlayers.forEach(video => {
-                video.addEventListener('click', function() {
-                    if (this.paused) {
-                        this.play();
-                    } else {
-                        this.pause();
-                    }
-                });
-            });
-            
-            // Setup like buttons
-            const likeButtons = document.querySelectorAll('.like-button');
-            likeButtons.forEach(button => {
-                button.addEventListener('click', async function() {
-                    if (!currentUser) {
-                        authModal.style.display = 'flex';
-                        return;
-                    }
+        // Update unread notification count from Supabase
+        async function updateUnreadCount() {
+            if (!currentUser) return;
 
-                    const videoId = this.getAttribute('data-id');
-                    const icon = this.querySelector('i');
-                    const countElement = this.querySelector('.action-count');
-                    
-                    try {
-                        if (this.classList.contains('liked')) {
-                            const { error } = await supabase
-                                .from('likes')
-                                .delete()
-                                .eq('user_id', currentUser.id)
-                                .eq('video_id', videoId);
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
 
-                            if (error) throw error;
+                if (error) throw error;
 
-                            this.classList.remove('liked');
-                            icon.className = 'far fa-heart';
-                            countElement.textContent = parseInt(countElement.textContent) - 1;
-                        } else {
-                            const { error } = await supabase
-                                .from('likes')
-                                .insert({
-                                    user_id: currentUser.id,
-                                    video_id: videoId
-                                });
-
-                            if (error) throw error;
-
-                            this.classList.add('liked');
-                            icon.className = 'fas fa-heart';
-                            countElement.textContent = parseInt(countElement.textContent) + 1;
-                        }
-                    } catch (error) {
-                        console.error('Error updating like:', error);
-                    }
-                });
-            });
-
-            // Setup follow buttons
-            const followButtons = document.querySelectorAll('.follow-button');
-            followButtons.forEach(button => {
-                button.addEventListener('click', async function() {
-                    if (!currentUser) {
-                        authModal.style.display = 'flex';
-                        return;
-                    }
-
-                    const userId = this.getAttribute('data-user');
-                    
-                    try {
-                        // Follow functionality
-                        this.textContent = 'Following';
-                        this.style.backgroundColor = 'var(--gray-color)';
-                    } catch (error) {
-                        console.error('Error following user:', error);
-                    }
-                });
-            });
+                const badge = document.getElementById('notificationBadge');
+                if (notifications.length > 0) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating unread count:', error);
+            }
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            uploadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (!currentUser) {
-                    authModal.style.display = 'flex';
+        // Load conversations from Supabase
+        async function loadConversations() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const conversationsContainer = document.getElementById('conversationsContainer');
+            conversationsContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                // Get unique conversation partners
+                const { data: messages, error: messagesError } = await supabase
+                    .from('messages')
+                    .select('sender_id, receiver_id, content, created_at')
+                    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                    .order('created_at', { ascending: false });
+
+                if (messagesError) throw messagesError;
+
+                // Get unique conversation partners
+                const conversationPartners = new Set();
+                const lastMessages = {};
+
+                messages.forEach(msg => {
+                    const partnerId = msg.sender_id === currentUser.id ? msg.receiver_id : msg.sender_id;
+                    conversationPartners.add(partnerId);
+                    
+                    // Store the latest message for each partner
+                    if (!lastMessages[partnerId] || new Date(msg.created_at) > new Date(lastMessages[partnerId].created_at)) {
+                        lastMessages[partnerId] = msg;
+                    }
+                });
+
+                conversationsContainer.innerHTML = '';
+
+                if (conversationPartners.size === 0) {
+                    conversationsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No messages yet</h3>
+                                <p>Start a conversation with someone</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
+                            </div>
+                        </div>
+                    `;
                     return;
                 }
-                uploadModal.style.display = 'flex';
-            });
-            
-            uploadClose.addEventListener('click', function() {
-                uploadModal.style.display = 'none';
-            });
-            
-            uploadModal.addEventListener('click', function(e) {
-                if (e.target === uploadModal) {
-                    uploadModal.style.display = 'none';
-                }
-            });
 
-            uploadArea.addEventListener('click', function() {
-                videoFileInput.click();
-            });
+                // Get user details for each conversation partner
+                const { data: users, error: usersError } = await supabase
+                    .from('profiles')
+                    .select('id, name, avatar')
+                    .in('id', Array.from(conversationPartners));
 
-            videoFileInput.addEventListener('change', function(e) {
-                if (this.files && this.files[0]) {
-                    const fileName = this.files[0].name;
-                    uploadArea.innerHTML = `
-                        <i class="fas fa-check-circle" style="color: var(--primary-color);"></i>
-                        <div class="upload-text">${fileName}</div>
-                        <div class="upload-subtext">Click to change video</div>
-                    `;
-                }
-            });
+                if (usersError) throw usersError;
 
-            uploadSubmit.addEventListener('click', async function() {
-                if (!videoFileInput.files[0]) {
-                    alert('Please select a video file');
-                    return;
-                }
-
-                const caption = captionInput.value.trim();
-                const file = videoFileInput.files[0];
-
-                try {
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${Math.random()}.${fileExt}`;
-                    const filePath = `videos/${fileName}`;
-
-                    const { error: uploadError } = await supabase.storage
-                        .from('videos')
-                        .upload(filePath, file);
-
-                    if (uploadError) throw uploadError;
-
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('videos')
-                        .getPublicUrl(filePath);
-
-                    const { error: dbError } = await supabase
-                        .from('videos')
-                        .insert({
-                            user_id: currentUser.id,
-                            video_url: publicUrl,
-                            caption: caption,
-                            music: 'Original Sound'
-                        });
-
-                    if (dbError) throw dbError;
-
-                    videoFileInput.value = '';
-                    captionInput.value = '';
-                    uploadModal.style.display = 'none';
-                    uploadArea.innerHTML = `
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <div class="upload-text">Select video to upload</div>
-                        <div class="upload-subtext">Or drag and drop a file</div>
+                users.forEach(user => {
+                    const lastMessage = lastMessages[user.id];
+                    const conversationEl = document.createElement('div');
+                    conversationEl.className = 'card';
+                    conversationEl.style.padding = '15px';
+                    conversationEl.style.marginBottom = '10px';
+                    conversationEl.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                            <div style="flex: 1; margin-left: 10px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div class="username">${user.name}</div>
+                                    <div class="timestamp">${formatDate(lastMessage.created_at)}</div>
+                                </div>
+                                <p>${lastMessage.content}</p>
+                            </div>
+                        </div>
                     `;
 
-                    await loadVideos();
-                    alert('Video uploaded successfully!');
-                } catch (error) {
-                    console.error('Error uploading video:', error);
-                    alert('Failed to upload video');
-                }
-            });
-            
-            authBtn.addEventListener('click', function() {
-                authModal.style.display = 'flex';
-            });
-
-            loginTab.addEventListener('click', function() {
-                loginTab.classList.add('active');
-                signupTab.classList.remove('active');
-                loginForm.style.display = 'flex';
-                signupForm.style.display = 'none';
-            });
-
-            signupTab.addEventListener('click', function() {
-                signupTab.classList.add('active');
-                loginTab.classList.remove('active');
-                signupForm.style.display = 'flex';
-                loginForm.style.display = 'none';
-            });
-
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
+                    // Add click event to open chat
+                    conversationEl.addEventListener('click', () => {
+                        currentChatUser = user;
+                        document.getElementById('chatUserName').textContent = user.name;
+                        showPage('chatPage');
+                        loadChat(user);
                     });
 
-                    if (error) throw error;
+                    conversationsContainer.appendChild(conversationEl);
+                });
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
+            }
+        }
 
-                    currentUser = data.user;
-                    await loadUserProfile();
-                    authModal.style.display = 'none';
-                    await loadVideos();
-                } catch (error) {
-                    showAuthMessage('Login failed: ' + error.message);
+        // Load chat with a user from Supabase
+        async function loadChat(user) {
+            const messageThread = document.getElementById('messageThread');
+            messageThread.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: messages, error } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${user.id}),and(sender_id.eq.${user.id},receiver_id.eq.${currentUser.id})`)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                messageThread.innerHTML = '';
+
+                messages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
+                    messageEl.innerHTML = `
+                        <div>${msg.content}</div>
+                        <div class="message-time">${formatTime(msg.created_at)}</div>
+                    `;
+                    messageThread.appendChild(messageEl);
+                });
+
+                // Scroll to bottom
+                messageThread.scrollTop = messageThread.scrollHeight;
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
+            }
+        }
+
+        // Send a message with Supabase
+        async function sendMessage() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+
+            if (!content || !currentChatUser) return;
+
+            try {
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([
+                        {
+                            sender_id: currentUser.id,
+                            receiver_id: currentChatUser.id,
+                            content: content
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                // Clear input and reload chat
+                messageInput.value = '';
+                loadChat(currentChatUser);
+
+                // Create notification
+                const { error: notifError } = await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: currentChatUser.id,
+                            type: 'message',
+                            source_user_id: currentUser.id,
+                            content: 'sent you a message',
+                            read: false
+                        }
+                    ]);
+
+                if (notifError) console.error('Error creating notification:', notifError);
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('Error sending message. Please try again.', 'error');
+            }
+        }
+
+        // Initialize search
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
+        // Handle search input with Supabase
+        async function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
+                return;
+            }
+
+            try {
+                const { data: users, error } = await supabase
+                    .from('profiles')
+                    .select('id, name, bio, avatar')
+                    .ilike('name', `%${query}%`)
+                    .neq('id', currentUser.id);
+
+                if (error) throw error;
+
+                searchResults.innerHTML = '';
+
+                if (users.length === 0) {
+                    searchResults.innerHTML = '<p class="text-center">No users found</p>';
+                    return;
                 }
-            });
 
-            signupForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('signup-username').value;
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
+                // Check follow status for each user
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
 
-                try {
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: {
-                                username: username
+                if (followsError) throw followsError;
+
+                const followingIds = follows.map(f => f.following_id);
+
+                users.forEach(user => {
+                    const isFollowing = followingIds.includes(user.id);
+                    const userEl = document.createElement('div');
+                    userEl.className = 'card user-item';
+                    userEl.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        <div style="flex: 1;">
+                            <div class="username">${user.name}</div>
+                            <div>${user.bio || ''}</div>
+                        </div>
+                        <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                            ${isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
+                    `;
+
+                    // Add follow functionality
+                    const followBtn = userEl.querySelector('button');
+                    followBtn.addEventListener('click', () => {
+                        toggleFollow(user.id);
+                    });
+
+                    searchResults.appendChild(userEl);
+                });
+            } catch (error) {
+                console.error('Error searching users:', error);
+                searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
+            }
+        }
+
+        // Toggle follow with Supabase
+        async function toggleFollow(userId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            try {
+                // Check if already following
+                const { data: existingFollow, error: checkError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id)
+                    .eq('following_id', userId)
+                    .single();
+
+                if (checkError && checkError.code !== 'PGRST116') throw checkError;
+
+                if (existingFollow) {
+                    // Unfollow
+                    const { error: unfollowError } = await supabase
+                        .from('follows')
+                        .delete()
+                        .eq('id', existingFollow.id);
+
+                    if (unfollowError) throw unfollowError;
+                } else {
+                    // Follow
+                    const { error: followError } = await supabase
+                        .from('follows')
+                        .insert([
+                            {
+                                follower_id: currentUser.id,
+                                following_id: userId
                             }
-                        }
-                    });
+                        ]);
 
-                    if (error) throw error;
+                    if (followError) throw followError;
 
-                    alert('Signup successful! Please check your email for verification.');
-                    loginTab.click();
-                } catch (error) {
-                    showAuthMessage('Signup failed: ' + error.message);
+                    // Create notification
+                    const { error: notifError } = await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: userId,
+                                type: 'follow',
+                                source_user_id: currentUser.id,
+                                content: 'started following you',
+                                read: false
+                            }
+                        ]);
+
+                    if (notifError) console.error('Error creating notification:', notifError);
                 }
-            });
 
-            profileNav.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (!currentUser) {
-                    authModal.style.display = 'flex';
-                    return;
+                // Update UI
+                handleSearch();
+
+                // Update profile stats if on profile page
+                if (currentPage === 'profilePage') {
+                    loadProfile();
                 }
-                
-                videoFeed.style.display = 'none';
-                profileContainer.style.display = 'block';
-                homeNav.classList.remove('active');
-                profileNav.classList.add('active');
-            });
-
-            homeNav.addEventListener('click', function(e) {
-                e.preventDefault();
-                videoFeed.style.display = 'block';
-                profileContainer.style.display = 'none';
-                homeNav.classList.add('active');
-                profileNav.classList.remove('active');
-            });
-
-            function showAuthMessage(message) {
-                authMessage.textContent = message;
-                authMessage.style.display = 'block';
-                setTimeout(() => {
-                    authMessage.style.display = 'none';
-                }, 5000);
+            } catch (error) {
+                console.error('Error toggling follow:', error);
+                showToast('Error updating follow status. Please try again.', 'error');
             }
         }
 
+        // Format date
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - new Date(date);
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+
+            return new Date(date).toLocaleDateString();
+        }
+
+        // Format time
+        function formatTime(date) {
+            return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize the app when the DOM is loaded
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
