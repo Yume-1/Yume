@@ -43,7 +43,7 @@
             color: var(--text-color);
             line-height: 1.6;
             transition: var(--transition);
-            padding-bottom: 60px; /* Space for bottom nav */
+            padding-bottom: 60px;
         }
 
         a {
@@ -253,6 +253,21 @@
 
         .btn-block {
             width: 100%;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--error-color);
+            color: white;
         }
 
         /* Pages */
@@ -604,6 +619,214 @@
         .toast.warning {
             border-left: 4px solid var(--warning-color);
         }
+
+        /* Call Styles */
+        .calls-container {
+            padding: 15px;
+        }
+
+        .call-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .call-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .call-item:hover {
+            background-color: var(--bg-color);
+        }
+
+        .call-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .call-type {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .call-duration {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .call-time {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .call-modal {
+            max-width: 800px;
+            width: 95%;
+        }
+
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            height: 400px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .call-control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .call-control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .call-control-btn.end-call {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .call-control-btn.muted {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .call-info {
+            text-align: center;
+        }
+
+        #callTimer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #callStatus {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .incoming-call-modal {
+            text-align: center;
+        }
+
+        .caller-info {
+            margin-bottom: 20px;
+        }
+
+        .call-actions-incoming {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .call-actions-user {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Voice call specific styles */
+        .voice-call .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .voice-call .video-wrapper {
+            width: 150px;
+            height: 150px;
+        }
+
+        .voice-call .video-wrapper video {
+            display: none;
+        }
+
+        .voice-call .avatar-large {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Screen share styles */
+        .screen-share .video-container {
+            grid-template-columns: 1fr;
+        }
+
+        .screen-share .video-wrapper:first-child {
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .video-container {
+                height: 300px;
+                grid-template-columns: 1fr;
+            }
+            
+            .call-controls {
+                gap: 10px;
+            }
+            
+            .call-control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -631,6 +854,24 @@
             <h2 class="text-center">Messages</h2>
             <div id="conversationsContainer">
                 <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Calls Page -->
+        <section id="callsPage" class="page">
+            <h2 class="text-center">Calls</h2>
+            <div class="calls-container">
+                <div class="call-actions">
+                    <button class="btn btn-primary" id="startCallBtn">
+                        <i class="fas fa-video"></i> Start New Call
+                    </button>
+                    <button class="btn btn-secondary" id="voiceCallBtn">
+                        <i class="fas fa-phone"></i> Voice Call
+                    </button>
+                </div>
+                <div id="callHistoryContainer">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </section>
 
@@ -763,6 +1004,10 @@
             <div class="nav-icon"><i class="fas fa-comments"></i></div>
             <span>Messages</span>
         </div>
+        <div class="nav-item" data-page="callsPage">
+            <div class="nav-icon"><i class="fas fa-video"></i></div>
+            <span>Calls</span>
+        </div>
         <div class="nav-item" data-page="newPostPage">
             <div class="nav-icon"><i class="fas fa-plus-square"></i></div>
             <span>New Post</span>
@@ -818,10 +1063,85 @@
         </div>
     </div>
 
+    <!-- Call Modal -->
+    <div class="modal-backdrop" id="callModal" style="display: none;">
+        <div class="modal call-modal">
+            <div class="modal-header">
+                <h3 id="callModalTitle">Incoming Call</h3>
+                <button class="close-btn" id="endCallBtn">&times;</button>
+            </div>
+            <div class="call-content">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <video id="localVideo" autoplay muted playsinline></video>
+                        <div class="video-label">You</div>
+                    </div>
+                    <div class="video-wrapper">
+                        <video id="remoteVideo" autoplay playsinline></video>
+                        <div class="video-label" id="remoteUserName">User</div>
+                    </div>
+                </div>
+                <div class="call-controls">
+                    <button class="call-control-btn" id="muteAudioBtn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="call-control-btn" id="muteVideoBtn">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="call-control-btn end-call" id="hangupBtn">
+                        <i class="fas fa-phone-slash"></i>
+                    </button>
+                    <button class="call-control-btn" id="screenShareBtn">
+                        <i class="fas fa-desktop"></i>
+                    </button>
+                </div>
+                <div class="call-info">
+                    <div id="callTimer">00:00</div>
+                    <div id="callStatus">Connecting...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Call Modal -->
+    <div class="modal-backdrop" id="startCallModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Start a Call</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="user-list" id="callUserList">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incoming Call Notification -->
+    <div class="modal-backdrop" id="incomingCallModal" style="display: none;">
+        <div class="modal incoming-call-modal">
+            <div class="modal-header">
+                <h3>Incoming Call</h3>
+            </div>
+            <div class="caller-info">
+                <img id="callerAvatar" src="" alt="Caller" class="avatar-large">
+                <h4 id="callerName">User Name</h4>
+                <p id="callType">Video Call</p>
+            </div>
+            <div class="call-actions-incoming">
+                <button class="btn btn-success" id="acceptCallBtn">
+                    <i class="fas fa-phone"></i> Accept
+                </button>
+                <button class="btn btn-danger" id="rejectCallBtn">
+                    <i class="fas fa-phone-slash"></i> Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://your-project.supabase.co'; // Replace with your Supabase URL
-        const SUPABASE_ANON_KEY = 'your-anon-key'; // Replace with your Supabase anon key
+        // Supabase configuration - REPLACE WITH YOUR ACTUAL CREDENTIALS
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -832,6 +1152,27 @@
         let currentPage = 'homePage';
         let currentPostId = null;
         let currentChatUser = null;
+
+        // WebRTC State Management
+        let peerConnection = null;
+        let localStream = null;
+        let remoteStream = null;
+        let dataChannel = null;
+        let callTimer = null;
+        let callStartTime = null;
+        let currentCall = null;
+        let isCallInitiator = false;
+        let isScreenSharing = false;
+        let screenStream = null;
+
+        // STUN/TURN servers configuration
+        const rtcConfig = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' }
+            ]
+        };
 
         // DOM Elements
         const pages = document.querySelectorAll('.page');
@@ -849,8 +1190,70 @@
             // Set up event listeners
             setupEventListeners();
 
+            // Initialize WebRTC
+            initWebRTC();
+
             // Load initial data
             loadInitialData();
+        }
+
+        // Initialize WebRTC functionality
+        function initWebRTC() {
+            setupCallEventListeners();
+            setupSignalingChannel();
+        }
+
+        // Set up call event listeners
+        function setupCallEventListeners() {
+            // Start call buttons
+            document.getElementById('startCallBtn').addEventListener('click', showStartCallModal);
+            document.getElementById('voiceCallBtn').addEventListener('click', showStartCallModal);
+            
+            // Call control buttons
+            document.getElementById('muteAudioBtn').addEventListener('click', toggleAudio);
+            document.getElementById('muteVideoBtn').addEventListener('click', toggleVideo);
+            document.getElementById('hangupBtn').addEventListener('click', endCall);
+            document.getElementById('screenShareBtn').addEventListener('click', toggleScreenShare);
+            document.getElementById('endCallBtn').addEventListener('click', endCall);
+            
+            // Incoming call buttons
+            document.getElementById('acceptCallBtn').addEventListener('click', acceptCall);
+            document.getElementById('rejectCallBtn').addEventListener('click', rejectCall);
+            
+            // Close modals
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                if (!btn.id) {
+                    btn.addEventListener('click', () => {
+                        document.getElementById('startCallModal').style.display = 'none';
+                    });
+                }
+            });
+        }
+
+        // Set up signaling channel using Supabase Realtime
+        function setupSignalingChannel() {
+            if (!currentUser) return;
+
+            // Subscribe to call signaling channel
+            const callChannel = supabase.channel('calls');
+            
+            callChannel
+                .on('broadcast', { event: 'call-offer' }, (payload) => {
+                    handleCallOffer(payload);
+                })
+                .on('broadcast', { event: 'call-answer' }, (payload) => {
+                    handleCallAnswer(payload);
+                })
+                .on('broadcast', { event: 'ice-candidate' }, (payload) => {
+                    handleIceCandidate(payload);
+                })
+                .on('broadcast', { event: 'call-reject' }, (payload) => {
+                    handleCallReject(payload);
+                })
+                .on('broadcast', { event: 'call-end' }, (payload) => {
+                    handleCallEnd(payload);
+                })
+                .subscribe();
         }
 
         // Set theme function
@@ -932,6 +1335,7 @@
             if (pageId === 'profilePage') loadProfile();
             if (pageId === 'notificationsPage') loadNotifications();
             if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'callsPage') loadCallHistory();
             if (pageId === 'searchPage') initSearch();
         }
 
@@ -1140,6 +1544,791 @@
                     }
                 )
                 .subscribe();
+        }
+
+        // Show start call modal
+        async function showStartCallModal() {
+            if (!currentUser) {
+                showToast('Please login to make calls', 'warning');
+                showPage('authPage');
+                return;
+            }
+
+            const userList = document.getElementById('callUserList');
+            userList.innerHTML = '<div class="spinner"></div>';
+            document.getElementById('startCallModal').style.display = 'flex';
+
+            try {
+                // Get users that current user follows or has messaged with
+                const { data: users, error } = await supabase
+                    .from('profiles')
+                    .select('id, name, avatar, bio')
+                    .neq('id', currentUser.id)
+                    .limit(20);
+
+                if (error) throw error;
+
+                userList.innerHTML = '';
+
+                if (users.length === 0) {
+                    userList.innerHTML = '<p class="text-center">No users found</p>';
+                    return;
+                }
+
+                users.forEach(user => {
+                    const userEl = document.createElement('div');
+                    userEl.className = 'user-item';
+                    userEl.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar">
+                        <div style="flex: 1;">
+                            <div class="username">${user.name}</div>
+                            <div>${user.bio || ''}</div>
+                        </div>
+                        <div class="call-actions-user">
+                            <button class="btn btn-primary btn-sm video-call-btn" data-user-id="${user.id}">
+                                <i class="fas fa-video"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm voice-call-btn" data-user-id="${user.id}">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                        </div>
+                    `;
+
+                    // Add call buttons event listeners
+                    userEl.querySelector('.video-call-btn').addEventListener('click', () => {
+                        startCall(user.id, 'video');
+                    });
+
+                    userEl.querySelector('.voice-call-btn').addEventListener('click', () => {
+                        startCall(user.id, 'voice');
+                    });
+
+                    userList.appendChild(userEl);
+                });
+            } catch (error) {
+                console.error('Error loading users for call:', error);
+                userList.innerHTML = '<p class="text-center">Error loading users</p>';
+            }
+        }
+
+        // Start a call
+        async function startCall(targetUserId, callType) {
+            if (!currentUser) return;
+
+            document.getElementById('startCallModal').style.display = 'none';
+            
+            try {
+                // Get target user details
+                const { data: targetUser, error } = await supabase
+                    .from('profiles')
+                    .select('name, avatar')
+                    .eq('id', targetUserId)
+                    .single();
+
+                if (error) throw error;
+
+                // Initialize call
+                currentCall = {
+                    id: generateCallId(),
+                    targetUserId: targetUserId,
+                    targetUserName: targetUser.name,
+                    targetUserAvatar: targetUser.avatar,
+                    type: callType,
+                    status: 'initiating'
+                };
+
+                isCallInitiator = true;
+
+                // Show call modal
+                showCallModal('Outgoing Call', targetUser.name, targetUser.avatar, callType);
+                
+                // Get local media
+                await getLocalMedia(callType);
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Send call offer
+                await sendCallOffer(targetUserId, callType);
+                
+            } catch (error) {
+                console.error('Error starting call:', error);
+                showToast('Error starting call. Please try again.', 'error');
+                endCall();
+            }
+        }
+
+        // Generate unique call ID
+        function generateCallId() {
+            return `call_${currentUser.id}_${Date.now()}`;
+        }
+
+        // Get local media stream
+        async function getLocalMedia(callType = 'video') {
+            try {
+                const constraints = {
+                    audio: true,
+                    video: callType === 'video' ? {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } : false
+                };
+
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // Display local video
+                const localVideo = document.getElementById('localVideo');
+                if (localVideo) {
+                    localVideo.srcObject = localStream;
+                }
+
+                return localStream;
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+                showToast('Error accessing camera/microphone. Please check permissions.', 'error');
+                throw error;
+            }
+        }
+
+        // Create peer connection
+        function createPeerConnection() {
+            try {
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream to connection
+                if (localStream) {
+                    localStream.getTracks().forEach(track => {
+                        peerConnection.addTrack(track, localStream);
+                    });
+                }
+
+                // Set up remote stream
+                remoteStream = new MediaStream();
+                const remoteVideo = document.getElementById('remoteVideo');
+                if (remoteVideo) {
+                    remoteVideo.srcObject = remoteStream;
+                }
+
+                // Handle incoming tracks
+                peerConnection.ontrack = (event) => {
+                    event.streams[0].getTracks().forEach(track => {
+                        remoteStream.addTrack(track);
+                    });
+                };
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate && currentCall) {
+                        sendIceCandidate(currentCall.targetUserId, event.candidate);
+                    }
+                };
+
+                // Handle connection state changes
+                peerConnection.onconnectionstatechange = () => {
+                    const state = peerConnection.connectionState;
+                    updateCallStatus(state);
+                    
+                    if (state === 'connected') {
+                        startCallTimer();
+                        showToast('Call connected!', 'success');
+                    } else if (state === 'failed' || state === 'disconnected') {
+                        showToast('Call disconnected', 'warning');
+                        endCall();
+                    }
+                };
+
+                // Create data channel for messaging
+                if (isCallInitiator) {
+                    dataChannel = peerConnection.createDataChannel('chat');
+                    setupDataChannel();
+                } else {
+                    peerConnection.ondatachannel = (event) => {
+                        dataChannel = event.channel;
+                        setupDataChannel();
+                    };
+                }
+
+            } catch (error) {
+                console.error('Error creating peer connection:', error);
+                throw error;
+            }
+        }
+
+        // Set up data channel
+        function setupDataChannel() {
+            if (!dataChannel) return;
+
+            dataChannel.onopen = () => {
+                console.log('Data channel opened');
+            };
+
+            dataChannel.onmessage = (event) => {
+                console.log('Received message:', event.data);
+                // Handle data channel messages
+            };
+
+            dataChannel.onclose = () => {
+                console.log('Data channel closed');
+            };
+        }
+
+        // Send call offer
+        async function sendCallOffer(targetUserId, callType) {
+            try {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                // Send offer via Supabase
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-offer',
+                    payload: {
+                        callId: currentCall.id,
+                        callerId: currentUser.id,
+                        callerName: currentUser.name,
+                        callerAvatar: currentUser.avatar,
+                        targetUserId: targetUserId,
+                        offer: offer,
+                        callType: callType,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call offer:', error);
+                throw error;
+            }
+        }
+
+        // Handle incoming call offer
+        async function handleCallOffer(payload) {
+            if (!currentUser || payload.payload.targetUserId !== currentUser.id) return;
+
+            const { callId, callerId, callerName, callerAvatar, offer, callType } = payload.payload;
+
+            // Don't show incoming call if user is already in a call
+            if (currentCall) {
+                sendCallReject(callerId, callId, 'User is busy');
+                return;
+            }
+
+            // Set current call
+            currentCall = {
+                id: callId,
+                callerId: callerId,
+                callerName: callerName,
+                callerAvatar: callerAvatar,
+                type: callType,
+                status: 'incoming'
+            };
+
+            // Store the offer
+            currentCall.offer = offer;
+
+            // Show incoming call modal
+            showIncomingCallModal(callerName, callerAvatar, callType);
+        }
+
+        // Show incoming call modal
+        function showIncomingCallModal(callerName, callerAvatar, callType) {
+            document.getElementById('callerName').textContent = callerName;
+            document.getElementById('callerAvatar').src = callerAvatar;
+            document.getElementById('callType').textContent = callType === 'video' ? 'Video Call' : 'Voice Call';
+            document.getElementById('incomingCallModal').style.display = 'flex';
+            
+            // Auto-reject after 30 seconds
+            setTimeout(() => {
+                if (document.getElementById('incomingCallModal').style.display === 'flex') {
+                    rejectCall();
+                }
+            }, 30000);
+        }
+
+        // Accept incoming call
+        async function acceptCall() {
+            if (!currentCall) return;
+
+            document.getElementById('incomingCallModal').style.display = 'none';
+            
+            try {
+                isCallInitiator = false;
+                
+                // Show call modal
+                showCallModal('In Call', currentCall.callerName, currentCall.callerAvatar, currentCall.type);
+                
+                // Get local media
+                await getLocalMedia(currentCall.type);
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Set remote description
+                await peerConnection.setRemoteDescription(currentCall.offer);
+                
+                // Create and send answer
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                
+                // Send answer
+                await sendCallAnswer(currentCall.callerId, answer);
+                
+            } catch (error) {
+                console.error('Error accepting call:', error);
+                showToast('Error accepting call', 'error');
+                endCall();
+            }
+        }
+
+        // Send call answer
+        async function sendCallAnswer(callerId, answer) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-answer',
+                    payload: {
+                        callId: currentCall.id,
+                        answer: answer,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call answer:', error);
+                throw error;
+            }
+        }
+
+        // Handle call answer
+        async function handleCallAnswer(payload) {
+            if (!currentCall || !peerConnection) return;
+
+            try {
+                await peerConnection.setRemoteDescription(payload.payload.answer);
+            } catch (error) {
+                console.error('Error handling call answer:', error);
+                endCall();
+            }
+        }
+
+        // Send ICE candidate
+        async function sendIceCandidate(targetUserId, candidate) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'ice-candidate',
+                    payload: {
+                        callId: currentCall.id,
+                        candidate: candidate,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending ICE candidate:', error);
+            }
+        }
+
+        // Handle ICE candidate
+        async function handleIceCandidate(payload) {
+            if (!currentCall || !peerConnection) return;
+
+            try {
+                await peerConnection.addIceCandidate(payload.payload.candidate);
+            } catch (error) {
+                console.error('Error adding ICE candidate:', error);
+            }
+        }
+
+        // Reject call
+        function rejectCall() {
+            if (!currentCall) return;
+
+            sendCallReject(currentCall.callerId, currentCall.id, 'Call rejected');
+            resetCall();
+            document.getElementById('incomingCallModal').style.display = 'none';
+        }
+
+        // Send call rejection
+        async function sendCallReject(callerId, callId, reason) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-reject',
+                    payload: {
+                        callId: callId,
+                        reason: reason,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call rejection:', error);
+            }
+        }
+
+        // Handle call rejection
+        function handleCallReject(payload) {
+            if (!currentCall || currentCall.id !== payload.payload.callId) return;
+
+            showToast('Call was rejected', 'warning');
+            endCall();
+        }
+
+        // End call
+        function endCall() {
+            if (currentCall) {
+                sendCallEnd();
+                saveCallHistory();
+            }
+            resetCall();
+        }
+
+        // Send call end
+        async function sendCallEnd() {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-end',
+                    payload: {
+                        callId: currentCall.id,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call end:', error);
+            }
+        }
+
+        // Handle call end
+        function handleCallEnd(payload) {
+            if (!currentCall || currentCall.id !== payload.payload.callId) return;
+
+            showToast('Call ended by other user', 'info');
+            endCall();
+        }
+
+        // Reset call state
+        function resetCall() {
+            // Stop media streams
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+            }
+            
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream = null;
+            }
+
+            // Close peer connection
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            // Clear data channel
+            dataChannel = null;
+
+            // Stop call timer
+            stopCallTimer();
+
+            // Reset UI
+            document.getElementById('callModal').style.display = 'none';
+            document.getElementById('incomingCallModal').style.display = 'none';
+            
+            const localVideo = document.getElementById('localVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+            
+            if (localVideo) localVideo.srcObject = null;
+            if (remoteVideo) remoteVideo.srcObject = null;
+
+            // Reset call state
+            currentCall = null;
+            isCallInitiator = false;
+            isScreenSharing = false;
+        }
+
+        // Show call modal
+        function showCallModal(title, userName, userAvatar, callType) {
+            document.getElementById('callModalTitle').textContent = title;
+            document.getElementById('remoteUserName').textContent = userName;
+            
+            const callModal = document.getElementById('callModal');
+            callModal.style.display = 'flex';
+            
+            // Set call type class
+            callModal.classList.remove('voice-call', 'video-call');
+            callModal.classList.add(callType === 'voice' ? 'voice-call' : 'video-call');
+            
+            // Update UI based on call type
+            const localVideo = document.getElementById('localVideo');
+            if (localVideo) {
+                localVideo.style.display = callType === 'video' ? 'block' : 'none';
+            }
+        }
+
+        // Toggle audio mute
+        function toggleAudio() {
+            if (!localStream) return;
+            
+            const audioTracks = localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                const isMuted = !audioTracks[0].enabled;
+                audioTracks[0].enabled = isMuted;
+                
+                const button = document.getElementById('muteAudioBtn');
+                button.classList.toggle('muted', !isMuted);
+                button.innerHTML = isMuted ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>';
+                
+                showToast(isMuted ? 'Microphone on' : 'Microphone muted', 'info');
+            }
+        }
+
+        // Toggle video mute
+        function toggleVideo() {
+            if (!localStream) return;
+            
+            const videoTracks = localStream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                const isEnabled = !videoTracks[0].enabled;
+                videoTracks[0].enabled = isEnabled;
+                
+                const button = document.getElementById('muteVideoBtn');
+                button.classList.toggle('muted', !isEnabled);
+                button.innerHTML = isEnabled ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>';
+                
+                const localVideo = document.getElementById('localVideo');
+                if (localVideo) {
+                    localVideo.style.display = isEnabled ? 'block' : 'none';
+                }
+                
+                showToast(isEnabled ? 'Video on' : 'Video off', 'info');
+            }
+        }
+
+        // Toggle screen share
+        async function toggleScreenShare() {
+            try {
+                if (!isScreenSharing) {
+                    // Start screen share
+                    screenStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true,
+                        audio: true
+                    });
+                    
+                    // Replace video track
+                    const videoTrack = screenStream.getVideoTracks()[0];
+                    const sender = peerConnection.getSenders().find(s => 
+                        s.track && s.track.kind === 'video'
+                    );
+                    
+                    if (sender) {
+                        await sender.replaceTrack(videoTrack);
+                    }
+                    
+                    // Handle screen share end
+                    videoTrack.onended = () => {
+                        toggleScreenShare();
+                    };
+                    
+                    isScreenSharing = true;
+                    document.getElementById('callModal').classList.add('screen-share');
+                    showToast('Screen sharing started', 'success');
+                    
+                } else {
+                    // Stop screen share
+                    if (screenStream) {
+                        screenStream.getTracks().forEach(track => track.stop());
+                        
+                        // Restore camera track
+                        if (localStream) {
+                            const cameraTrack = localStream.getVideoTracks()[0];
+                            const sender = peerConnection.getSenders().find(s => 
+                                s.track && s.track.kind === 'video'
+                            );
+                            
+                            if (sender && cameraTrack) {
+                                await sender.replaceTrack(cameraTrack);
+                            }
+                        }
+                        
+                        screenStream = null;
+                    }
+                    
+                    isScreenSharing = false;
+                    document.getElementById('callModal').classList.remove('screen-share');
+                    showToast('Screen sharing stopped', 'info');
+                }
+                
+            } catch (error) {
+                console.error('Error toggling screen share:', error);
+                showToast('Error sharing screen', 'error');
+            }
+        }
+
+        // Start call timer
+        function startCallTimer() {
+            callStartTime = new Date();
+            callTimer = setInterval(updateCallTimer, 1000);
+        }
+
+        // Stop call timer
+        function stopCallTimer() {
+            if (callTimer) {
+                clearInterval(callTimer);
+                callTimer = null;
+            }
+            document.getElementById('callTimer').textContent = '00:00';
+        }
+
+        // Update call timer
+        function updateCallTimer() {
+            if (!callStartTime) return;
+            
+            const now = new Date();
+            const diff = Math.floor((now - callStartTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            document.getElementById('callTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Update call status
+        function updateCallStatus(status) {
+            const statusElement = document.getElementById('callStatus');
+            if (statusElement) {
+                statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            }
+        }
+
+        // Save call history
+        async function saveCallHistory() {
+            if (!currentCall || !callStartTime) return;
+
+            try {
+                const callDuration = Math.floor((new Date() - callStartTime) / 1000);
+                const otherUserId = isCallInitiator ? currentCall.targetUserId : currentCall.callerId;
+                const otherUserName = isCallInitiator ? currentCall.targetUserName : currentCall.callerName;
+
+                const { error } = await supabase
+                    .from('call_history')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            other_user_id: otherUserId,
+                            other_user_name: otherUserName,
+                            call_type: currentCall.type,
+                            duration: callDuration,
+                            initiated: isCallInitiator,
+                            timestamp: new Date().toISOString()
+                        }
+                    ]);
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error saving call history:', error);
+            }
+        }
+
+        // Load call history
+        async function loadCallHistory() {
+            if (!currentUser) return;
+
+            const container = document.getElementById('callHistoryContainer');
+            container.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: calls, error } = await supabase
+                    .from('call_history')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('timestamp', { ascending: false })
+                    .limit(20);
+
+                if (error) throw error;
+
+                container.innerHTML = '';
+
+                if (calls.length === 0) {
+                    container.innerHTML = '<p class="text-center">No call history</p>';
+                    return;
+                }
+
+                calls.forEach(call => {
+                    const callEl = document.createElement('div');
+                    callEl.className = 'card call-item';
+                    callEl.innerHTML = `
+                        <div class="call-info">
+                            <div class="username">${call.other_user_name}</div>
+                            <div class="call-type">
+                                <i class="fas ${call.call_type === 'video' ? 'fa-video' : 'fa-phone'}"></i>
+                                ${call.call_type === 'video' ? 'Video' : 'Voice'} Call
+                                ${call.initiated ? '(Outgoing)' : '(Incoming)'}
+                            </div>
+                            <div class="call-duration">Duration: ${formatCallDuration(call.duration)}</div>
+                            <div class="call-time">${formatDate(call.timestamp)}</div>
+                        </div>
+                    `;
+
+                    // Add click to call again
+                    callEl.addEventListener('click', () => {
+                        startCall(call.other_user_id, call.call_type);
+                    });
+
+                    container.appendChild(callEl);
+                });
+
+            } catch (error) {
+                console.error('Error loading call history:', error);
+                container.innerHTML = '<p class="text-center">Error loading call history</p>';
+            }
+        }
+
+        // Format call duration
+        function formatCallDuration(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 3000);
         }
 
         // Login user with Supabase
@@ -2205,28 +3394,6 @@
         // Format time
         function formatTime(date) {
             return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Show toast notification
-        function showToast(message, type = 'success') {
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            toastContainer.appendChild(toast);
-
-            // Show toast
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
-
-            // Hide toast after 3 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    toastContainer.removeChild(toast);
-                }, 300);
-            }, 3000);
         }
 
         // Initialize the app when the DOM is loaded
