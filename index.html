@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ALL YOUR EXISTING CSS STYLES REMAIN THE SAME */
         :root {
             --primary-color: #e91e63;
             --primary-light: #f8bbd0;
@@ -47,32 +46,1109 @@
             padding-bottom: 60px;
         }
 
-        /* ... ALL YOUR EXISTING CSS ... */
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .post-card {
+            padding: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .post-content {
+            margin-bottom: 15px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn.liked {
+            color: var(--primary-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 15px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Auth pages */
+        .auth-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Messages */
+        .message-thread {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent {
+            background-color: var(--primary-light);
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background-color: var(--card-bg);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Chat call buttons */
+        .chat-call-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Notifications */
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-item.unread {
+            background-color: var(--primary-light);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Profile */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .user-list {
+            margin-top: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .desktop-nav {
+                display: flex;
+            }
+
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Comment section */
+        .comments-container {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+
+        .comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+            background-color: var(--bg-color);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment-input {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .comment-input input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .login-prompt i {
+            font-size: 3rem;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            z-index: 1001;
+            max-width: 300px;
+            transition: all 0.3s ease;
+            transform: translateX(150%);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--error-color);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        /* Call Styles */
+        .call-modal {
+            max-width: 800px;
+            width: 95%;
+        }
+
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            height: 400px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .call-control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .call-control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .call-control-btn.end-call {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .call-control-btn.muted {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .call-info {
+            text-align: center;
+        }
+
+        #callTimer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #callStatus {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .incoming-call-modal {
+            text-align: center;
+        }
+
+        .caller-info {
+            margin-bottom: 20px;
+        }
+
+        .call-actions-incoming {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        /* Voice call specific styles */
+        .voice-call .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .voice-call .video-wrapper {
+            width: 150px;
+            height: 150px;
+        }
+
+        .voice-call .video-wrapper video {
+            display: none;
+        }
+
+        .voice-call .avatar-large {
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Screen share styles */
+        .screen-share .video-container {
+            grid-template-columns: 1fr;
+        }
+
+        .screen-share .video-wrapper:first-child {
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .video-container {
+                height: 300px;
+                grid-template-columns: 1fr;
+            }
+            
+            .call-controls {
+                gap: 10px;
+            }
+            
+            .call-control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+
+        /* User profile view */
+        .profile-view {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        /* Followers/Following modal */
+        .follow-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .follow-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
     </style>
 </head>
 <body>
-    <!-- ALL YOUR EXISTING HTML STRUCTURE REMAINS THE SAME -->
+    <!-- Header -->
     <header class="header">
         <div class="logo">Yume</div>
         <button class="theme-toggle" id="themeToggle">🌙</button>
     </header>
 
+    <!-- Toast notifications -->
     <div id="toastContainer"></div>
 
+    <!-- Main Content -->
     <main class="container">
-        <!-- ... ALL YOUR PAGES AND MODALS ... -->
+        <!-- Home/Feed Page -->
+        <section id="homePage" class="page active">
+            <h2 class="text-center">Your Feed</h2>
+            <div id="feedContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Messages Page -->
+        <section id="messagesPage" class="page">
+            <h2 class="text-center">Messages</h2>
+            <div id="conversationsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Chat Page -->
+        <section id="chatPage" class="page">
+            <div class="chat-header">
+                <button id="backToMessages" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                <h3 id="chatUserName">User Name</h3>
+            </div>
+            <div class="chat-call-buttons">
+                <button class="btn btn-primary btn-sm" id="startVideoCall">
+                    <i class="fas fa-video"></i> Video Call
+                </button>
+                <button class="btn btn-secondary btn-sm" id="startVoiceCall">
+                    <i class="fas fa-phone"></i> Voice Call
+                </button>
+            </div>
+            <div class="message-thread" id="messageThread">
+                <div class="spinner"></div>
+            </div>
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button id="sendMessageBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </section>
+
+        <!-- New Post Page -->
+        <section id="newPostPage" class="page">
+            <h2 class="text-center">Create Post</h2>
+            <form id="newPostForm">
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="postContent" placeholder="What's on your mind? (280 characters max)" maxlength="280" required></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="file" id="postImage" accept="image/*" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Post</button>
+            </form>
+        </section>
+
+        <!-- Notifications Page -->
+        <section id="notificationsPage" class="page">
+            <h2 class="text-center">Notifications</h2>
+            <div id="notificationsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="profilePage" class="page">
+            <div class="profile-header">
+                <img src="" alt="Profile" class="profile-avatar" id="profileAvatar">
+                <h2 id="profileName">User Name</h2>
+                <p id="profileBio">Bio goes here</p>
+                <button class="btn btn-primary mt-1" id="editProfileBtn">Edit Profile</button>
+                <button class="btn btn-secondary mt-1" id="logoutBtn">Logout</button>
+            </div>
+            <div class="profile-stats">
+                <div class="stat" id="postsStat">
+                    <div class="stat-value" id="postsCount">0</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat" id="followingStat">
+                    <div class="stat-value" id="followingCount">0</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat" id="followersStat">
+                    <div class="stat-value" id="followersCount">0</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+            </div>
+            <div id="userPostsContainer">
+                <div class="spinner"></div>
+            </div>
+        </section>
+
+        <!-- Search Page -->
+        <section id="searchPage" class="page">
+            <h2 class="text-center">Search</h2>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search users...">
+            </div>
+            <div id="searchResults">
+                <p class="text-center">Start typing to search for users</p>
+            </div>
+        </section>
+
+        <!-- Auth Pages -->
+        <section id="authPage" class="page">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-tab="login">Login</div>
+                    <div class="auth-tab" data-tab="register">Register</div>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="loginEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <div class="text-center mt-2">
+                        <button type="button" class="btn btn-secondary" id="googleLogin">Login with Google</button>
+                    </div>
+                    <div class="text-center mt-2">
+                        <button type="button" id="continueAsGuest">Continue as Guest</button>
+                    </div>
+                </form>
+
+                <form id="registerForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="registerName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="registerEmail" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerPassword" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-input" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+            </div>
+        </section>
     </main>
 
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <!-- ... YOUR NAVIGATION ... -->
+        <div class="nav-item active" data-page="homePage">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" data-page="messagesPage">
+            <div class="nav-icon"><i class="fas fa-comments"></i></div>
+            <span>Messages</span>
+        </div>
+        <div class="nav-item" data-page="newPostPage">
+            <div class="nav-icon"><i class="fas fa-plus-square"></i></div>
+            <span>New Post</span>
+        </div>
+        <div class="nav-item" data-page="notificationsPage">
+            <div class="nav-icon"><i class="fas fa-bell"></i>
+                <span class="badge" id="notificationBadge" style="display: none;">0</span>
+            </div>
+            <span>Notifications</span>
+        </div>
+        <div class="nav-item" data-page="profilePage">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <span>Profile</span>
+        </div>
     </nav>
 
-    <!-- ... ALL YOUR MODALS ... -->
+    <!-- Edit Profile Modal -->
+    <div class="modal-backdrop" id="editProfileModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="editDisplayName" placeholder="Display Name" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-input form-textarea" id="editBio" placeholder="Bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="file" id="editAvatar" accept="image/*" class="form-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-backdrop" id="commentModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Comments</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="commentsContainer">
+                <div class="spinner"></div>
+            </div>
+            <div class="comment-input">
+                <input type="text" id="commentInput" placeholder="Write a comment...">
+                <button id="postCommentBtn" class="btn btn-primary">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call Modal -->
+    <div class="modal-backdrop" id="callModal" style="display: none;">
+        <div class="modal call-modal">
+            <div class="modal-header">
+                <h3 id="callModalTitle">Incoming Call</h3>
+                <button class="close-btn" id="endCallBtn">&times;</button>
+            </div>
+            <div class="call-content">
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <video id="localVideo" autoplay muted playsinline></video>
+                        <div class="video-label">You</div>
+                    </div>
+                    <div class="video-wrapper">
+                        <video id="remoteVideo" autoplay playsinline></video>
+                        <div class="video-label" id="remoteUserName">User</div>
+                    </div>
+                </div>
+                <div class="call-controls">
+                    <button class="call-control-btn" id="muteAudioBtn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="call-control-btn" id="muteVideoBtn">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="call-control-btn end-call" id="hangupBtn">
+                        <i class="fas fa-phone-slash"></i>
+                    </button>
+                    <button class="call-control-btn" id="screenShareBtn">
+                        <i class="fas fa-desktop"></i>
+                    </button>
+                </div>
+                <div class="call-info">
+                    <div id="callTimer">00:00</div>
+                    <div id="callStatus">Connecting...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incoming Call Notification -->
+    <div class="modal-backdrop" id="incomingCallModal" style="display: none;">
+        <div class="modal incoming-call-modal">
+            <div class="modal-header">
+                <h3>Incoming Call</h3>
+            </div>
+            <div class="caller-info">
+                <img id="callerAvatar" src="" alt="Caller" class="avatar-large">
+                <h4 id="callerName">User Name</h4>
+                <p id="callType">Video Call</p>
+            </div>
+            <div class="call-actions-incoming">
+                <button class="btn btn-success" id="acceptCallBtn">
+                    <i class="fas fa-phone"></i> Accept
+                </button>
+                <button class="btn btn-danger" id="rejectCallBtn">
+                    <i class="fas fa-phone-slash"></i> Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile View Modal -->
+    <div class="modal-backdrop" id="userProfileModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>User Profile</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="profile-view">
+                <img src="" alt="Profile" class="profile-avatar" id="viewProfileAvatar">
+                <h2 id="viewProfileName">User Name</h2>
+                <p id="viewProfileBio">Bio goes here</p>
+                <div class="profile-actions">
+                    <button class="btn btn-primary" id="followUserBtn">Follow</button>
+                    <button class="btn btn-secondary" id="messageUserBtn">Message</button>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="viewPostsCount">0</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="viewFollowingCount">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="viewFollowersCount">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Followers/Following List Modal -->
+    <div class="modal-backdrop" id="followListModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="followListTitle">Followers</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="follow-list" id="followListContainer">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // CORRECTED Supabase configuration
-        const SUPABASE_URL = 'https://xmjtlyfxdtklftuxajch.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtanRseWZ4ZHRrbGZ0dXhhamNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2ODg1NTQsImV4cCI6MjA3ODI2NDU1NH0.g6R8HumZRbDCQ1YWtdOEf5qLmAwUXueWPZDt44PtbB4';
+        // Supabase configuration - REPLACE WITH YOUR ACTUAL CREDENTIALS
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -83,6 +1159,7 @@
         let currentPage = 'homePage';
         let currentPostId = null;
         let currentChatUser = null;
+        let viewedUser = null;
 
         // WebRTC State Management
         let peerConnection = null;
@@ -134,4 +1211,2299 @@
 
         // Initialize WebRTC functionality
         function initWebRTC() {
-            console.log('Initializing WebRTC...
+            console.log('Initializing WebRTC...');
+            setupCallEventListeners();
+            setupSignalingChannel();
+        }
+
+        // Set up call event listeners
+        function setupCallEventListeners() {
+            // Chat call buttons
+            document.getElementById('startVideoCall').addEventListener('click', () => {
+                if (currentChatUser) {
+                    startCall(currentChatUser.id, 'video');
+                }
+            });
+            
+            document.getElementById('startVoiceCall').addEventListener('click', () => {
+                if (currentChatUser) {
+                    startCall(currentChatUser.id, 'voice');
+                }
+            });
+            
+            // Call control buttons
+            document.getElementById('muteAudioBtn').addEventListener('click', toggleAudio);
+            document.getElementById('muteVideoBtn').addEventListener('click', toggleVideo);
+            document.getElementById('hangupBtn').addEventListener('click', endCall);
+            document.getElementById('screenShareBtn').addEventListener('click', toggleScreenShare);
+            document.getElementById('endCallBtn').addEventListener('click', endCall);
+            
+            // Incoming call buttons
+            document.getElementById('acceptCallBtn').addEventListener('click', acceptCall);
+            document.getElementById('rejectCallBtn').addEventListener('click', rejectCall);
+        }
+
+        // Set up signaling channel using Supabase Realtime
+        function setupSignalingChannel() {
+            if (!currentUser) return;
+
+            // Subscribe to call signaling channel
+            const callChannel = supabase.channel('calls');
+            
+            callChannel
+                .on('broadcast', { event: 'call-offer' }, (payload) => {
+                    handleCallOffer(payload);
+                })
+                .on('broadcast', { event: 'call-answer' }, (payload) => {
+                    handleCallAnswer(payload);
+                })
+                .on('broadcast', { event: 'ice-candidate' }, (payload) => {
+                    handleIceCandidate(payload);
+                })
+                .on('broadcast', { event: 'call-reject' }, (payload) => {
+                    handleCallReject(payload);
+                })
+                .on('broadcast', { event: 'call-end' }, (payload) => {
+                    handleCallEnd(payload);
+                })
+                .subscribe();
+        }
+
+        // Set theme function
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+
+        // Check authentication status
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                const { data: userProfile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+                
+                if (userProfile) {
+                    currentUser = {
+                        id: session.user.id,
+                        email: session.user.email,
+                        ...userProfile
+                    };
+                    showPage('homePage');
+                    loadFeed();
+                    updateUnreadCount();
+                } else {
+                    // Create a profile if it doesn't exist
+                    const { data: newProfile, error } = await supabase
+                        .from('profiles')
+                        .insert([
+                            {
+                                id: session.user.id,
+                                name: session.user.email.split('@')[0],
+                                bio: '',
+                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                            }
+                        ])
+                        .select()
+                        .single();
+                    
+                    if (!error) {
+                        currentUser = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            ...newProfile
+                        };
+                        showPage('homePage');
+                        loadFeed();
+                        updateUnreadCount();
+                    }
+                }
+            } else {
+                showPage('authPage');
+            }
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            currentPage = pageId;
+
+            // Update navigation
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load content for the page if needed
+            if (pageId === 'homePage') loadFeed();
+            if (pageId === 'profilePage') loadProfile();
+            if (pageId === 'notificationsPage') loadNotifications();
+            if (pageId === 'messagesPage') loadConversations();
+            if (pageId === 'searchPage') initSearch();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const pageId = item.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                setTheme(newTheme);
+                currentTheme = newTheme;
+            });
+
+            // Auth tabs
+            const authTabs = document.querySelectorAll('.auth-tab');
+            authTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    authTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    if (tabName === 'login') {
+                        document.getElementById('loginForm').style.display = 'block';
+                        document.getElementById('registerForm').style.display = 'none';
+                    } else {
+                        document.getElementById('loginForm').style.display = 'none';
+                        document.getElementById('registerForm').style.display = 'block';
+                    }
+                });
+            });
+
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                loginUser(email, password);
+            });
+
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+                if (password !== confirmPassword) {
+                    showToast('Passwords do not match', 'error');
+                    return;
+                }
+
+                registerUser(name, email, password);
+            });
+
+            // Google login
+            document.getElementById('googleLogin').addEventListener('click', () => {
+                signInWithGoogle();
+            });
+
+            // Continue as guest
+            document.getElementById('continueAsGuest').addEventListener('click', () => {
+                currentUser = null;
+                showPage('homePage');
+                loadFeed();
+            });
+
+            // New post form
+            document.getElementById('newPostForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = document.getElementById('postContent').value;
+                const imageFile = document.getElementById('postImage').files[0];
+                createPost(content, imageFile);
+            });
+
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', () => {
+                showEditProfileModal();
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                logoutUser();
+            });
+
+            // Close modal buttons
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('editProfileModal').style.display = 'none';
+                    document.getElementById('commentModal').style.display = 'none';
+                    document.getElementById('userProfileModal').style.display = 'none';
+                    document.getElementById('followListModal').style.display = 'none';
+                });
+            });
+
+            // Edit profile form
+            document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const displayName = document.getElementById('editDisplayName').value;
+                const bio = document.getElementById('editBio').value;
+                const avatarFile = document.getElementById('editAvatar').files[0];
+                updateProfile(displayName, bio, avatarFile);
+            });
+
+            // Back to messages button
+            document.getElementById('backToMessages').addEventListener('click', () => {
+                showPage('messagesPage');
+            });
+
+            // Send message button
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+
+            // Message input enter key
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // Post comment button
+            document.getElementById('postCommentBtn').addEventListener('click', postComment);
+
+            // Comment input enter key
+            document.getElementById('commentInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    postComment();
+                }
+            });
+
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+
+            // Profile stats clicks
+            document.getElementById('postsStat').addEventListener('click', () => {
+                document.getElementById('userPostsContainer').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            document.getElementById('followingStat').addEventListener('click', () => {
+                showFollowList('following');
+            });
+
+            document.getElementById('followersStat').addEventListener('click', () => {
+                showFollowList('followers');
+            });
+
+            // User profile actions
+            document.getElementById('followUserBtn').addEventListener('click', () => {
+                if (viewedUser) {
+                    toggleFollow(viewedUser.id);
+                }
+            });
+
+            document.getElementById('messageUserBtn').addEventListener('click', () => {
+                if (viewedUser) {
+                    document.getElementById('userProfileModal').style.display = 'none';
+                    currentChatUser = viewedUser;
+                    document.getElementById('chatUserName').textContent = viewedUser.name;
+                    showPage('chatPage');
+                    loadChat(viewedUser);
+                }
+            });
+        }
+
+        // Load initial data
+        function loadInitialData() {
+            // Set up real-time subscriptions
+            setupRealtimeSubscriptions();
+        }
+
+        // Set up real-time subscriptions
+        function setupRealtimeSubscriptions() {
+            if (!currentUser) return;
+
+            // Subscribe to new posts
+            supabase
+                .channel('posts')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'posts' },
+                    (payload) => {
+                        if (currentPage === 'homePage') {
+                            loadFeed();
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new messages
+            supabase
+                .channel('messages')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'messages' },
+                    (payload) => {
+                        if (currentPage === 'messagesPage' || 
+                            (currentPage === 'chatPage' && currentChatUser && 
+                            (payload.new.sender_id === currentChatUser.id || payload.new.receiver_id === currentChatUser.id))) {
+                            if (currentPage === 'chatPage') {
+                                loadChat(currentChatUser);
+                            } else {
+                                loadConversations();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new notifications
+            supabase
+                .channel('notifications')
+                .on('postgres_changes', 
+                    { event: 'INSERT', schema: 'public', table: 'notifications' },
+                    (payload) => {
+                        if (payload.new.user_id === currentUser.id) {
+                            updateUnreadCount();
+                            if (currentPage === 'notificationsPage') {
+                                loadNotifications();
+                            }
+                        }
+                    }
+                )
+                .subscribe();
+
+            // Subscribe to new likes and comments
+            supabase
+                .channel('interactions')
+                .on('postgres_changes', 
+                    { event: '*', schema: 'public', table: 'posts' },
+                    (payload) => {
+                        if (currentPage === 'homePage') {
+                            loadFeed();
+                        }
+                        if (currentPage === 'profilePage') {
+                            loadProfile();
+                        }
+                    }
+                )
+                .subscribe();
+        }
+
+        // Start a call
+        async function startCall(targetUserId, callType) {
+            if (!currentUser) return;
+
+            try {
+                // Get target user details
+                const { data: targetUser, error } = await supabase
+                    .from('profiles')
+                    .select('name, avatar')
+                    .eq('id', targetUserId)
+                    .single();
+
+                if (error) throw error;
+
+                // Initialize call
+                currentCall = {
+                    id: generateCallId(),
+                    targetUserId: targetUserId,
+                    targetUserName: targetUser.name,
+                    targetUserAvatar: targetUser.avatar,
+                    type: callType,
+                    status: 'initiating'
+                };
+
+                isCallInitiator = true;
+
+                // Show call modal
+                showCallModal('Outgoing Call', targetUser.name, targetUser.avatar, callType);
+                
+                // Get local media
+                await getLocalMedia(callType);
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Send call offer
+                await sendCallOffer(targetUserId, callType);
+                
+            } catch (error) {
+                console.error('Error starting call:', error);
+                showToast('Error starting call. Please try again.', 'error');
+                endCall();
+            }
+        }
+
+        // Generate unique call ID
+        function generateCallId() {
+            return `call_${currentUser.id}_${Date.now()}`;
+        }
+
+        // Get local media stream
+        async function getLocalMedia(callType = 'video') {
+            try {
+                const constraints = {
+                    audio: true,
+                    video: callType === 'video' ? {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } : false
+                };
+
+                localStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                // Display local video
+                const localVideo = document.getElementById('localVideo');
+                if (localVideo) {
+                    localVideo.srcObject = localStream;
+                }
+
+                return localStream;
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+                showToast('Error accessing camera/microphone. Please check permissions.', 'error');
+                throw error;
+            }
+        }
+
+        // Create peer connection
+        function createPeerConnection() {
+            try {
+                peerConnection = new RTCPeerConnection(rtcConfig);
+
+                // Add local stream to connection
+                if (localStream) {
+                    localStream.getTracks().forEach(track => {
+                        peerConnection.addTrack(track, localStream);
+                    });
+                }
+
+                // Set up remote stream
+                remoteStream = new MediaStream();
+                const remoteVideo = document.getElementById('remoteVideo');
+                if (remoteVideo) {
+                    remoteVideo.srcObject = remoteStream;
+                }
+
+                // Handle incoming tracks
+                peerConnection.ontrack = (event) => {
+                    event.streams[0].getTracks().forEach(track => {
+                        remoteStream.addTrack(track);
+                    });
+                };
+
+                // Handle ICE candidates
+                peerConnection.onicecandidate = (event) => {
+                    if (event.candidate && currentCall) {
+                        sendIceCandidate(currentCall.targetUserId, event.candidate);
+                    }
+                };
+
+                // Handle connection state changes
+                peerConnection.onconnectionstatechange = () => {
+                    const state = peerConnection.connectionState;
+                    updateCallStatus(state);
+                    
+                    if (state === 'connected') {
+                        startCallTimer();
+                        showToast('Call connected!', 'success');
+                    } else if (state === 'failed' || state === 'disconnected') {
+                        showToast('Call disconnected', 'warning');
+                        endCall();
+                    }
+                };
+
+                // Create data channel for messaging
+                if (isCallInitiator) {
+                    dataChannel = peerConnection.createDataChannel('chat');
+                    setupDataChannel();
+                } else {
+                    peerConnection.ondatachannel = (event) => {
+                        dataChannel = event.channel;
+                        setupDataChannel();
+                    };
+                }
+
+            } catch (error) {
+                console.error('Error creating peer connection:', error);
+                throw error;
+            }
+        }
+
+        // Set up data channel
+        function setupDataChannel() {
+            if (!dataChannel) return;
+
+            dataChannel.onopen = () => {
+                console.log('Data channel opened');
+            };
+
+            dataChannel.onmessage = (event) => {
+                console.log('Received message:', event.data);
+                // Handle data channel messages
+            };
+
+            dataChannel.onclose = () => {
+                console.log('Data channel closed');
+            };
+        }
+
+        // Send call offer
+        async function sendCallOffer(targetUserId, callType) {
+            try {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+
+                // Send offer via Supabase
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-offer',
+                    payload: {
+                        callId: currentCall.id,
+                        callerId: currentUser.id,
+                        callerName: currentUser.name,
+                        callerAvatar: currentUser.avatar,
+                        targetUserId: targetUserId,
+                        offer: offer,
+                        callType: callType,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call offer:', error);
+                throw error;
+            }
+        }
+
+        // Handle incoming call offer
+        async function handleCallOffer(payload) {
+            if (!currentUser || payload.payload.targetUserId !== currentUser.id) return;
+
+            const { callId, callerId, callerName, callerAvatar, offer, callType } = payload.payload;
+
+            // Don't show incoming call if user is already in a call
+            if (currentCall) {
+                sendCallReject(callerId, callId, 'User is busy');
+                return;
+            }
+
+            // Set current call
+            currentCall = {
+                id: callId,
+                callerId: callerId,
+                callerName: callerName,
+                callerAvatar: callerAvatar,
+                type: callType,
+                status: 'incoming'
+            };
+
+            // Store the offer
+            currentCall.offer = offer;
+
+            // Show incoming call modal
+            showIncomingCallModal(callerName, callerAvatar, callType);
+        }
+
+        // Show incoming call modal
+        function showIncomingCallModal(callerName, callerAvatar, callType) {
+            document.getElementById('callerName').textContent = callerName;
+            document.getElementById('callerAvatar').src = callerAvatar;
+            document.getElementById('callType').textContent = callType === 'video' ? 'Video Call' : 'Voice Call';
+            document.getElementById('incomingCallModal').style.display = 'flex';
+            
+            // Auto-reject after 30 seconds
+            setTimeout(() => {
+                if (document.getElementById('incomingCallModal').style.display === 'flex') {
+                    rejectCall();
+                }
+            }, 30000);
+        }
+
+        // Accept incoming call
+        async function acceptCall() {
+            if (!currentCall) return;
+
+            document.getElementById('incomingCallModal').style.display = 'none';
+            
+            try {
+                isCallInitiator = false;
+                
+                // Show call modal
+                showCallModal('In Call', currentCall.callerName, currentCall.callerAvatar, currentCall.type);
+                
+                // Get local media
+                await getLocalMedia(currentCall.type);
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Set remote description
+                await peerConnection.setRemoteDescription(currentCall.offer);
+                
+                // Create and send answer
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                
+                // Send answer
+                await sendCallAnswer(currentCall.callerId, answer);
+                
+            } catch (error) {
+                console.error('Error accepting call:', error);
+                showToast('Error accepting call', 'error');
+                endCall();
+            }
+        }
+
+        // Send call answer
+        async function sendCallAnswer(callerId, answer) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-answer',
+                    payload: {
+                        callId: currentCall.id,
+                        answer: answer,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call answer:', error);
+                throw error;
+            }
+        }
+
+        // Handle call answer
+        async function handleCallAnswer(payload) {
+            if (!currentCall || !peerConnection) return;
+
+            try {
+                await peerConnection.setRemoteDescription(payload.payload.answer);
+            } catch (error) {
+                console.error('Error handling call answer:', error);
+                endCall();
+            }
+        }
+
+        // Send ICE candidate
+        async function sendIceCandidate(targetUserId, candidate) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'ice-candidate',
+                    payload: {
+                        callId: currentCall.id,
+                        candidate: candidate,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending ICE candidate:', error);
+            }
+        }
+
+        // Handle ICE candidate
+        async function handleIceCandidate(payload) {
+            if (!currentCall || !peerConnection) return;
+
+            try {
+                await peerConnection.addIceCandidate(payload.payload.candidate);
+            } catch (error) {
+                console.error('Error adding ICE candidate:', error);
+            }
+        }
+
+        // Reject call
+        function rejectCall() {
+            if (!currentCall) return;
+
+            sendCallReject(currentCall.callerId, currentCall.id, 'Call rejected');
+            resetCall();
+            document.getElementById('incomingCallModal').style.display = 'none';
+        }
+
+        // Send call rejection
+        async function sendCallReject(callerId, callId, reason) {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-reject',
+                    payload: {
+                        callId: callId,
+                        reason: reason,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call rejection:', error);
+            }
+        }
+
+        // Handle call rejection
+        function handleCallReject(payload) {
+            if (!currentCall || currentCall.id !== payload.payload.callId) return;
+
+            showToast('Call was rejected', 'warning');
+            endCall();
+        }
+
+        // End call
+        function endCall() {
+            if (currentCall) {
+                sendCallEnd();
+                saveCallHistory();
+            }
+            resetCall();
+        }
+
+        // Send call end
+        async function sendCallEnd() {
+            try {
+                const { error } = await supabase.channel('calls').send({
+                    type: 'broadcast',
+                    event: 'call-end',
+                    payload: {
+                        callId: currentCall.id,
+                        timestamp: new Date().toISOString()
+                    }
+                });
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error sending call end:', error);
+            }
+        }
+
+        // Handle call end
+        function handleCallEnd(payload) {
+            if (!currentCall || currentCall.id !== payload.payload.callId) return;
+
+            showToast('Call ended by other user', 'info');
+            endCall();
+        }
+
+        // Reset call state
+        function resetCall() {
+            // Stop media streams
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+            }
+            
+            if (remoteStream) {
+                remoteStream.getTracks().forEach(track => track.stop());
+                remoteStream = null;
+            }
+
+            // Close peer connection
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            // Clear data channel
+            dataChannel = null;
+
+            // Stop call timer
+            stopCallTimer();
+
+            // Reset UI
+            document.getElementById('callModal').style.display = 'none';
+            document.getElementById('incomingCallModal').style.display = 'none';
+            
+            const localVideo = document.getElementById('localVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+            
+            if (localVideo) localVideo.srcObject = null;
+            if (remoteVideo) remoteVideo.srcObject = null;
+
+            // Reset call state
+            currentCall = null;
+            isCallInitiator = false;
+            isScreenSharing = false;
+        }
+
+        // Show call modal
+        function showCallModal(title, userName, userAvatar, callType) {
+            document.getElementById('callModalTitle').textContent = title;
+            document.getElementById('remoteUserName').textContent = userName;
+            
+            const callModal = document.getElementById('callModal');
+            callModal.style.display = 'flex';
+            
+            // Set call type class
+            callModal.classList.remove('voice-call', 'video-call');
+            callModal.classList.add(callType === 'voice' ? 'voice-call' : 'video-call');
+            
+            // Update UI based on call type
+            const localVideo = document.getElementById('localVideo');
+            if (localVideo) {
+                localVideo.style.display = callType === 'video' ? 'block' : 'none';
+            }
+        }
+
+        // Toggle audio mute
+        function toggleAudio() {
+            if (!localStream) return;
+            
+            const audioTracks = localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                const isMuted = !audioTracks[0].enabled;
+                audioTracks[0].enabled = isMuted;
+                
+                const button = document.getElementById('muteAudioBtn');
+                button.classList.toggle('muted', !isMuted);
+                button.innerHTML = isMuted ? '<i class="fas fa-microphone"></i>' : '<i class="fas fa-microphone-slash"></i>';
+                
+                showToast(isMuted ? 'Microphone on' : 'Microphone muted', 'info');
+            }
+        }
+
+        // Toggle video mute
+        function toggleVideo() {
+            if (!localStream) return;
+            
+            const videoTracks = localStream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                const isEnabled = !videoTracks[0].enabled;
+                videoTracks[0].enabled = isEnabled;
+                
+                const button = document.getElementById('muteVideoBtn');
+                button.classList.toggle('muted', !isEnabled);
+                button.innerHTML = isEnabled ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>';
+                
+                const localVideo = document.getElementById('localVideo');
+                if (localVideo) {
+                    localVideo.style.display = isEnabled ? 'block' : 'none';
+                }
+                
+                showToast(isEnabled ? 'Video on' : 'Video off', 'info');
+            }
+        }
+
+        // Toggle screen share
+        async function toggleScreenShare() {
+            try {
+                if (!isScreenSharing) {
+                    // Start screen share
+                    screenStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true,
+                        audio: true
+                    });
+                    
+                    // Replace video track
+                    const videoTrack = screenStream.getVideoTracks()[0];
+                    const sender = peerConnection.getSenders().find(s => 
+                        s.track && s.track.kind === 'video'
+                    );
+                    
+                    if (sender) {
+                        await sender.replaceTrack(videoTrack);
+                    }
+                    
+                    // Handle screen share end
+                    videoTrack.onended = () => {
+                        toggleScreenShare();
+                    };
+                    
+                    isScreenSharing = true;
+                    document.getElementById('callModal').classList.add('screen-share');
+                    showToast('Screen sharing started', 'success');
+                    
+                } else {
+                    // Stop screen share
+                    if (screenStream) {
+                        screenStream.getTracks().forEach(track => track.stop());
+                        
+                        // Restore camera track
+                        if (localStream) {
+                            const cameraTrack = localStream.getVideoTracks()[0];
+                            const sender = peerConnection.getSenders().find(s => 
+                                s.track && s.track.kind === 'video'
+                            );
+                            
+                            if (sender && cameraTrack) {
+                                await sender.replaceTrack(cameraTrack);
+                            }
+                        }
+                        
+                        screenStream = null;
+                    }
+                    
+                    isScreenSharing = false;
+                    document.getElementById('callModal').classList.remove('screen-share');
+                    showToast('Screen sharing stopped', 'info');
+                }
+                
+            } catch (error) {
+                console.error('Error toggling screen share:', error);
+                showToast('Error sharing screen', 'error');
+            }
+        }
+
+        // Start call timer
+        function startCallTimer() {
+            callStartTime = new Date();
+            callTimer = setInterval(updateCallTimer, 1000);
+        }
+
+        // Stop call timer
+        function stopCallTimer() {
+            if (callTimer) {
+                clearInterval(callTimer);
+                callTimer = null;
+            }
+            document.getElementById('callTimer').textContent = '00:00';
+        }
+
+        // Update call timer
+        function updateCallTimer() {
+            if (!callStartTime) return;
+            
+            const now = new Date();
+            const diff = Math.floor((now - callStartTime) / 1000);
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+            
+            document.getElementById('callTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Update call status
+        function updateCallStatus(status) {
+            const statusElement = document.getElementById('callStatus');
+            if (statusElement) {
+                statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            }
+        }
+
+        // Save call history
+        async function saveCallHistory() {
+            if (!currentCall || !callStartTime) return;
+
+            try {
+                const callDuration = Math.floor((new Date() - callStartTime) / 1000);
+                const otherUserId = isCallInitiator ? currentCall.targetUserId : currentCall.callerId;
+                const otherUserName = isCallInitiator ? currentCall.targetUserName : currentCall.callerName;
+
+                const { error } = await supabase
+                    .from('call_history')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            other_user_id: otherUserId,
+                            other_user_name: otherUserName,
+                            call_type: currentCall.type,
+                            duration: callDuration,
+                            initiated: isCallInitiator,
+                            timestamp: new Date().toISOString()
+                        }
+                    ]);
+
+                if (error) throw error;
+
+            } catch (error) {
+                console.error('Error saving call history:', error);
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Login user with Supabase
+        async function loginUser(email, password) {
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                const { data: userProfile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                currentUser = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    ...userProfile
+                };
+
+                showPage('homePage');
+                loadFeed();
+                updateUnreadCount();
+                setupRealtimeSubscriptions();
+                showToast('Login successful!', 'success');
+            } catch (error) {
+                showToast('Login failed. Please try again.', 'error');
+            }
+        }
+
+        // Register user with Supabase
+        async function registerUser(name, email, password) {
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                // Create user profile
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: data.user.id,
+                            name: name,
+                            bio: '',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80'
+                        }
+                    ]);
+
+                if (profileError) {
+                    showToast('Error creating profile: ' + profileError.message, 'error');
+                    return;
+                }
+
+                showToast('Registration successful! Please check your email for verification.', 'success');
+                
+                // Switch to login tab
+                document.querySelector('.auth-tab[data-tab="login"]').click();
+                document.getElementById('loginEmail').value = email;
+            } catch (error) {
+                showToast('Registration failed. Please try again.', 'error');
+            }
+        }
+
+        // Sign in with Google
+        async function signInWithGoogle() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+
+                if (error) {
+                    showToast(error.message, 'error');
+                }
+            } catch (error) {
+                showToast('Google sign-in failed. Please try again.', 'error');
+            }
+        }
+
+        // Logout user
+        async function logoutUser() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    showToast(error.message, 'error');
+                    return;
+                }
+
+                currentUser = null;
+                showPage('authPage');
+                showToast('Logged out successfully', 'success');
+            } catch (error) {
+                showToast('Logout failed. Please try again.', 'error');
+            }
+        }
+
+        // Load feed posts from Supabase
+        async function loadFeed() {
+            const feedContainer = document.getElementById('feedContainer');
+
+            if (!currentUser) {
+                feedContainer.innerHTML = `
+                    <div class="card login-prompt">
+                        <i class="fas fa-rss"></i>
+                        <h3>Login to see your feed</h3>
+                        <p>Sign in to view posts from users you follow</p>
+                        <button class="btn btn-primary mt-1" onclick="showPage('authPage')">Login</button>
+                    </div>
+                `;
+                return;
+            }
+
+            feedContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                // Get posts from followed users
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+
+                if (followsError) throw followsError;
+
+                const followedUserIds = follows.map(f => f.following_id);
+                followedUserIds.push(currentUser.id); // Include current user's posts
+
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            id, name, avatar
+                        )
+                    `)
+                    .in('user_id', followedUserIds)
+                    .order('created_at', { ascending: false });
+
+                if (postsError) throw postsError;
+
+                feedContainer.innerHTML = '';
+
+                if (posts.length === 0) {
+                    feedContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-rss" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>Your feed is empty</h3>
+                                <p>Follow some users to see their posts here</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Discover Users</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    feedContainer.appendChild(createPostElement(post));
+                });
+            } catch (error) {
+                console.error('Error loading feed:', error);
+                feedContainer.innerHTML = '<p class="text-center">Error loading feed. Please try again.</p>';
+            }
+        }
+
+        // Create post element
+        function createPostElement(post) {
+            const isLiked = post.liked_by && post.liked_by.includes(currentUser.id);
+
+            const postEl = document.createElement('div');
+            postEl.className = 'card post-card';
+            postEl.innerHTML = `
+                <div class="user-info" data-user-id="${post.profiles.id}">
+                    <img src="${post.profiles.avatar}" alt="${post.profiles.name}" class="avatar">
+                    <div>
+                        <div class="username">${post.profiles.name}</div>
+                        <div class="timestamp">${formatDate(post.created_at)}</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>${post.content}</p>
+                    ${post.image ? `<img src="${post.image}" alt="Post image" class="post-image">` : ''}
+                </div>
+                <div class="post-actions">
+                    <button class="action-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                        <i class="fas fa-heart"></i> <span>${post.like_count || 0}</span>
+                    </button>
+                    <button class="action-btn" data-post-id="${post.id}">
+                        <i class="fas fa-comment"></i> <span>${post.comment_count || 0}</span>
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i>
+                    </button>
+                </div>
+            `;
+
+            // Add like functionality
+            const likeBtn = postEl.querySelector('.action-btn:first-child');
+            likeBtn.addEventListener('click', () => {
+                toggleLike(post.id);
+            });
+
+            // Add comment functionality
+            const commentBtn = postEl.querySelectorAll('.action-btn')[1];
+            commentBtn.addEventListener('click', () => {
+                showComments(post.id);
+            });
+
+            // Add user profile click
+            const userInfo = postEl.querySelector('.user-info');
+            userInfo.addEventListener('click', () => {
+                showUserProfile(post.profiles.id);
+            });
+
+            return postEl;
+        }
+
+        // Toggle like on a post
+        async function toggleLike(postId) {
+            try {
+                // Check if user already liked the post
+                const { data: post, error: postError } = await supabase
+                    .from('posts')
+                    .select('liked_by, like_count, user_id')
+                    .eq('id', postId)
+                    .single();
+
+                if (postError) throw postError;
+
+                const isLiked = post.liked_by && post.liked_by.includes(currentUser.id);
+                let newLikedBy = post.liked_by || [];
+                let newLikeCount = post.like_count || 0;
+
+                if (isLiked) {
+                    // Unlike
+                    newLikedBy = newLikedBy.filter(id => id !== currentUser.id);
+                    newLikeCount--;
+                } else {
+                    // Like
+                    newLikedBy.push(currentUser.id);
+                    newLikeCount++;
+
+                    // Create notification if not the post owner
+                    if (post.user_id !== currentUser.id) {
+                        const { error: notifError } = await supabase
+                            .from('notifications')
+                            .insert([
+                                {
+                                    user_id: post.user_id,
+                                    type: 'like',
+                                    source_user_id: currentUser.id,
+                                    content: 'liked your post',
+                                    read: false
+                                }
+                            ]);
+
+                        if (notifError) console.error('Error creating notification:', notifError);
+                    }
+                }
+
+                // Update post
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({
+                        liked_by: newLikedBy,
+                        like_count: newLikeCount
+                    })
+                    .eq('id', postId);
+
+                if (updateError) throw updateError;
+
+                // Update UI
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+                showToast('Error updating like. Please try again.', 'error');
+            }
+        }
+
+        // Show comments for a post
+        function showComments(postId) {
+            if (!currentUser) {
+                showToast('Please login to view comments', 'warning');
+                showPage('authPage');
+                return;
+            }
+
+            currentPostId = postId;
+            document.getElementById('commentModal').style.display = 'flex';
+            loadComments();
+        }
+
+        // Load comments for a post from Supabase
+        async function loadComments() {
+            const commentsContainer = document.getElementById('commentsContainer');
+            commentsContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: comments, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            id, name, avatar
+                        )
+                    `)
+                    .eq('post_id', currentPostId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                commentsContainer.innerHTML = '';
+
+                if (comments.length === 0) {
+                    commentsContainer.innerHTML = '<p class="text-center">No comments yet</p>';
+                } else {
+                    comments.forEach(comment => {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = 'comment';
+                        commentEl.innerHTML = `
+                            <img src="${comment.profiles.avatar}" alt="${comment.profiles.name}" class="comment-avatar" data-user-id="${comment.profiles.id}">
+                            <div class="comment-content">
+                                <div class="username" data-user-id="${comment.profiles.id}">${comment.profiles.name}</div>
+                                <p>${comment.content}</p>
+                                <div class="timestamp">${formatDate(comment.created_at)}</div>
+                            </div>
+                        `;
+
+                        // Add user profile click
+                        const userAvatar = commentEl.querySelector('.comment-avatar');
+                        const username = commentEl.querySelector('.username');
+                        userAvatar.addEventListener('click', () => {
+                            showUserProfile(comment.profiles.id);
+                        });
+                        username.addEventListener('click', () => {
+                            showUserProfile(comment.profiles.id);
+                        });
+
+                        commentsContainer.appendChild(commentEl);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = '<p class="text-center">Error loading comments</p>';
+            }
+        }
+
+        // Post a comment
+        async function postComment() {
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+
+            if (!content) return;
+
+            try {
+                // Create comment
+                const { data: newComment, error: commentError } = await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: currentPostId,
+                            user_id: currentUser.id,
+                            content: content
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (commentError) throw commentError;
+
+                // Update post comment count
+                const { data: post, error: postError } = await supabase
+                    .from('posts')
+                    .select('comment_count, user_id')
+                    .eq('id', currentPostId)
+                    .single();
+
+                if (postError) throw postError;
+
+                const { error: updateError } = await supabase
+                    .from('posts')
+                    .update({
+                        comment_count: (post.comment_count || 0) + 1
+                    })
+                    .eq('id', currentPostId);
+
+                if (updateError) throw updateError;
+
+                // Create notification if not the post owner
+                if (post.user_id !== currentUser.id) {
+                    const { error: notifError } = await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: post.user_id,
+                                type: 'comment',
+                                source_user_id: currentUser.id,
+                                content: 'commented on your post',
+                                read: false
+                            }
+                        ]);
+
+                    if (notifError) console.error('Error creating notification:', notifError);
+                }
+
+                // Clear input and reload comments
+                commentInput.value = '';
+                loadComments();
+
+                // Update post in feed
+                if (currentPage === 'homePage') {
+                    loadFeed();
+                } else if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showToast('Error posting comment. Please try again.', 'error');
+            }
+        }
+
+        // Create a new post with Supabase
+        async function createPost(content, imageFile) {
+            if (!currentUser) {
+                showToast('Please login to create a post', 'warning');
+                showPage('authPage');
+                return;
+            }
+
+            try {
+                let imageUrl = '';
+
+                // If there's an image file, upload it to Supabase Storage
+                if (imageFile) {
+                    const fileExt = imageFile.name.split('.').pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const filePath = `posts/${currentUser.id}/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('post-images')
+                        .upload(filePath, imageFile);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('post-images')
+                        .getPublicUrl(filePath);
+
+                    imageUrl = publicUrl;
+                }
+
+                // Create post in database
+                const { error } = await supabase
+                    .from('posts')
+                    .insert([
+                        {
+                            user_id: currentUser.id,
+                            content: content,
+                            image: imageUrl,
+                            like_count: 0,
+                            comment_count: 0,
+                            liked_by: []
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                // Reset form and go back to feed
+                document.getElementById('newPostForm').reset();
+                showPage('homePage');
+                loadFeed();
+
+                showToast('Post created successfully!', 'success');
+            } catch (error) {
+                console.error('Error creating post:', error);
+                showToast('Error creating post. Please try again.', 'error');
+            }
+        }
+
+        // Load user profile from Supabase
+        async function loadProfile() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            // Update profile info
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileBio').textContent = currentUser.bio || '';
+            document.getElementById('profileAvatar').src = currentUser.avatar;
+
+            try {
+                // Get user stats
+                const { data: posts, error: postsError } = await supabase
+                    .from('posts')
+                    .select('id')
+                    .eq('user_id', currentUser.id);
+
+                if (postsError) throw postsError;
+
+                const { data: following, error: followingError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id);
+
+                if (followingError) throw followingError;
+
+                const { data: followers, error: followersError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('following_id', currentUser.id);
+
+                if (followersError) throw followersError;
+
+                // Update stats
+                document.getElementById('postsCount').textContent = posts.length;
+                document.getElementById('followingCount').textContent = following.length;
+                document.getElementById('followersCount').textContent = followers.length;
+
+                // Load user's posts
+                const postsContainer = document.getElementById('userPostsContainer');
+                postsContainer.innerHTML = '<div class="spinner"></div>';
+
+                const { data: userPosts, error: userPostsError } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            id, name, avatar
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (userPostsError) throw userPostsError;
+
+                postsContainer.innerHTML = '';
+
+                if (userPosts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-camera" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No posts yet</h3>
+                                <p>Share your first post with the world</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('newPostPage')">Create Post</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                userPosts.forEach(post => {
+                    postsContainer.appendChild(createPostElement(post));
+                });
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showToast('Error loading profile. Please try again.', 'error');
+            }
+        }
+
+        // Show edit profile modal
+        function showEditProfileModal() {
+            document.getElementById('editDisplayName').value = currentUser.name;
+            document.getElementById('editBio').value = currentUser.bio || '';
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        // Update user profile with Supabase
+        async function updateProfile(displayName, bio, avatarFile) {
+            try {
+                let avatarUrl = currentUser.avatar;
+
+                // If there's an avatar file, upload it to Supabase Storage
+                if (avatarFile) {
+                    const fileExt = avatarFile.name.split('.').pop();
+                    const fileName = `${Math.random()}.${fileExt}`;
+                    const filePath = `avatars/${currentUser.id}/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('avatars')
+                        .upload(filePath, avatarFile);
+
+                    if (uploadError) throw uploadError;
+
+                    // Get public URL
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(filePath);
+
+                    avatarUrl = publicUrl;
+                }
+
+                // Update profile in database
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        name: displayName,
+                        bio: bio,
+                        avatar: avatarUrl
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                // Update current user
+                currentUser.name = displayName;
+                currentUser.bio = bio;
+                currentUser.avatar = avatarUrl;
+
+                // Update UI
+                document.getElementById('profileName').textContent = displayName;
+                document.getElementById('profileBio').textContent = bio;
+                document.getElementById('profileAvatar').src = avatarUrl;
+
+                // Close modal
+                document.getElementById('editProfileModal').style.display = 'none';
+
+                showToast('Profile updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showToast('Error updating profile. Please try again.', 'error');
+            }
+        }
+
+        // Load notifications from Supabase
+        async function loadNotifications() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const notificationsContainer = document.getElementById('notificationsContainer');
+            notificationsContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select(`
+                        *,
+                        profiles:source_user_id (
+                            id, name, avatar
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                notificationsContainer.innerHTML = '';
+
+                if (notifications.length === 0) {
+                    notificationsContainer.innerHTML = '<p class="text-center">No notifications yet</p>';
+                    return;
+                }
+
+                notifications.forEach(notif => {
+                    const notifEl = document.createElement('div');
+                    notifEl.className = `card notification-item ${notif.read ? '' : 'unread'}`;
+                    notifEl.innerHTML = `
+                        <div class="notification-icon">
+                            <i class="fas fa-${notif.type === 'like' ? 'heart' : notif.type === 'comment' ? 'comment' : 'user-plus'}"></i>
+                        </div>
+                        <div>
+                            <p><strong class="username" data-user-id="${notif.profiles.id}">${notif.profiles.name}</strong> ${notif.content}</p>
+                            <div class="timestamp">${formatDate(notif.created_at)}</div>
+                        </div>
+                    `;
+
+                    // Add user profile click
+                    const username = notifEl.querySelector('.username');
+                    username.addEventListener('click', () => {
+                        showUserProfile(notif.profiles.id);
+                    });
+
+                    // Mark as read when clicked
+                    if (!notif.read) {
+                        notifEl.addEventListener('click', async () => {
+                            try {
+                                const { error: updateError } = await supabase
+                                    .from('notifications')
+                                    .update({ read: true })
+                                    .eq('id', notif.id);
+
+                                if (updateError) throw updateError;
+
+                                updateUnreadCount();
+                                loadNotifications();
+                            } catch (error) {
+                                console.error('Error marking notification as read:', error);
+                            }
+                        });
+                    }
+
+                    notificationsContainer.appendChild(notifEl);
+                });
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                notificationsContainer.innerHTML = '<p class="text-center">Error loading notifications</p>';
+            }
+        }
+
+        // Update unread notification count from Supabase
+        async function updateUnreadCount() {
+            if (!currentUser) return;
+
+            try {
+                const { data: notifications, error } = await supabase
+                    .from('notifications')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
+
+                if (error) throw error;
+
+                const badge = document.getElementById('notificationBadge');
+                if (notifications.length > 0) {
+                    badge.textContent = notifications.length;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error updating unread count:', error);
+            }
+        }
+
+        // Load conversations from Supabase
+        async function loadConversations() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const conversationsContainer = document.getElementById('conversationsContainer');
+            conversationsContainer.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                // Get unique conversation partners
+                const { data: messages, error: messagesError } = await supabase
+                    .from('messages')
+                    .select('sender_id, receiver_id, content, created_at')
+                    .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                    .order('created_at', { ascending: false });
+
+                if (messagesError) throw messagesError;
+
+                // Get unique conversation partners
+                const conversationPartners = new Set();
+                const lastMessages = {};
+
+                messages.forEach(msg => {
+                    const partnerId = msg.sender_id === currentUser.id ? msg.receiver_id : msg.sender_id;
+                    conversationPartners.add(partnerId);
+                    
+                    // Store the latest message for each partner
+                    if (!lastMessages[partnerId] || new Date(msg.created_at) > new Date(lastMessages[partnerId].created_at)) {
+                        lastMessages[partnerId] = msg;
+                    }
+                });
+
+                conversationsContainer.innerHTML = '';
+
+                if (conversationPartners.size === 0) {
+                    conversationsContainer.innerHTML = `
+                        <div class="card text-center">
+                            <div style="padding: 40px 20px;">
+                                <i class="fas fa-comments" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                                <h3>No messages yet</h3>
+                                <p>Start a conversation with someone</p>
+                                <button class="btn btn-primary mt-1" onclick="showPage('searchPage')">Find Users</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Get user details for each conversation partner
+                const { data: users, error: usersError } = await supabase
+                    .from('profiles')
+                    .select('id, name, avatar')
+                    .in('id', Array.from(conversationPartners));
+
+                if (usersError) throw usersError;
+
+                users.forEach(user => {
+                    const lastMessage = lastMessages[user.id];
+                    const conversationEl = document.createElement('div');
+                    conversationEl.className = 'card';
+                    conversationEl.style.padding = '15px';
+                    conversationEl.style.marginBottom = '10px';
+                    conversationEl.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <img src="${user.avatar}" alt="${user.name}" class="avatar" data-user-id="${user.id}">
+                            <div style="flex: 1; margin-left: 10px; cursor: pointer;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div class="username" data-user-id="${user.id}">${user.name}</div>
+                                    <div class="timestamp">${formatDate(lastMessage.created_at)}</div>
+                                </div>
+                                <p>${lastMessage.content}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    // Add click event to open chat
+                    conversationEl.addEventListener('click', () => {
+                        currentChatUser = user;
+                        document.getElementById('chatUserName').textContent = user.name;
+                        showPage('chatPage');
+                        loadChat(user);
+                    });
+
+                    // Add user profile click
+                    const userAvatar = conversationEl.querySelector('.avatar');
+                    const username = conversationEl.querySelector('.username');
+                    userAvatar.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showUserProfile(user.id);
+                    });
+                    username.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showUserProfile(user.id);
+                    });
+
+                    conversationsContainer.appendChild(conversationEl);
+                });
+            } catch (error) {
+                console.error('Error loading conversations:', error);
+                conversationsContainer.innerHTML = '<p class="text-center">Error loading conversations</p>';
+            }
+        }
+
+        // Load chat with a user from Supabase
+        async function loadChat(user) {
+            const messageThread = document.getElementById('messageThread');
+            messageThread.innerHTML = '<div class="spinner"></div>';
+
+            try {
+                const { data: messages, error } = await supabase
+                    .from('messages')
+                    .select('*')
+                    .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${user.id}),and(sender_id.eq.${user.id},receiver_id.eq.${currentUser.id})`)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                messageThread.innerHTML = '';
+
+                messages.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`;
+                    messageEl.innerHTML = `
+                        <div>${msg.content}</div>
+                        <div class="message-time">${formatTime(msg.created_at)}</div>
+                    `;
+                    messageThread.appendChild(messageEl);
+                });
+
+                // Scroll to bottom
+                messageThread.scrollTop = messageThread.scrollHeight;
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                messageThread.innerHTML = '<p class="text-center">Error loading messages</p>';
+            }
+        }
+
+        // Send a message with Supabase
+        async function sendMessage() {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+
+            if (!content || !currentChatUser) return;
+
+            try {
+                const { error } = await supabase
+                    .from('messages')
+                    .insert([
+                        {
+                            sender_id: currentUser.id,
+                            receiver_id: currentChatUser.id,
+                            content: content
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                // Clear input and reload chat
+                messageInput.value = '';
+                loadChat(currentChatUser);
+
+                // Create notification
+                const { error: notifError } = await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: currentChatUser.id,
+                            type: 'message',
+                            source_user_id: currentUser.id,
+                            content: 'sent you a message',
+                            read: false
+                        }
+                    ]);
+
+                if (notifError) console.error('Error creating notification:', notifError);
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('Error sending message. Please try again.', 'error');
+            }
+        }
+
+        // Initialize search
+        function initSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').innerHTML = '<p class="text-center">Start typing to search for users</p>';
+        }
+
+        // Handle search input with Supabase
+        async function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+
+            if (query.length < 2) {
+                searchResults.innerHTML = '<p class="text-center">Start typing to search for users</p>';
+                return;
+            }
+
+            try {
+                const { data: users, error } = await supabase
+                    .from('profiles')
+                    .select('id, name, bio, avatar')
+                    .ilike('name', `%${query}%`)
+                    .neq('id', currentUser.id);
+
+                if (error) throw error;
+
+                searchResults.innerHTML = '';
+
+                if (users.length === 0) {
+                    searchResults.innerHTML = '<p class="text-center">No users found</p>';
+                    return;
+                }
+
+                // Check follow status for each user
+                const { data: follows, error: followsError } = await supabase
+                    .from('follows')
+                    .select('following_id')
+                    .eq('follower_id', currentUser.id);
+
+                if (followsError) throw followsError;
+
+                const followingIds = follows.map(f => f.following_id);
+
+                users.forEach(user => {
+                    const isFollowing = followingIds.includes(user.id);
+                    const userEl = document.createElement('div');
+                    userEl.className = 'card user-item';
+                    userEl.innerHTML = `
+                        <img src="${user.avatar}" alt="${user.name}" class="avatar" data-user-id="${user.id}">
+                        <div style="flex: 1;">
+                            <div class="username" data-user-id="${user.id}">${user.name}</div>
+                            <div>${user.bio || ''}</div>
+                        </div>
+                        <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" data-user-id="${user.id}">
+                            ${isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
+                    `;
+
+                    // Add follow functionality
+                    const followBtn = userEl.querySelector('button');
+                    followBtn.addEventListener('click', () => {
+                        toggleFollow(user.id);
+                    });
+
+                    // Add user profile click
+                    const userAvatar = userEl.querySelector('.avatar');
+                    const username = userEl.querySelector('.username');
+                    userAvatar.addEventListener('click', () => {
+                        showUserProfile(user.id);
+                    });
+                    username.addEventListener('click', () => {
+                        showUserProfile(user.id);
+                    });
+
+                    searchResults.appendChild(userEl);
+                });
+            } catch (error) {
+                console.error('Error searching users:', error);
+                searchResults.innerHTML = '<p class="text-center">Error searching users</p>';
+            }
+        }
+
+        // Toggle follow with Supabase
+        async function toggleFollow(userId) {
+            if (!currentUser) {
+                showPage('authPage');
+                return;
+            }
+
+            try {
+                // Check if already following
+                const { data: existingFollow, error: checkError } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id)
+                    .eq('following_id', userId)
+                    .single();
+
+                if (checkError && checkError.code !== 'PGRST116') throw checkError;
+
+                if (existingFollow) {
+                    // Unfollow
+                    const { error: unfollowError } = await supabase
+                        .from('follows')
+                        .delete()
+                        .eq('id', existingFollow.id);
+
+                    if (unfollowError) throw unfollowError;
+                    showToast('Unfollowed user', 'info');
+                } else {
+                    // Follow
+                    const { error: followError } = await supabase
+                        .from('follows')
+                        .insert([
+                            {
+                                follower_id: currentUser.id,
+                                following_id: userId
+                            }
+                        ]);
+
+                    if (followError) throw followError;
+
+                    // Create notification
+                    const { error: notifError } = await supabase
+                        .from('notifications')
+                        .insert([
+                            {
+                                user_id: userId,
+                                type: 'follow',
+                                source_user_id: currentUser.id,
+                                content: 'started following you',
+                                read: false
+                            }
+                        ]);
+
+                    if (notifError) console.error('Error creating notification:', notifError);
+                    
+                    showToast('Followed user', 'success');
+                }
+
+                // Update UI
+                handleSearch();
+
+                // Update profile stats if on profile page
+                if (currentPage === 'profilePage') {
+                    loadProfile();
+                }
+            } catch (error) {
+                console.error('Error toggling follow:', error);
+                showToast('Error updating follow status. Please try again.', 'error');
+            }
+        }
+
+        // Show user profile
+        async function showUserProfile(userId) {
+            try {
+                const { data: user, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) throw error;
+
+                viewedUser = user;
+
+                // Update modal content
+                document.getElementById('viewProfileName').textContent = user.name;
+                document.getElementById('viewProfileBio').textContent = user.bio || '';
+                document.getElementById('viewProfileAvatar').src = user.avatar;
+
+                // Get user stats
+                const { data: posts } = await supabase
+                    .from('posts')
+                    .select('id')
+                    .eq('user_id', userId);
+
+                const { data: following } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', userId);
+
+                const { data: followers } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('following_id', userId);
+
+                // Update stats
+                document.getElementById('viewPostsCount').textContent = posts?.length || 0;
+                document.getElementById('viewFollowingCount').textContent = following?.length || 0;
+                document.getElementById('viewFollowersCount').textContent = followers?.length || 0;
+
+                // Check if current user is following this user
+                const { data: isFollowing } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id)
+                    .eq('following_id', userId)
+                    .single();
+
+                // Update follow button
+                const followBtn = document.getElementById('followUserBtn');
+                if (isFollowing) {
+                    followBtn.textContent = 'Unfollow';
+                    followBtn.classList.remove('btn-primary');
+                    followBtn.classList.add('btn-secondary');
+                } else {
+                    followBtn.textContent = 'Follow';
+                    followBtn.classList.remove('btn-secondary');
+                    followBtn.classList.add('btn-primary');
+                }
+
+                // Show modal
+                document.getElementById('userProfileModal').style.display = 'flex';
+
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showToast('Error loading user profile', 'error');
+            }
+        }
+
+        // Show followers/following list
+        async function showFollowList(type) {
+            if (!currentUser) return;
+
+            try {
+                document.getElementById('followListTitle').textContent = type === 'followers' ? 'Followers' : 'Following';
+                const container = document.getElementById('followListContainer');
+                container.innerHTML = '<div class="spinner"></div>';
+
+                let data;
+                if (type === 'followers') {
+                    const { data: followers, error } = await supabase
+                        .from('follows')
+                        .select(`
+                            follower_id,
+                            profiles:follower_id (id, name, avatar)
+                        `)
+                        .eq('following_id', currentUser.id);
+
+                    if (error) throw error;
+                    data = followers;
+                } else {
+                    const { data: following, error } = await supabase
+                        .from('follows')
+                        .select(`
+                            following_id,
+                            profiles:following_id (id, name, avatar)
+                        `)
+                        .eq('follower_id', currentUser.id);
+
+                    if (error) throw error;
+                    data = following;
+                }
+
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = `<p class="text-center">No ${type} yet</p>`;
+                } else {
+                    data.forEach(item => {
+                        const user = type === 'followers' ? item.profiles : item.profiles;
+                        const followItem = document.createElement('div');
+                        followItem.className = 'follow-item';
+                        followItem.innerHTML = `
+                            <img src="${user.avatar}" alt="${user.name}" class="avatar" data-user-id="${user.id}">
+                            <div style="flex: 1; margin-left: 10px;">
+                                <div class="username" data-user-id="${user.id}">${user.name}</div>
+                            </div>
+                        `;
+
+                        // Add user profile click
+                        const userAvatar = followItem.querySelector('.avatar');
+                        const username = followItem.querySelector('.username');
+                        userAvatar.addEventListener('click', () => {
+                            document.getElementById('followListModal').style.display = 'none';
+                            showUserProfile(user.id);
+                        });
+                        username.addEventListener('click', () => {
+                            document.getElementById('followListModal').style.display = 'none';
+                            showUserProfile(user.id);
+                        });
+
+                        container.appendChild(followItem);
+                    });
+                }
+
+                document.getElementById('followListModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading follow list:', error);
+                showToast('Error loading follow list', 'error');
+            }
+        }
+
+        // Format date
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - new Date(date);
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+
+            return new Date(date).toLocaleDateString();
+        }
+
+        // Format time
+        function formatTime(date) {
+            return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Initialize the app when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
